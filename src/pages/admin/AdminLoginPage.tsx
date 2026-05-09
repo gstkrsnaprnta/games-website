@@ -1,16 +1,27 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FormInput } from "../../components/admin/FormInput";
-import { supabase } from "../../lib/supabase";
+import { signInAdmin } from "../../services/auth";
 
 export function AdminLoginPage() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setMessage(error ? error.message : "Login berhasil. Buka /admin untuk masuk dashboard.");
+    setLoading(true);
+    const { error } = await signInAdmin(email, password);
+    setLoading(false);
+
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    navigate("/admin");
   }
 
   return (
@@ -23,7 +34,9 @@ export function AdminLoginPage() {
         <FormInput label="Email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required />
         <FormInput label="Password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} required />
         {message ? <p className="text-sm text-slate-600">{message}</p> : null}
-        <button className="rounded-lg bg-cyan-600 px-5 py-3 font-bold text-white">Login</button>
+        <button disabled={loading} className="rounded-lg bg-cyan-600 px-5 py-3 font-bold text-white disabled:bg-slate-400">
+          {loading ? "Memproses..." : "Login"}
+        </button>
       </form>
     </main>
   );

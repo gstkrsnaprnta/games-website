@@ -1,11 +1,16 @@
 import { Link, useParams } from "react-router-dom";
 import { EmptyState } from "../../components/shared/EmptyState";
-import { sampleCompetitions } from "./sampleData";
+import { ErrorState } from "../../components/shared/ErrorState";
+import { LoadingState } from "../../components/shared/LoadingState";
+import { getCompetitionBySlug } from "../../services/competitions";
+import { useAsyncData } from "../../utils/useAsyncData";
 
 export function CompetitionDetailPage() {
   const { slug } = useParams();
-  const competition = sampleCompetitions.find((item) => item.slug === slug);
+  const { data: competition, error, loading } = useAsyncData(() => getCompetitionBySlug(slug ?? ""), [slug]);
 
+  if (loading) return <section className="container-page py-10"><LoadingState /></section>;
+  if (error) return <section className="container-page py-10"><ErrorState message={error} /></section>;
   if (!competition) return <section className="container-page py-10"><EmptyState title="Lomba tidak ditemukan" /></section>;
 
   return (

@@ -67,6 +67,7 @@ export type Announcement = {
 
 export type Registration = {
   id: string;
+  event_id?: string;
   competition_id: string;
   registration_code: string;
   participant_type: string;
@@ -83,4 +84,25 @@ export type Registration = {
   submission_status: SubmissionStatus;
   admin_note: string | null;
   created_at: string;
+  competitions?: Pick<Competition, "name" | "code" | "slug"> | null;
+};
+
+export type RegistrationStatusResult = {
+  registration_code: string;
+  participant_name: string;
+  team_name: string | null;
+  institution: string;
+  competition_name: string;
+  competition_code: string;
+  registration_status: RegistrationStatus;
+  payment_status: PaymentStatus;
+  submission_status: SubmissionStatus;
+  admin_note: string | null;
+};
+
+export type Profile = {
+  id: string;
+  full_name: string | null;
+  role: "admin" | "super_admin";
+  is_active: boolean;
 };

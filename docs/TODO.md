@@ -13,15 +13,19 @@
 
 ## Phase 1
 
-- [ ] Hubungkan halaman publik ke data Supabase.
-- [ ] Implementasi form pendaftaran dan insert anggota tim.
-- [ ] Generate nomor registrasi otomatis dari Supabase RPC.
-- [ ] Implementasi cek status peserta sesuai RLS.
-- [ ] Implementasi admin session guard berbasis Supabase Auth.
+- [x] Hubungkan halaman publik ke data Supabase.
+- [x] Implementasi form pendaftaran dan insert anggota tim.
+- [x] Generate nomor registrasi otomatis dari Supabase RPC.
+- [x] Implementasi cek status peserta via RPC sesuai RLS.
+- [x] Implementasi admin session guard berbasis Supabase Auth.
+- [x] Implementasi role check dari tabel `profiles`.
+- [x] Dashboard admin awal berisi count lomba, pengumuman, peserta, dan peserta pending.
 - [ ] CRUD events, competitions, timelines, faqs, announcements.
-- [ ] Dashboard peserta.
+- [ ] Dashboard peserta/admin list peserta lengkap.
 - [ ] Validasi pembayaran dan berkas manual.
 - [ ] Export CSV data peserta.
+- [ ] Terapkan migration `002_registration_status_rpc.sql` ke Supabase remote jika belum dijalankan.
+- [ ] Hardening generator nomor registrasi agar aman dari race condition saat submit bersamaan.
 
 ## Future / Non-MVP
 
