@@ -31,7 +31,11 @@
 - [x] Create/edit/publish/unpublish/delete announcements.
 - [x] Create/edit/deactivate sponsors.
 - [x] Create/edit/deactivate galleries.
-- [ ] CRUD events.
+- [x] CRUD events.
+- [x] Set satu event aktif dan otomatis nonaktifkan event lain.
+- [x] Pagination sederhana registrations.
+- [x] Filter registrations berdasarkan lomba, status pembayaran, dan status berkas.
+- [x] Confirm dialog reusable untuk aksi destructive/activation events.
 - [ ] Terapkan migration `002_registration_status_rpc.sql` ke Supabase remote jika belum dijalankan.
 - [ ] Hardening generator nomor registrasi agar aman dari race condition saat submit bersamaan.
 

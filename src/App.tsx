@@ -4,6 +4,7 @@ import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 import { AdminAnnouncementsPage } from "./pages/admin/AdminAnnouncementsPage";
 import { AdminCompetitionsPage } from "./pages/admin/AdminCompetitionsPage";
 import { AdminDashboardPage } from "./pages/admin/AdminDashboardPage";
+import { AdminEventsPage } from "./pages/admin/AdminEventsPage";
 import { AdminFaqsPage } from "./pages/admin/AdminFaqsPage";
 import { AdminGalleriesPage } from "./pages/admin/AdminGalleriesPage";
 import { AdminLoginPage } from "./pages/admin/AdminLoginPage";
@@ -49,7 +50,7 @@ const router = createBrowserRouter([
         element: <AdminLayout />,
         children: [
           { index: true, element: <AdminDashboardPage /> },
-          { path: "events", element: <AdminPlaceholderPage title="Events" /> },
+          { path: "events", element: <AdminEventsPage /> },
           { path: "competitions", element: <AdminCompetitionsPage /> },
           { path: "timelines", element: <AdminTimelinesPage /> },
           { path: "faqs", element: <AdminFaqsPage /> },

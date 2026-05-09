@@ -37,6 +37,7 @@ Validasi pembayaran dan berkas dilakukan oleh panitia melalui data peserta. Paym
 
 ## CMS Konten
 
+- `/admin/events`: tambah, edit, hapus event tahunan, dan set satu event aktif. Saat satu event diaktifkan, event lain otomatis nonaktif.
 - `/admin/competitions`: tambah, edit, dan hapus lomba.
 - `/admin/timelines`: tambah, edit, dan hapus timeline.
 - `/admin/faqs`: tambah, edit, dan hapus FAQ.

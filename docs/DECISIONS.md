@@ -30,3 +30,10 @@
 - CRUD konten admin dibuat langsung dari frontend dengan anon/publishable key dan session admin, tetap mengandalkan RLS.
 - Competitions, timelines, FAQs, dan announcements mendukung delete; sponsors dan galleries memakai deactivate agar arsip sponsor/galeri tidak hilang tanpa sengaja.
 - Tidak ada perubahan RLS pada Phase 2 karena policy admin existing sudah mencakup operasi yang digunakan.
+
+## 2026-05-09 Events and Registration Filters
+
+- `/admin/events` memakai service admin khusus dan update dua langkah saat set aktif: nonaktifkan event lain, lalu aktifkan event terpilih.
+- Validasi event minimal dilakukan di UI: `year` dan `name` wajib.
+- Registrations memakai filter client-side dan pagination sederhana karena volume MVP masih kecil; server-side pagination tetap dicatat untuk skala lebih besar.
+- Confirm dialog reusable mulai dipakai untuk aksi set active/delete event.

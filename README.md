@@ -58,4 +58,6 @@ npm run lint
 - Buka `/admin/login`, login dengan akun admin Supabase, lalu cek dashboard `/admin`.
 - Buka `/admin/registrations`, klik kode registrasi, lalu ubah status validasi manual.
 - Test tombol Export CSV di `/admin/registrations`.
+- Test filter dan pagination di `/admin/registrations`.
+- Test create/edit/set active event di `/admin/events`.
 - Test tambah/edit konten di `/admin/competitions`, `/admin/timelines`, `/admin/faqs`, `/admin/announcements`, `/admin/sponsors`, dan `/admin/galleries`.

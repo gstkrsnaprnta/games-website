@@ -2,7 +2,7 @@
 
 ## Status Terakhir
 
-Phase 2 sebagian besar selesai. Halaman publik dan admin list sudah mengambil data Supabase, form pendaftaran dan cek status berjalan via RLS/RPC, admin auth guard berjalan, dashboard admin menampilkan count, detail peserta admin sudah bisa validasi manual, export CSV registrasi tersedia, dan CRUD ringan konten admin sudah tersedia untuk lomba, timeline, FAQ, pengumuman, sponsor, dan galeri.
+Phase 2 lanjutan selesai. Halaman publik dan admin list sudah mengambil data Supabase, form pendaftaran dan cek status berjalan via RLS/RPC, admin auth guard berjalan, dashboard admin menampilkan count, detail peserta admin sudah bisa validasi manual, export CSV registrasi tersedia, CRUD ringan konten admin sudah tersedia, `/admin/events` sudah CRUD dan bisa set satu event aktif, serta registrations sudah punya filter dan pagination sederhana.
 
 ## Stack
 
@@ -40,12 +40,15 @@ Phase 2 sebagian besar selesai. Halaman publik dan admin list sudah mengambil da
 - [x] Create/edit/delete competitions, timelines, FAQs, announcements.
 - [x] Publish/unpublish announcements.
 - [x] Create/edit/deactivate sponsors dan galleries.
+- [x] CRUD events dan active-event management.
+- [x] Filter registrations berdasarkan lomba, pembayaran, dan berkas.
+- [x] Pagination sederhana registrations.
+- [x] Confirm dialog reusable untuk aksi event.
 - [x] Supabase schema awal dan RLS awal.
 - [x] Dokumentasi awal.
 
 ## Fitur Belum Selesai
 
-- [ ] CRUD events.
 - [ ] Pagination server-side untuk data admin besar.
 - [ ] UI polish modal/dialog untuk CRUD agar lebih nyaman.
 - [ ] Terapkan migration 002 di Supabase remote bila belum diterapkan.
@@ -81,8 +84,8 @@ RLS sudah diaktifkan untuk semua tabel. Public read dibatasi ke konten aktif/pub
 1. Jalankan migration `002_registration_status_rpc.sql` di Supabase remote jika belum.
 2. Uji pendaftaran end-to-end dengan data dummy yang boleh tersimpan.
 3. Uji cek status memakai nomor registrasi hasil pendaftaran.
-4. Tambahkan CRUD events dan active-event management.
-5. Tambahkan pagination/filter server-side untuk registrasi.
+4. Tambahkan pagination/filter server-side untuk registrasi jika data mulai besar.
+5. Gunakan ConfirmDialog reusable untuk aksi destructive di modul admin lain.
 6. Rapikan UI CRUD ke modal/dialog reusable.
 7. Tambahkan export CSV dengan opsi filter.
 8. Hardening nomor registrasi memakai sequence/transaction.

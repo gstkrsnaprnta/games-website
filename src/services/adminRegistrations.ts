@@ -15,6 +15,7 @@ export type AdminRegistrationRow = {
   submission_status: SubmissionStatus;
   admin_note: string | null;
   created_at: string;
+  competition_id?: string;
   competitions: { name: string; code: string } | null;
   registration_members?: { id: string; name: string; role: string | null }[];
 };
@@ -23,7 +24,7 @@ export async function getAdminRegistrations() {
   const { data, error } = await supabase
     .from("registrations")
     .select(
-      "id, registration_code, leader_name, team_name, email, whatsapp, institution, level, registration_status, payment_status, submission_status, admin_note, created_at, competitions(name, code)",
+      "id, competition_id, registration_code, leader_name, team_name, email, whatsapp, institution, level, registration_status, payment_status, submission_status, admin_note, created_at, competitions(name, code)",
     )
     .order("created_at", { ascending: false });
 
