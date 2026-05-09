@@ -16,3 +16,9 @@
 - Nomor registrasi Phase 1 memakai RPC `next_registration_code` berbasis `count(*) + 1`; ini cukup untuk MVP awal tetapi perlu diganti dengan mekanisme atomic/sequence sebelum traffic tinggi.
 - Cek status peserta memakai RPC `check_registration_status` dengan `security definer` agar publik tetap tidak bisa membaca tabel `registrations` secara bebas.
 - Admin route dijaga dengan Supabase session dan role `admin`/`super_admin` aktif dari tabel `profiles`.
+
+## 2026-05-09 Admin Lists Fix
+
+- Halaman list admin tidak lagi memakai placeholder untuk competitions, timelines, faqs, announcements, sponsors, dan galleries.
+- Query list admin memakai service terpisah `admin*` agar tidak memakai filter publik seperti `is_active = true` atau `status = published`.
+- Tidak ada perubahan RLS karena policy admin yang ada sudah mengizinkan akun admin aktif membaca tabel yang dibutuhkan.

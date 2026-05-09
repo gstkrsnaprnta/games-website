@@ -2,7 +2,7 @@
 
 ## Status Terakhir
 
-Phase 1 sebagian besar selesai. Halaman publik sudah mengambil data Supabase, form pendaftaran sudah insert ke `registrations` dan `registration_members`, cek status sudah diarahkan ke RPC aman RLS, admin auth guard sudah memeriksa session dan profile role, dan dashboard admin awal sudah menampilkan count.
+Phase 1 sebagian besar selesai. Halaman publik sudah mengambil data Supabase, form pendaftaran sudah insert ke `registrations` dan `registration_members`, cek status sudah diarahkan ke RPC aman RLS, admin auth guard sudah memeriksa session dan profile role, dashboard admin awal sudah menampilkan count, dan halaman list admin utama sudah mengambil data Supabase.
 
 ## Stack
 
@@ -18,6 +18,7 @@ Phase 1 sebagian besar selesai. Halaman publik sudah mengambil data Supabase, fo
 - `src/lib/supabase.ts`: Supabase client frontend.
 - `src/pages/public/*`: halaman publik MVP.
 - `src/pages/admin/*`: skeleton halaman admin MVP.
+- `src/services/admin*.ts`: service list admin yang mengambil semua data admin tanpa filter publik.
 - `src/components/*`: komponen publik, admin, dan shared.
 - `supabase/migrations/001_initial_schema.sql`: schema awal + RLS.
 - `supabase/migrations/002_registration_status_rpc.sql`: RPC cek status peserta tanpa membuka read public registrations.
@@ -32,6 +33,8 @@ Phase 1 sebagian besar selesai. Halaman publik sudah mengambil data Supabase, fo
 - [x] Admin login page memakai Supabase Auth.
 - [x] Admin protected route memeriksa session dan role `profiles`.
 - [x] Dashboard admin awal berisi count lomba, pengumuman, peserta, dan peserta pending.
+- [x] Admin registrations list menampilkan data peserta dan join competition.
+- [x] Admin competitions, timelines, faqs, announcements, sponsors, galleries list menampilkan data Supabase.
 - [x] Supabase schema awal dan RLS awal.
 - [x] Dokumentasi awal.
 
@@ -40,13 +43,14 @@ Phase 1 sebagian besar selesai. Halaman publik sudah mengambil data Supabase, fo
 - [ ] CRUD CMS admin.
 - [ ] Validasi pembayaran/berkas manual.
 - [ ] Export CSV nyata.
-- [ ] List/detail peserta admin yang lengkap.
+- [ ] Detail peserta admin yang lengkap.
 - [ ] Terapkan migration 002 di Supabase remote bila belum diterapkan.
 
 ## Masalah / Bug
 
 - RPC `check_registration_status` ada di migration 002. Jika halaman cek status menampilkan error 404/function not found, jalankan migration tersebut di Supabase.
 - Generator nomor registrasi masih berbasis count+1. Catatan race condition sudah masuk TODO.
+- Sponsors dan galleries bisa tampil empty state jika memang belum ada data di Supabase.
 
 ## Cara Menjalankan
 
@@ -72,7 +76,7 @@ RLS sudah diaktifkan untuk semua tabel. Public read dibatasi ke konten aktif/pub
 1. Jalankan migration `002_registration_status_rpc.sql` di Supabase remote jika belum.
 2. Uji pendaftaran end-to-end dengan data dummy yang boleh tersimpan.
 3. Uji cek status memakai nomor registrasi hasil pendaftaran.
-4. Bangun list peserta admin dengan filter/search.
+4. Tambahkan detail peserta admin.
 5. Tambahkan update status pembayaran dan berkas manual.
 6. Tambahkan CRUD lomba, timeline, FAQ, pengumuman.
 7. Tambahkan export CSV.

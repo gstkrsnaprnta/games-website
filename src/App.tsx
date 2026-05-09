@@ -1,10 +1,16 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { AdminLayout } from "./components/admin/AdminLayout";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
+import { AdminAnnouncementsPage } from "./pages/admin/AdminAnnouncementsPage";
+import { AdminCompetitionsPage } from "./pages/admin/AdminCompetitionsPage";
 import { AdminDashboardPage } from "./pages/admin/AdminDashboardPage";
+import { AdminFaqsPage } from "./pages/admin/AdminFaqsPage";
+import { AdminGalleriesPage } from "./pages/admin/AdminGalleriesPage";
 import { AdminLoginPage } from "./pages/admin/AdminLoginPage";
 import { AdminPlaceholderPage } from "./pages/admin/AdminPlaceholderPage";
 import { AdminRegistrationsPage } from "./pages/admin/AdminRegistrationsPage";
+import { AdminSponsorsPage } from "./pages/admin/AdminSponsorsPage";
+import { AdminTimelinesPage } from "./pages/admin/AdminTimelinesPage";
 import { AnnouncementDetailPage } from "./pages/public/AnnouncementDetailPage";
 import { AnnouncementsPage } from "./pages/public/AnnouncementsPage";
 import { CheckStatusPage } from "./pages/public/CheckStatusPage";
@@ -43,14 +49,14 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <AdminDashboardPage /> },
           { path: "events", element: <AdminPlaceholderPage title="Events" /> },
-          { path: "competitions", element: <AdminPlaceholderPage title="Lomba" /> },
-          { path: "timelines", element: <AdminPlaceholderPage title="Timeline" /> },
-          { path: "faqs", element: <AdminPlaceholderPage title="FAQ" /> },
-          { path: "announcements", element: <AdminPlaceholderPage title="Pengumuman" /> },
+          { path: "competitions", element: <AdminCompetitionsPage /> },
+          { path: "timelines", element: <AdminTimelinesPage /> },
+          { path: "faqs", element: <AdminFaqsPage /> },
+          { path: "announcements", element: <AdminAnnouncementsPage /> },
           { path: "registrations", element: <AdminRegistrationsPage /> },
           { path: "registrations/:id", element: <AdminPlaceholderPage title="Detail Peserta" /> },
-          { path: "sponsors", element: <AdminPlaceholderPage title="Sponsor dan Media Partner" /> },
-          { path: "galleries", element: <AdminPlaceholderPage title="Galeri" /> },
+          { path: "sponsors", element: <AdminSponsorsPage /> },
+          { path: "galleries", element: <AdminGalleriesPage /> },
           { path: "settings", element: <AdminPlaceholderPage title="Pengaturan" /> },
         ],
       },

@@ -1,4 +1,4 @@
-import { CalendarDays, FileText, HelpCircle, LayoutDashboard, Megaphone, Trophy, Users } from "lucide-react";
+import { CalendarDays, FileImage, FileText, Handshake, HelpCircle, LayoutDashboard, Megaphone, Trophy, Users } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 const links = [
@@ -9,6 +9,8 @@ const links = [
   ["FAQ", "/admin/faqs", HelpCircle],
   ["Pengumuman", "/admin/announcements", Megaphone],
   ["Peserta", "/admin/registrations", Users],
+  ["Sponsor", "/admin/sponsors", Handshake],
+  ["Galeri", "/admin/galleries", FileImage],
 ];
 
 export function AdminSidebar() {
