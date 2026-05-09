@@ -56,3 +56,6 @@ npm run lint
 - Buka `/daftar`, isi form, lalu simpan nomor registrasi yang muncul.
 - Buka `/cek-status`, masukkan nomor registrasi dan email/WhatsApp pendaftar.
 - Buka `/admin/login`, login dengan akun admin Supabase, lalu cek dashboard `/admin`.
+- Buka `/admin/registrations`, klik kode registrasi, lalu ubah status validasi manual.
+- Test tombol Export CSV di `/admin/registrations`.
+- Test tambah/edit konten di `/admin/competitions`, `/admin/timelines`, `/admin/faqs`, `/admin/announcements`, `/admin/sponsors`, dan `/admin/galleries`.

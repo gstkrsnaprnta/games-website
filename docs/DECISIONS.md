@@ -22,3 +22,11 @@
 - Halaman list admin tidak lagi memakai placeholder untuk competitions, timelines, faqs, announcements, sponsors, dan galleries.
 - Query list admin memakai service terpisah `admin*` agar tidak memakai filter publik seperti `is_active = true` atau `status = published`.
 - Tidak ada perubahan RLS karena policy admin yang ada sudah mengizinkan akun admin aktif membaca tabel yang dibutuhkan.
+
+## 2026-05-09 Phase 2
+
+- Admin registration detail ditambahkan untuk validasi manual status pendaftaran, pembayaran, berkas, dan catatan admin.
+- Export CSV registrasi dilakukan di browser dari data yang sudah diizinkan RLS untuk admin.
+- CRUD konten admin dibuat langsung dari frontend dengan anon/publishable key dan session admin, tetap mengandalkan RLS.
+- Competitions, timelines, FAQs, dan announcements mendukung delete; sponsors dan galleries memakai deactivate agar arsip sponsor/galeri tidak hilang tanpa sengaja.
+- Tidak ada perubahan RLS pada Phase 2 karena policy admin existing sudah mencakup operasi yang digunakan.

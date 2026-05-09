@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { CSVExportButton } from "../../components/admin/CSVExportButton";
 import { DataTable } from "../../components/admin/DataTable";
 import { FilterBar } from "../../components/admin/FilterBar";
 import { SearchInput } from "../../components/admin/SearchInput";
 import { StatusBadge } from "../../components/shared/StatusBadge";
 import { getAdminRegistrations } from "../../services/adminRegistrations";
+import { toCsv } from "../../utils/csv";
 import { formatDate } from "../../utils/date";
 import { useAsyncData } from "../../utils/useAsyncData";
 import { AdminPageState, TableCellMuted } from "./adminPageUtils";
@@ -26,6 +28,29 @@ export function AdminRegistrationsPage() {
     );
   }, [data, search]);
 
+  const csv = useMemo(
+    () =>
+      toCsv(
+        rows.map((registration) => ({
+          kode: registration.registration_code,
+          nama: registration.team_name || registration.leader_name,
+          ketua: registration.leader_name,
+          email: registration.email,
+          whatsapp: registration.whatsapp,
+          instansi: registration.institution,
+          jenjang: registration.level,
+          lomba: registration.competitions?.name,
+          kode_lomba: registration.competitions?.code,
+          status_pendaftaran: registration.registration_status,
+          status_pembayaran: registration.payment_status,
+          status_berkas: registration.submission_status,
+          catatan_admin: registration.admin_note,
+          tanggal_daftar: registration.created_at,
+        })),
+      ),
+    [rows],
+  );
+
   return (
     <section>
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -33,7 +58,7 @@ export function AdminRegistrationsPage() {
           <h1 className="text-2xl font-black text-slate-950">Peserta</h1>
           <p className="mt-2 text-sm text-slate-600">Daftar peserta yang masuk dari form pendaftaran.</p>
         </div>
-        <CSVExportButton />
+        <CSVExportButton filename="registrations-games.csv" csv={csv} />
       </div>
       <div className="mt-6">
         <FilterBar>
@@ -70,7 +95,9 @@ export function AdminRegistrationsPage() {
             <tbody>
               {rows.map((registration) => (
                 <tr key={registration.id} className="border-t border-slate-100">
-                  <td className="p-3 font-bold text-slate-950">{registration.registration_code}</td>
+                  <td className="p-3 font-bold text-cyan-700">
+                    <Link to={`/admin/registrations/${registration.id}`}>{registration.registration_code}</Link>
+                  </td>
                   <td className="p-3">
                     <p className="font-semibold text-slate-900">{registration.team_name || registration.leader_name}</p>
                     <p className="text-xs text-slate-500">{registration.email} / {registration.whatsapp}</p>

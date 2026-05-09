@@ -8,6 +8,7 @@ import { AdminFaqsPage } from "./pages/admin/AdminFaqsPage";
 import { AdminGalleriesPage } from "./pages/admin/AdminGalleriesPage";
 import { AdminLoginPage } from "./pages/admin/AdminLoginPage";
 import { AdminPlaceholderPage } from "./pages/admin/AdminPlaceholderPage";
+import { AdminRegistrationDetailPage } from "./pages/admin/AdminRegistrationDetailPage";
 import { AdminRegistrationsPage } from "./pages/admin/AdminRegistrationsPage";
 import { AdminSponsorsPage } from "./pages/admin/AdminSponsorsPage";
 import { AdminTimelinesPage } from "./pages/admin/AdminTimelinesPage";
@@ -54,7 +55,7 @@ const router = createBrowserRouter([
           { path: "faqs", element: <AdminFaqsPage /> },
           { path: "announcements", element: <AdminAnnouncementsPage /> },
           { path: "registrations", element: <AdminRegistrationsPage /> },
-          { path: "registrations/:id", element: <AdminPlaceholderPage title="Detail Peserta" /> },
+          { path: "registrations/:id", element: <AdminRegistrationDetailPage /> },
           { path: "sponsors", element: <AdminSponsorsPage /> },
           { path: "galleries", element: <AdminGalleriesPage /> },
           { path: "settings", element: <AdminPlaceholderPage title="Pengaturan" /> },

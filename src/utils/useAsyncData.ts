@@ -15,6 +15,7 @@ export function useAsyncData<T>(
     error: null,
     loading: true,
   });
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
@@ -44,7 +45,7 @@ export function useAsyncData<T>(
     };
     // The caller owns the dependency list because loaders are usually inline route-param closures.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
+  }, [...deps, reloadKey]);
 
-  return state;
+  return { ...state, reload: () => setReloadKey((current) => current + 1) };
 }

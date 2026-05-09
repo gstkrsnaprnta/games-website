@@ -2,7 +2,7 @@
 
 ## Status Terakhir
 
-Phase 1 sebagian besar selesai. Halaman publik sudah mengambil data Supabase, form pendaftaran sudah insert ke `registrations` dan `registration_members`, cek status sudah diarahkan ke RPC aman RLS, admin auth guard sudah memeriksa session dan profile role, dashboard admin awal sudah menampilkan count, dan halaman list admin utama sudah mengambil data Supabase.
+Phase 2 sebagian besar selesai. Halaman publik dan admin list sudah mengambil data Supabase, form pendaftaran dan cek status berjalan via RLS/RPC, admin auth guard berjalan, dashboard admin menampilkan count, detail peserta admin sudah bisa validasi manual, export CSV registrasi tersedia, dan CRUD ringan konten admin sudah tersedia untuk lomba, timeline, FAQ, pengumuman, sponsor, dan galeri.
 
 ## Stack
 
@@ -17,8 +17,8 @@ Phase 1 sebagian besar selesai. Halaman publik sudah mengambil data Supabase, fo
 - `src/App.tsx`: konfigurasi route publik dan admin.
 - `src/lib/supabase.ts`: Supabase client frontend.
 - `src/pages/public/*`: halaman publik MVP.
-- `src/pages/admin/*`: skeleton halaman admin MVP.
-- `src/services/admin*.ts`: service list admin yang mengambil semua data admin tanpa filter publik.
+- `src/pages/admin/*`: halaman admin dashboard, list, detail peserta, dan CRUD ringan konten.
+- `src/services/admin*.ts`: service admin untuk list dan mutation tanpa filter publik.
 - `src/components/*`: komponen publik, admin, dan shared.
 - `supabase/migrations/001_initial_schema.sql`: schema awal + RLS.
 - `supabase/migrations/002_registration_status_rpc.sql`: RPC cek status peserta tanpa membuka read public registrations.
@@ -35,15 +35,19 @@ Phase 1 sebagian besar selesai. Halaman publik sudah mengambil data Supabase, fo
 - [x] Dashboard admin awal berisi count lomba, pengumuman, peserta, dan peserta pending.
 - [x] Admin registrations list menampilkan data peserta dan join competition.
 - [x] Admin competitions, timelines, faqs, announcements, sponsors, galleries list menampilkan data Supabase.
+- [x] Admin registration detail dan validasi manual status/catatan.
+- [x] Export CSV registrasi.
+- [x] Create/edit/delete competitions, timelines, FAQs, announcements.
+- [x] Publish/unpublish announcements.
+- [x] Create/edit/deactivate sponsors dan galleries.
 - [x] Supabase schema awal dan RLS awal.
 - [x] Dokumentasi awal.
 
 ## Fitur Belum Selesai
 
-- [ ] CRUD CMS admin.
-- [ ] Validasi pembayaran/berkas manual.
-- [ ] Export CSV nyata.
-- [ ] Detail peserta admin yang lengkap.
+- [ ] CRUD events.
+- [ ] Pagination server-side untuk data admin besar.
+- [ ] UI polish modal/dialog untuk CRUD agar lebih nyaman.
 - [ ] Terapkan migration 002 di Supabase remote bila belum diterapkan.
 
 ## Masalah / Bug
@@ -51,6 +55,7 @@ Phase 1 sebagian besar selesai. Halaman publik sudah mengambil data Supabase, fo
 - RPC `check_registration_status` ada di migration 002. Jika halaman cek status menampilkan error 404/function not found, jalankan migration tersebut di Supabase.
 - Generator nomor registrasi masih berbasis count+1. Catatan race condition sudah masuk TODO.
 - Sponsors dan galleries bisa tampil empty state jika memang belum ada data di Supabase.
+- Delete competitions/timelines/FAQs/announcements bisa ditolak database jika ada data yang masih mereferensikan row tersebut; error akan tampil di UI.
 
 ## Cara Menjalankan
 
@@ -76,10 +81,10 @@ RLS sudah diaktifkan untuk semua tabel. Public read dibatasi ke konten aktif/pub
 1. Jalankan migration `002_registration_status_rpc.sql` di Supabase remote jika belum.
 2. Uji pendaftaran end-to-end dengan data dummy yang boleh tersimpan.
 3. Uji cek status memakai nomor registrasi hasil pendaftaran.
-4. Tambahkan detail peserta admin.
-5. Tambahkan update status pembayaran dan berkas manual.
-6. Tambahkan CRUD lomba, timeline, FAQ, pengumuman.
-7. Tambahkan export CSV.
+4. Tambahkan CRUD events dan active-event management.
+5. Tambahkan pagination/filter server-side untuk registrasi.
+6. Rapikan UI CRUD ke modal/dialog reusable.
+7. Tambahkan export CSV dengan opsi filter.
 8. Hardening nomor registrasi memakai sequence/transaction.
 9. Uji mobile dan build production.
 

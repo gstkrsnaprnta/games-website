@@ -22,10 +22,16 @@
 - [x] Dashboard admin awal berisi count lomba, pengumuman, peserta, dan peserta pending.
 - [x] Admin list peserta menampilkan data Supabase, join lomba, status badge, dan search.
 - [x] Admin list competitions, timelines, faqs, announcements, sponsors, galleries menampilkan data Supabase.
-- [ ] CRUD events, competitions, timelines, faqs, announcements.
-- [ ] Dashboard peserta/admin list peserta lengkap.
-- [ ] Validasi pembayaran dan berkas manual.
-- [ ] Export CSV data peserta.
+- [x] Detail peserta admin.
+- [x] Validasi status pendaftaran, pembayaran, berkas, dan admin note.
+- [x] Export CSV data peserta.
+- [x] Create/edit/delete competitions.
+- [x] Create/edit/delete timelines.
+- [x] Create/edit/delete FAQ.
+- [x] Create/edit/publish/unpublish/delete announcements.
+- [x] Create/edit/deactivate sponsors.
+- [x] Create/edit/deactivate galleries.
+- [ ] CRUD events.
 - [ ] Terapkan migration `002_registration_status_rpc.sql` ke Supabase remote jika belum dijalankan.
 - [ ] Hardening generator nomor registrasi agar aman dari race condition saat submit bersamaan.
 
