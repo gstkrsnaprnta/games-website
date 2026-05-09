@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
+import { Copy } from "lucide-react";
 import { FormInput } from "../../components/admin/FormInput";
 import { FormSelect } from "../../components/admin/FormSelect";
 import { FormTextarea } from "../../components/admin/FormTextarea";
+import { PageHero } from "../../components/public/PageHero";
 import { EmptyState } from "../../components/shared/EmptyState";
 import { ErrorState } from "../../components/shared/ErrorState";
 import { LoadingState } from "../../components/shared/LoadingState";
@@ -133,12 +135,19 @@ export function RegisterPage() {
 
   if (successCode) {
     return (
-      <section className="container-page max-w-3xl py-10">
-        <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-6">
-          <p className="text-sm font-bold text-emerald-700">Pendaftaran berhasil</p>
-          <h1 className="mt-2 text-3xl font-black text-slate-950">Simpan nomor registrasi kamu</h1>
-          <p className="mt-4 rounded-lg bg-white p-4 text-2xl font-black text-emerald-700">{successCode}</p>
-          <p className="mt-4 text-sm leading-6 text-slate-700">
+      <section className="container-page max-w-3xl py-14">
+        <div className="rounded-[2rem] border border-[#004551]/10 bg-[#c2e1df]/70 p-6 text-center shadow-xl md:p-10">
+          <p className="text-sm font-black uppercase tracking-[0.22em] text-[#770525]">Pendaftaran berhasil</p>
+          <h1 className="mt-3 text-3xl font-black text-[#004551] md:text-5xl">Simpan nomor registrasi kamu</h1>
+          <p className="mt-6 rounded-[1.4rem] bg-white p-5 text-2xl font-black text-[#770525] md:text-4xl">{successCode}</p>
+          <button
+            type="button"
+            onClick={() => void navigator.clipboard?.writeText(successCode)}
+            className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#770525] px-5 py-3 text-sm font-black text-white"
+          >
+            <Copy size={16} /> Salin Kode
+          </button>
+          <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-[#004551]/75">
             Gunakan nomor ini bersama email atau WhatsApp untuk cek status pendaftaran.
           </p>
         </div>
@@ -147,66 +156,60 @@ export function RegisterPage() {
   }
 
   return (
-    <section className="container-page max-w-3xl py-10">
-      <h1 className="text-3xl font-black">Pendaftaran Peserta</h1>
-      <p className="mt-3 text-slate-600">Pilih lomba yang pendaftarannya sedang dibuka.</p>
-      <div className="mt-6">
-        {competitions.loading ? <LoadingState /> : null}
-        {competitions.error ? <ErrorState message={competitions.error} /> : null}
-        {!competitions.loading && !competitions.error && competitions.data?.length === 0 ? (
-          <EmptyState description="Belum ada lomba yang membuka pendaftaran." />
-        ) : null}
+    <>
+      <PageHero eyebrow="Pendaftaran" title="Daftarkan diri atau timmu" description="Isi data dengan benar. Nomor registrasi akan muncul setelah pendaftaran berhasil disimpan." />
+      <section className="container-page max-w-4xl py-12">
+        <div className="mb-6">
+          {competitions.loading ? <LoadingState /> : null}
+          {competitions.error ? <ErrorState message={competitions.error} /> : null}
+          {!competitions.loading && !competitions.error && competitions.data?.length === 0 ? (
+            <EmptyState description="Belum ada lomba yang membuka pendaftaran." />
+          ) : null}
+        </div>
+        <form onSubmit={handleSubmit} className="grid gap-6">
+          <FormGroup step="01" title="Pilih Lomba">
+            <FormSelect label="Pilihan lomba" value={form.competition_id} onChange={(event) => updateField("competition_id", event.target.value)} required options={[{ label: "Pilih lomba", value: "" }, ...(competitions.data?.map((competition) => ({ label: competition.name, value: competition.id })) ?? [])]} />
+            <FormSelect label="Jenjang" value={form.level} onChange={(event) => updateField("level", event.target.value)} required options={[{ label: "Pilih jenjang", value: "" }, { label: "SD/sederajat", value: "SD" }, { label: "SMP/sederajat", value: "SMP" }, { label: "SMA/sederajat", value: "SMA" }, { label: "Mahasiswa", value: "Mahasiswa" }]} />
+          </FormGroup>
+          <FormGroup step="02" title="Data Peserta / Ketua">
+            <FormSelect label="Tipe peserta" value={form.participant_type} onChange={(event) => updateField("participant_type", event.target.value as FormState["participant_type"])} options={[{ label: "Individu", value: "individual" }, { label: "Tim", value: "team" }]} />
+            <FormInput label="Nama peserta utama / ketua tim" value={form.leader_name} onChange={(event) => updateField("leader_name", event.target.value)} required />
+            <FormInput label="Email" type="email" value={form.email} onChange={(event) => updateField("email", event.target.value)} required />
+            <FormInput label="Nomor WhatsApp" value={form.whatsapp} onChange={(event) => updateField("whatsapp", event.target.value)} required />
+            <FormInput label="Asal sekolah/kampus/instansi" value={form.institution} onChange={(event) => updateField("institution", event.target.value)} required />
+          </FormGroup>
+          <FormGroup step="03" title="Data Tim / Anggota">
+            <FormInput label="Nama tim" value={form.team_name} onChange={(event) => updateField("team_name", event.target.value)} />
+            <FormTextarea label="Anggota tim" placeholder="Satu nama per baris" value={form.members} onChange={(event) => updateField("members", event.target.value)} />
+          </FormGroup>
+          <FormGroup step="04" title="Pembayaran / Berkas">
+            <FormInput label="Link bukti pembayaran" value={form.payment_proof_url} onChange={(event) => updateField("payment_proof_url", event.target.value)} />
+            <FormInput label="Link karya / berkas Google Drive" value={form.submission_url} onChange={(event) => updateField("submission_url", event.target.value)} />
+          </FormGroup>
+          <div className="games-card rounded-[1.5rem] p-5">
+            <label className="flex gap-3 text-sm font-semibold text-[#004551]">
+              <input type="checkbox" checked={form.agreement} onChange={(event) => updateField("agreement", event.target.checked)} required />
+              Saya menyetujui syarat dan ketentuan lomba.
+            </label>
+            {error ? <div className="mt-4"><ErrorState message={error} /></div> : null}
+            <button disabled={submitting || competitions.loading} className="games-button mt-5 w-full rounded-full bg-[#770525] px-6 py-4 font-black text-white disabled:cursor-not-allowed disabled:bg-stone-400">
+              {submitting ? "Mengirim..." : "Kirim Pendaftaran"}
+            </button>
+          </div>
+        </form>
+      </section>
+    </>
+  );
+}
+
+function FormGroup({ step, title, children }: { step: string; title: string; children: React.ReactNode }) {
+  return (
+    <section className="games-card rounded-[1.7rem] p-5 md:p-6">
+      <div className="mb-5 flex items-center gap-3">
+        <span className="grid size-10 place-items-center rounded-2xl bg-[#770525] text-sm font-black text-white">{step}</span>
+        <h2 className="text-xl font-black text-[#004551]">{title}</h2>
       </div>
-      <form onSubmit={handleSubmit} className="mt-8 grid gap-4 rounded-lg border border-slate-200 bg-white p-5">
-        <FormSelect
-          label="Pilihan lomba"
-          value={form.competition_id}
-          onChange={(event) => updateField("competition_id", event.target.value)}
-          required
-          options={[
-            { label: "Pilih lomba", value: "" },
-            ...(competitions.data?.map((competition) => ({ label: competition.name, value: competition.id })) ?? []),
-          ]}
-        />
-        <FormSelect
-          label="Jenjang"
-          value={form.level}
-          onChange={(event) => updateField("level", event.target.value)}
-          required
-          options={[
-            { label: "Pilih jenjang", value: "" },
-            { label: "SD/sederajat", value: "SD" },
-            { label: "SMP/sederajat", value: "SMP" },
-            { label: "SMA/sederajat", value: "SMA" },
-            { label: "Mahasiswa", value: "Mahasiswa" },
-          ]}
-        />
-        <FormSelect
-          label="Tipe peserta"
-          value={form.participant_type}
-          onChange={(event) => updateField("participant_type", event.target.value as FormState["participant_type"])}
-          options={[
-            { label: "Individu", value: "individual" },
-            { label: "Tim", value: "team" },
-          ]}
-        />
-        <FormInput label="Nama peserta utama / ketua tim" value={form.leader_name} onChange={(event) => updateField("leader_name", event.target.value)} required />
-        <FormInput label="Email" type="email" value={form.email} onChange={(event) => updateField("email", event.target.value)} required />
-        <FormInput label="Nomor WhatsApp" value={form.whatsapp} onChange={(event) => updateField("whatsapp", event.target.value)} required />
-        <FormInput label="Asal sekolah/kampus/instansi" value={form.institution} onChange={(event) => updateField("institution", event.target.value)} required />
-        <FormInput label="Nama tim" value={form.team_name} onChange={(event) => updateField("team_name", event.target.value)} />
-        <FormTextarea label="Anggota tim" placeholder="Satu nama per baris" value={form.members} onChange={(event) => updateField("members", event.target.value)} />
-        <FormInput label="Link bukti pembayaran" value={form.payment_proof_url} onChange={(event) => updateField("payment_proof_url", event.target.value)} />
-        <FormInput label="Link karya / berkas Google Drive" value={form.submission_url} onChange={(event) => updateField("submission_url", event.target.value)} />
-        <label className="flex gap-2 text-sm text-slate-700">
-          <input type="checkbox" checked={form.agreement} onChange={(event) => updateField("agreement", event.target.checked)} required />
-          Saya menyetujui syarat dan ketentuan lomba.
-        </label>
-        {error ? <ErrorState message={error} /> : null}
-        <button disabled={submitting || competitions.loading} className="rounded-lg bg-cyan-600 px-5 py-3 font-bold text-white disabled:cursor-not-allowed disabled:bg-slate-400">
-          {submitting ? "Mengirim..." : "Kirim Pendaftaran"}
-        </button>
-      </form>
+      <div className="grid gap-4 md:grid-cols-2">{children}</div>
     </section>
   );
 }

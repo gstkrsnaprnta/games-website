@@ -2,7 +2,7 @@
 
 ## Status Terakhir
 
-Phase 2 lanjutan selesai. Halaman publik dan admin list sudah mengambil data Supabase, form pendaftaran dan cek status berjalan via RLS/RPC, admin auth guard berjalan, dashboard admin menampilkan count, detail peserta admin sudah bisa validasi manual, export CSV registrasi tersedia, CRUD ringan konten admin sudah tersedia, `/admin/events` sudah CRUD dan bisa set satu event aktif, serta registrations sudah punya filter dan pagination sederhana.
+Public website redesign selesai. Halaman publik sekarang memakai branding GAMES 2026 dengan palet cream, teal, mint, maroon, dan pink; homepage terasa seperti landing page event; halaman lomba, timeline, FAQ, pengumuman, daftar, cek status, dan kontak sudah dipoles. Logic Supabase, auth, admin workflow, RLS, registration submit, dan check-status RPC tidak diubah.
 
 ## Stack
 
@@ -17,6 +17,7 @@ Phase 2 lanjutan selesai. Halaman publik dan admin list sudah mengambil data Sup
 - `src/App.tsx`: konfigurasi route publik dan admin.
 - `src/lib/supabase.ts`: Supabase client frontend.
 - `src/pages/public/*`: halaman publik MVP.
+- `src/components/public/*`: komponen visual public seperti navbar, footer, hero, cards, timeline, page hero, dan section heading.
 - `src/pages/admin/*`: halaman admin dashboard, list, detail peserta, dan CRUD ringan konten.
 - `src/services/admin*.ts`: service admin untuk list dan mutation tanpa filter publik.
 - `src/components/*`: komponen publik, admin, dan shared.
@@ -44,6 +45,9 @@ Phase 2 lanjutan selesai. Halaman publik dan admin list sudah mengambil data Sup
 - [x] Filter registrations berdasarkan lomba, pembayaran, dan berkas.
 - [x] Pagination sederhana registrations.
 - [x] Confirm dialog reusable untuk aksi event.
+- [x] Public website redesign sesuai branding GAMES 2026.
+- [x] Mobile navbar responsive dan landing-style homepage.
+- [x] Public registration/check-status UI dipoles tanpa mengubah logic submit/RPC.
 - [x] Supabase schema awal dan RLS awal.
 - [x] Dokumentasi awal.
 
@@ -52,6 +56,8 @@ Phase 2 lanjutan selesai. Halaman publik dan admin list sudah mengambil data Sup
 - [ ] Pagination server-side untuk data admin besar.
 - [ ] UI polish modal/dialog untuk CRUD agar lebih nyaman.
 - [ ] Terapkan migration 002 di Supabase remote bila belum diterapkan.
+- [ ] Tambahkan font Magic Retro Regular jika file legal tersedia.
+- [ ] Tambahkan logo/mascot resmi GAMES jika asset tersedia.
 
 ## Masalah / Bug
 
@@ -59,6 +65,7 @@ Phase 2 lanjutan selesai. Halaman publik dan admin list sudah mengambil data Sup
 - Generator nomor registrasi masih berbasis count+1. Catatan race condition sudah masuk TODO.
 - Sponsors dan galleries bisa tampil empty state jika memang belum ada data di Supabase.
 - Delete competitions/timelines/FAQs/announcements bisa ditolak database jika ada data yang masih mereferensikan row tersebut; error akan tampil di UI.
+- Visual hero memakai placeholder logo/mascot huruf `G` sampai asset resmi tersedia.
 
 ## Cara Menjalankan
 
@@ -84,10 +91,10 @@ RLS sudah diaktifkan untuk semua tabel. Public read dibatasi ke konten aktif/pub
 1. Jalankan migration `002_registration_status_rpc.sql` di Supabase remote jika belum.
 2. Uji pendaftaran end-to-end dengan data dummy yang boleh tersimpan.
 3. Uji cek status memakai nomor registrasi hasil pendaftaran.
-4. Tambahkan pagination/filter server-side untuk registrasi jika data mulai besar.
-5. Gunakan ConfirmDialog reusable untuk aksi destructive di modul admin lain.
-6. Rapikan UI CRUD ke modal/dialog reusable.
-7. Tambahkan export CSV dengan opsi filter.
+4. Tambahkan logo/mascot resmi dan font Magic Retro bila asset legal tersedia.
+5. Tambahkan pagination/filter server-side untuk registrasi jika data mulai besar.
+6. Gunakan ConfirmDialog reusable untuk aksi destructive di modul admin lain.
+7. Rapikan UI CRUD ke modal/dialog reusable.
 8. Hardening nomor registrasi memakai sequence/transaction.
 9. Uji mobile dan build production.
 

@@ -38,6 +38,9 @@
 - [x] Confirm dialog reusable untuk aksi destructive/activation events.
 - [ ] Terapkan migration `002_registration_status_rpc.sql` ke Supabase remote jika belum dijalankan.
 - [ ] Hardening generator nomor registrasi agar aman dari race condition saat submit bersamaan.
+- [ ] Tambahkan font Magic Retro Regular jika file font legal/resmi sudah tersedia.
+- [ ] Tambahkan asset logo/mascot resmi GAMES jika sudah tersedia.
+- [ ] Polish lanjutan visual admin setelah MVP public selesai.
 
 ## Future / Non-MVP
 

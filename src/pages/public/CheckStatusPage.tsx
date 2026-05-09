@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FormInput } from "../../components/admin/FormInput";
+import { PageHero } from "../../components/public/PageHero";
 import { EmptyState } from "../../components/shared/EmptyState";
 import { ErrorState } from "../../components/shared/ErrorState";
 import { StatusBadge } from "../../components/shared/StatusBadge";
@@ -38,9 +39,10 @@ export function CheckStatusPage() {
   }
 
   return (
-    <section className="container-page max-w-xl py-10">
-      <h1 className="text-3xl font-black">Cek Status Pendaftaran</h1>
-      <form onSubmit={handleSubmit} className="mt-8 grid gap-4 rounded-lg border border-slate-200 bg-white p-5">
+    <>
+    <PageHero eyebrow="Cek Status" title="Pantau validasi pendaftaranmu" description="Masukkan nomor registrasi dan kontak yang dipakai saat mendaftar." />
+    <section className="container-page max-w-2xl py-12">
+      <form onSubmit={handleSubmit} className="games-card grid gap-4 rounded-[1.7rem] p-6">
         <FormInput
           label="Nomor registrasi"
           placeholder="GAMES-2026-LCT-0001"
@@ -55,7 +57,7 @@ export function CheckStatusPage() {
           required
         />
         {error ? <ErrorState message={error} /> : null}
-        <button disabled={loading} className="rounded-lg bg-cyan-600 px-5 py-3 font-bold text-white disabled:bg-slate-400">
+        <button disabled={loading} className="games-button rounded-full bg-[#770525] px-5 py-4 font-black text-white disabled:bg-stone-400">
           {loading ? "Mengecek..." : "Cek Status"}
         </button>
       </form>
@@ -65,33 +67,34 @@ export function CheckStatusPage() {
         </div>
       ) : null}
       {result ? (
-        <div className="mt-6 rounded-lg border border-slate-200 bg-white p-5">
-          <p className="text-sm font-semibold text-cyan-700">{result.registration_code}</p>
-          <h2 className="mt-2 text-xl font-black text-slate-950">{result.team_name || result.participant_name}</h2>
+        <div className="mt-6 rounded-[1.7rem] border border-[#004551]/10 bg-white/75 p-6 shadow-xl">
+          <p className="text-sm font-black text-[#770525]">{result.registration_code}</p>
+          <h2 className="mt-2 text-2xl font-black text-[#004551]">{result.team_name || result.participant_name}</h2>
           <dl className="mt-5 grid gap-4 text-sm">
             <div>
-              <dt className="font-semibold text-slate-500">Cabang lomba</dt>
-              <dd className="mt-1 font-bold text-slate-900">{result.competition_name}</dd>
+              <dt className="font-semibold text-[#004551]/55">Cabang lomba</dt>
+              <dd className="mt-1 font-bold text-[#004551]">{result.competition_name}</dd>
             </div>
             <div className="flex items-center justify-between gap-3">
-              <dt className="font-semibold text-slate-500">Status pendaftaran</dt>
+              <dt className="font-semibold text-[#004551]/55">Status pendaftaran</dt>
               <dd><StatusBadge status={result.registration_status} /></dd>
             </div>
             <div className="flex items-center justify-between gap-3">
-              <dt className="font-semibold text-slate-500">Status pembayaran</dt>
+              <dt className="font-semibold text-[#004551]/55">Status pembayaran</dt>
               <dd><StatusBadge status={result.payment_status} /></dd>
             </div>
             <div className="flex items-center justify-between gap-3">
-              <dt className="font-semibold text-slate-500">Status berkas</dt>
+              <dt className="font-semibold text-[#004551]/55">Status berkas</dt>
               <dd><StatusBadge status={result.submission_status} /></dd>
             </div>
             <div>
-              <dt className="font-semibold text-slate-500">Catatan admin</dt>
-              <dd className="mt-1 text-slate-700">{result.admin_note || "-"}</dd>
+              <dt className="font-semibold text-[#004551]/55">Catatan admin</dt>
+              <dd className="mt-1 text-[#004551]/75">{result.admin_note || "-"}</dd>
             </div>
           </dl>
         </div>
       ) : null}
     </section>
+    </>
   );
 }

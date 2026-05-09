@@ -1,4 +1,5 @@
 import { Link, useParams } from "react-router-dom";
+import { PageHero } from "../../components/public/PageHero";
 import { EmptyState } from "../../components/shared/EmptyState";
 import { ErrorState } from "../../components/shared/ErrorState";
 import { LoadingState } from "../../components/shared/LoadingState";
@@ -14,16 +15,30 @@ export function CompetitionDetailPage() {
   if (!competition) return <section className="container-page py-10"><EmptyState title="Lomba tidak ditemukan" /></section>;
 
   return (
-    <section className="container-page py-10">
-      <p className="font-bold text-cyan-700">{competition.code}</p>
-      <h1 className="mt-2 text-3xl font-black text-slate-950">{competition.name}</h1>
-      <p className="mt-4 max-w-3xl leading-7 text-slate-600">{competition.description}</p>
-      <dl className="mt-8 grid gap-4 rounded-lg border border-slate-200 bg-white p-5 md:grid-cols-3">
-        <div><dt className="text-sm font-semibold text-slate-500">Jenjang</dt><dd className="mt-1 font-bold">{competition.participant_levels?.join(", ")}</dd></div>
-        <div><dt className="text-sm font-semibold text-slate-500">Tipe</dt><dd className="mt-1 font-bold">{competition.competition_type === "team" ? "Tim" : "Individu"}</dd></div>
-        <div><dt className="text-sm font-semibold text-slate-500">Status</dt><dd className="mt-1 font-bold">{competition.registration_status === "open" ? "Pendaftaran Buka" : "Pendaftaran Tutup"}</dd></div>
-      </dl>
-      <Link to="/daftar" className="mt-8 inline-flex rounded-lg bg-cyan-600 px-5 py-3 font-bold text-white">Daftar lomba ini</Link>
-    </section>
+    <>
+      <PageHero eyebrow={competition.code} title={competition.name} description={competition.short_description ?? undefined}>
+        <div className="flex flex-wrap gap-2">
+          {competition.participant_levels?.map((level) => <span key={level} className="rounded-full bg-white/15 px-4 py-2 text-sm font-black">{level}</span>)}
+        </div>
+      </PageHero>
+      <section className="container-page grid gap-8 py-12 lg:grid-cols-[1.2fr_0.8fr]">
+        <article className="games-card rounded-[2rem] p-6 md:p-8">
+          <h2 className="text-2xl font-black text-[#004551]">Deskripsi Lomba</h2>
+          <p className="mt-4 leading-8 text-[#004551]/72">{competition.description}</p>
+        </article>
+        <aside className="games-card rounded-[2rem] p-6">
+          <dl className="grid gap-4 text-sm">
+            <div><dt className="font-bold text-[#004551]/55">Jenjang</dt><dd className="mt-1 font-black text-[#004551]">{competition.participant_levels?.join(", ")}</dd></div>
+            <div><dt className="font-bold text-[#004551]/55">Tipe</dt><dd className="mt-1 font-black text-[#004551]">{competition.competition_type === "team" ? "Tim" : "Individu"}</dd></div>
+            <div><dt className="font-bold text-[#004551]/55">Status</dt><dd className="mt-1 font-black text-[#770525]">{competition.registration_status === "open" ? "Pendaftaran Buka" : "Pendaftaran Tutup"}</dd></div>
+            <div><dt className="font-bold text-[#004551]/55">Biaya</dt><dd className="mt-1 font-black text-[#004551]">{competition.registration_fee > 0 ? `Rp${competition.registration_fee.toLocaleString("id-ID")}` : "Gratis / sesuai ketentuan"}</dd></div>
+          </dl>
+          <div className="mt-6 grid gap-3">
+            {competition.guidebook_url ? <a href={competition.guidebook_url} className="rounded-full border border-[#004551]/20 px-5 py-3 text-center font-black text-[#004551]">Unduh Guidebook</a> : null}
+            <Link to="/daftar" className="rounded-full bg-[#770525] px-5 py-3 text-center font-black text-white">Daftar lomba ini</Link>
+          </div>
+        </aside>
+      </section>
+    </>
   );
 }

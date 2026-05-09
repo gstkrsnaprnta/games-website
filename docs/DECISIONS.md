@@ -37,3 +37,10 @@
 - Validasi event minimal dilakukan di UI: `year` dan `name` wajib.
 - Registrations memakai filter client-side dan pagination sederhana karena volume MVP masih kecil; server-side pagination tetap dicatat untuk skala lebih besar.
 - Confirm dialog reusable mulai dipakai untuk aksi set active/delete event.
+
+## 2026-05-09 Public Website Redesign
+
+- Public website memakai palet GAMES 2026: cream `#f2efeb`, dark teal `#004551`, soft mint `#c2e1df`, maroon `#770525`, dan pink `#faadb6`.
+- Font utama diganti ke Montserrat via Google Fonts; Magic Retro Regular belum dipakai karena file font legal belum tersedia di project.
+- Redesign dibatasi ke public pages dan shared visual states; logic Supabase, auth, RLS, admin workflow, registration submit, dan check-status RPC tidak diubah.
+- Motif visual memakai blob organik, cards lembut, glass surface, dan gradient halus agar terasa seperti event modern, bukan admin dashboard.
