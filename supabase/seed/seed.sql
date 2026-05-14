@@ -47,3 +47,35 @@ insert into public.announcements (event_id, title, slug, category, content, stat
 select id, 'Pendaftaran GAMES 2026 segera dibuka', 'pendaftaran-games-2026', 'general', 'Pantau website resmi GAMES untuk informasi pembukaan pendaftaran, guidebook, dan kontak panitia.', 'published', now()
 from active_event
 on conflict (slug) do nothing;
+
+with active_event as (select id from public.events where year = 2026)
+insert into public.payment_methods (event_id, type, label, qris_image_url, notes, sort_order, is_active)
+select
+  id,
+  'qris',
+  'QRIS Panitia GAMES',
+  'https://example.com/qris-games-2026.png',
+  'Scan QRIS panitia, lalu unggah atau tempel link bukti pembayaran pada formulir pendaftaran.',
+  1,
+  true
+from active_event
+where not exists (
+  select 1 from public.payment_methods where label = 'QRIS Panitia GAMES'
+);
+
+with active_event as (select id from public.events where year = 2026)
+insert into public.payment_methods (event_id, type, label, bank_name, account_number, account_holder, notes, sort_order, is_active)
+select
+  id,
+  'bank_transfer',
+  'Transfer Bank Panitia GAMES',
+  'Bank Contoh',
+  '1234567890',
+  'Panitia GAMES',
+  'Transfer sesuai biaya lomba, lalu unggah atau tempel link bukti pembayaran pada formulir pendaftaran.',
+  2,
+  true
+from active_event
+where not exists (
+  select 1 from public.payment_methods where label = 'Transfer Bank Panitia GAMES'
+);

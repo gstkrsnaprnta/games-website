@@ -36,7 +36,11 @@
 - [x] Pagination sederhana registrations.
 - [x] Filter registrations berdasarkan lomba, status pembayaran, dan status berkas.
 - [x] Confirm dialog reusable untuk aksi destructive/activation events.
+- [x] Metode pembayaran manual QRIS/transfer untuk MVP.
+- [x] Form pendaftaran menyimpan metode pembayaran dan link bukti pembayaran.
+- [x] Detail peserta admin menampilkan metode dan bukti pembayaran.
 - [ ] Terapkan migration `002_registration_status_rpc.sql` ke Supabase remote jika belum dijalankan.
+- [ ] Terapkan migration `003_manual_payment_methods.sql` ke Supabase remote jika belum dijalankan.
 - [ ] Hardening generator nomor registrasi agar aman dari race condition saat submit bersamaan.
 - [ ] Tambahkan font Magic Retro Regular jika file font legal/resmi sudah tersedia.
 - [ ] Tambahkan asset logo/mascot resmi GAMES jika sudah tersedia.
@@ -45,6 +49,7 @@
 ## Future / Non-MVP
 
 - [ ] Payment gateway otomatis.
+- [ ] Callback/status pembayaran otomatis dari payment provider.
 - [ ] WhatsApp otomatis.
 - [ ] Sertifikat otomatis.
 - [ ] Penjurian online.

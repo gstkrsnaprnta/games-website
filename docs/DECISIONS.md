@@ -44,3 +44,11 @@
 - Font utama diganti ke Montserrat via Google Fonts; Magic Retro Regular belum dipakai karena file font legal belum tersedia di project.
 - Redesign dibatasi ke public pages dan shared visual states; logic Supabase, auth, RLS, admin workflow, registration submit, dan check-status RPC tidak diubah.
 - Motif visual memakai blob organik, cards lembut, glass surface, dan gradient halus agar terasa seperti event modern, bukan admin dashboard.
+
+## 2026-05-12 Manual Payment Methods
+
+- Pembayaran MVP tetap manual; tidak ada payment gateway, callback, Midtrans, atau Xendit.
+- Metode pembayaran dipisah ke tabel `payment_methods` agar panitia bisa mengubah QRIS/rekening tanpa edit kode.
+- Form pendaftaran menyimpan `payment_method_id` dan tetap memakai `payment_proof_url` sebagai link bukti pembayaran.
+- Public hanya bisa membaca payment method aktif, sedangkan admin CRUD tetap dikontrol RLS melalui `public.is_admin()`.
+- Delete payment method dibiarkan ke database agar gagal jika sudah direferensikan pendaftaran; untuk menyembunyikan dari peserta digunakan deactivate.

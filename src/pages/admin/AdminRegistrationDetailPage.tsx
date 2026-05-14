@@ -11,7 +11,7 @@ import {
   type AdminRegistrationRow,
   updateAdminRegistrationStatus,
 } from "../../services/adminRegistrations";
-import type { PaymentStatus, RegistrationStatus, SubmissionStatus } from "../../types/models";
+import type { PaymentMethodType, PaymentStatus, RegistrationStatus, SubmissionStatus } from "../../types/models";
 import { formatDate } from "../../utils/date";
 import { useAsyncData } from "../../utils/useAsyncData";
 
@@ -151,6 +151,46 @@ function RegistrationSummary({ registration }: { registration: AdminRegistration
         <Detail label="Jenjang" value={registration.level ?? "-"} />
         <Detail label="Tanggal daftar" value={formatDate(registration.created_at)} />
       </dl>
+      <div className="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-4">
+        <h2 className="text-sm font-bold text-slate-950">Pembayaran Manual</h2>
+        <dl className="mt-3 grid gap-4 text-sm md:grid-cols-2">
+          <Detail label="Metode pembayaran" value={registration.payment_methods ? `${formatPaymentType(registration.payment_methods.type)} - ${registration.payment_methods.label}` : "-"} />
+          <Detail label="Bukti pembayaran" value={registration.payment_proof_url ?? "-"} />
+          {registration.payment_methods?.type === "bank_transfer" ? (
+            <>
+              <Detail label="Bank" value={registration.payment_methods.bank_name ?? "-"} />
+              <Detail label="Nomor rekening" value={registration.payment_methods.account_number ?? "-"} />
+              <Detail label="Atas nama" value={registration.payment_methods.account_holder ?? "-"} />
+            </>
+          ) : null}
+          {registration.payment_methods?.type === "qris" ? <Detail label="QRIS" value={registration.payment_methods.qris_image_url ?? "-"} /> : null}
+        </dl>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {registration.payment_proof_url ? (
+            <a
+              href={registration.payment_proof_url}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-lg bg-cyan-600 px-3 py-2 text-xs font-bold text-white"
+            >
+              Buka Bukti Pembayaran
+            </a>
+          ) : null}
+          {registration.payment_methods?.qris_image_url ? (
+            <a
+              href={registration.payment_methods.qris_image_url}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold text-slate-700"
+            >
+              Buka QRIS
+            </a>
+          ) : null}
+        </div>
+        {registration.payment_methods?.notes ? (
+          <p className="mt-4 rounded-lg bg-white p-3 text-sm text-slate-600">{registration.payment_methods.notes}</p>
+        ) : null}
+      </div>
       <div className="mt-6">
         <h2 className="text-sm font-bold text-slate-950">Anggota Tim</h2>
         {registration.registration_members?.length ? (
@@ -167,6 +207,12 @@ function RegistrationSummary({ registration }: { registration: AdminRegistration
       </div>
     </div>
   );
+}
+
+function formatPaymentType(type: PaymentMethodType) {
+  if (type === "qris") return "QRIS";
+  if (type === "bank_transfer") return "Transfer Bank";
+  return "E-Wallet";
 }
 
 function Detail({ label, value }: { label: string; value: string }) {

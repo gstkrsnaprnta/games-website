@@ -8,6 +8,7 @@ import { AdminEventsPage } from "./pages/admin/AdminEventsPage";
 import { AdminFaqsPage } from "./pages/admin/AdminFaqsPage";
 import { AdminGalleriesPage } from "./pages/admin/AdminGalleriesPage";
 import { AdminLoginPage } from "./pages/admin/AdminLoginPage";
+import { AdminPaymentMethodsPage } from "./pages/admin/AdminPaymentMethodsPage";
 import { AdminPlaceholderPage } from "./pages/admin/AdminPlaceholderPage";
 import { AdminRegistrationDetailPage } from "./pages/admin/AdminRegistrationDetailPage";
 import { AdminRegistrationsPage } from "./pages/admin/AdminRegistrationsPage";
@@ -57,6 +58,7 @@ const router = createBrowserRouter([
           { path: "announcements", element: <AdminAnnouncementsPage /> },
           { path: "registrations", element: <AdminRegistrationsPage /> },
           { path: "registrations/:id", element: <AdminRegistrationDetailPage /> },
+          { path: "payment-methods", element: <AdminPaymentMethodsPage /> },
           { path: "sponsors", element: <AdminSponsorsPage /> },
           { path: "galleries", element: <AdminGalleriesPage /> },
           { path: "settings", element: <AdminPlaceholderPage title="Pengaturan" /> },

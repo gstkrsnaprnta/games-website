@@ -1,35 +1,79 @@
+import { ArrowRight, Atom, BookOpen, Calculator, Code, FlaskConical, Microscope, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Competition } from "../../types/models";
 
+const iconMap: Record<string, React.ReactNode> = {
+  LCT: <Calculator size={24} />,
+  OLIM: <BookOpen size={24} />,
+  FIS: <Atom size={24} />,
+  KIM: <FlaskConical size={24} />,
+  BIO: <Microscope size={24} />,
+  KS: <Code size={24} />,
+};
+
+function getCompetitionIcon(code: string) {
+  return iconMap[code] ?? <BookOpen size={24} />;
+}
+
 export function CompetitionCard({ competition }: { competition: Competition }) {
   const isOpen = competition.registration_status === "open";
+  const priceLabel = competition.registration_fee > 0
+    ? `Rp${competition.registration_fee.toLocaleString("id-ID")} / ${competition.competition_type === "team" ? "tim" : "peserta"}`
+    : "Gratis";
 
   return (
-    <article className="group games-card flex h-full flex-col rounded-[1.7rem] p-5 transition duration-200 hover:-translate-y-1 hover:shadow-2xl">
-      <div className="flex items-start justify-between gap-3">
-        <div className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[#004551] text-lg font-black text-white">
-          {competition.code.slice(0, 2)}
+    <article className="glass-card-premium group flex h-full flex-col rounded-[1.35rem] p-5 md:p-6">
+      <div className="mb-5 flex items-start justify-between gap-3">
+        <div className="relative">
+          <div className="absolute inset-0 rounded-full bg-[#770525] opacity-25 blur-lg transition-opacity group-hover:opacity-45" />
+          <div className="relative grid size-14 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[#770525] to-[#9b0b34] text-white shadow-[0_18px_34px_rgba(119,5,37,0.24)]">
+            {getCompetitionIcon(competition.code)}
+          </div>
         </div>
-        <span className={isOpen ? "rounded-full bg-[#c2e1df] px-3 py-1 text-xs font-black text-[#004551]" : "rounded-full bg-stone-100 px-3 py-1 text-xs font-black text-stone-700"}>
-          {isOpen ? "Buka" : "Tutup"}
+        <span
+          className={`rounded-full px-3 py-1.5 text-[10px] font-black ${
+            isOpen
+              ? "border border-[#c2e1df]/70 bg-[#c2e1df]/55 text-[#004551]"
+              : "border border-stone-200 bg-stone-100/70 text-stone-500"
+          }`}
+        >
+          {isOpen ? "Pendaftaran Dibuka" : "Ditutup"}
         </span>
       </div>
-      <h3 className="mt-5 text-xl font-black text-[#004551]">{competition.name}</h3>
-      <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#004551]/68">{competition.short_description}</p>
-      <div className="mt-5 flex flex-wrap gap-2">
+
+      <h3 className="text-xl font-black leading-tight text-[#004551]">{competition.name}</h3>
+      <div className="mt-4 flex flex-wrap gap-2">
         {competition.participant_levels?.map((level) => (
-          <span key={level} className="rounded-full bg-[#faadb6]/35 px-3 py-1 text-xs font-black text-[#770525]">{level}</span>
+          <span
+            key={level}
+            className="rounded-full border border-[#faadb6]/35 bg-[#faadb6]/25 px-3 py-1 text-[10px] font-black text-[#770525]"
+          >
+            {level}
+          </span>
         ))}
+        <span className="inline-flex items-center gap-1 rounded-full border border-white/70 bg-white/50 px-3 py-1 text-[10px] font-black text-[#004551]">
+          <Users size={12} />
+          {competition.competition_type === "team" ? "Tim" : "Individu"}
+        </span>
       </div>
-      <p className="mt-4 text-sm font-bold text-[#004551]">
-        {competition.registration_fee > 0 ? `Rp${competition.registration_fee.toLocaleString("id-ID")}` : "Gratis / sesuai ketentuan"}
+
+      <p className="mt-4 line-clamp-3 text-sm font-medium leading-7 text-[#004551]/70">
+        {competition.short_description}
       </p>
-      <div className="mt-auto flex gap-2 pt-6">
-        <Link to={`/lomba/${competition.slug}`} className="games-button rounded-full border border-[#004551]/20 px-4 py-2 text-sm font-black text-[#004551]">
-          Detail
+      <p className="mt-4 text-sm font-black text-[#004551]">Biaya: {priceLabel}</p>
+
+      <div className="mt-auto flex items-center justify-between gap-3 pt-7">
+        <Link
+          to={`/lomba/${competition.slug}`}
+          className="btn-glass-outline inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-black text-[#004551]"
+        >
+          Selengkapnya <ArrowRight size={14} />
         </Link>
         {isOpen ? (
-          <Link to="/daftar" className="games-button rounded-full bg-[#770525] px-4 py-2 text-sm font-black text-white">
+          <Link
+            to="/daftar"
+            className="btn-glossy-maroon rounded-full px-6 py-2.5 text-xs font-black text-white"
+          >
             Daftar
           </Link>
         ) : null}

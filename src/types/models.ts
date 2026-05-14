@@ -1,5 +1,6 @@
 export type RegistrationStatus = "pending" | "verified" | "rejected" | "revision_required";
 export type PaymentStatus = "unpaid" | "pending" | "valid" | "rejected" | "revision_required";
+export type PaymentMethodType = "qris" | "bank_transfer" | "ewallet";
 export type SubmissionStatus =
   | "not_required"
   | "not_submitted"
@@ -33,10 +34,28 @@ export type Competition = {
   max_members: number;
   registration_fee: number;
   registration_status: "open" | "closed";
+  registration_open_at: string | null;
+  registration_close_at: string | null;
   guidebook_url: string | null;
   poster_url: string | null;
   contact_person: string | null;
   is_active: boolean;
+};
+
+export type PaymentMethod = {
+  id: string;
+  event_id: string | null;
+  type: PaymentMethodType;
+  label: string;
+  is_active: boolean;
+  bank_name: string | null;
+  account_number: string | null;
+  account_holder: string | null;
+  qris_image_url: string | null;
+  notes: string | null;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
 };
 
 export type Timeline = {
@@ -78,6 +97,7 @@ export type Registration = {
   institution: string;
   level: string | null;
   payment_proof_url: string | null;
+  payment_method_id?: string | null;
   submission_url: string | null;
   registration_status: RegistrationStatus;
   payment_status: PaymentStatus;

@@ -13,6 +13,7 @@ export type RegistrationPayload = {
   whatsapp: string;
   institution: string;
   level?: string | null;
+  payment_method_id?: string | null;
   payment_proof_url?: string | null;
   submission_url?: string | null;
   payment_status?: "unpaid" | "pending";

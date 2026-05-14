@@ -1,4 +1,4 @@
-import { CalendarDays, FileImage, FileText, Handshake, HelpCircle, LayoutDashboard, Megaphone, Trophy, Users } from "lucide-react";
+import { CalendarDays, CreditCard, FileImage, FileText, Handshake, HelpCircle, LayoutDashboard, Megaphone, Trophy, Users } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 const links = [
@@ -9,6 +9,7 @@ const links = [
   ["FAQ", "/admin/faqs", HelpCircle],
   ["Pengumuman", "/admin/announcements", Megaphone],
   ["Peserta", "/admin/registrations", Users],
+  ["Pembayaran", "/admin/payment-methods", CreditCard],
   ["Sponsor", "/admin/sponsors", Handshake],
   ["Galeri", "/admin/galleries", FileImage],
 ];

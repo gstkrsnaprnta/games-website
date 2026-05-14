@@ -9,6 +9,10 @@ export type Database = {
         Args: { competition_id_input: string };
         Returns: string;
       };
+      check_registration_status: {
+        Args: { registration_code_input: string; contact_input: string };
+        Returns: unknown;
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
