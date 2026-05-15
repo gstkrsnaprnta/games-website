@@ -2,9 +2,10 @@ import {
   ArrowLeft,
   ArrowRight,
   Atom,
+  BookOpen,
   Calendar,
   Calculator,
-  Code2,
+  Code,
   FlaskConical,
   Globe,
   Leaf,
@@ -28,30 +29,30 @@ import { useAsyncData } from "../../utils/useAsyncData";
 
 const stats = [
   {
-    icon: <Trophy size={24} className="text-[#7E032F]" strokeWidth={2.15} />,
+    icon: <Trophy size={22} className="text-[#7E032F]" strokeWidth={2.15} />,
     value: "5+",
-    valueClassName: "text-[1.9rem] lg:text-[2.15rem]",
+    valueClassName: "text-[1.65rem] lg:text-[2.05rem]",
     label: "Cabang Lomba",
     sublabel: "Matematika & Sains",
   },
   {
-    icon: <Users size={24} className="text-[#064252]" strokeWidth={2.15} />,
+    icon: <Users size={22} className="text-[#064252]" strokeWidth={2.15} />,
     value: "SD – Mahasiswa",
-    valueClassName: "text-[1.28rem] leading-[1.05] lg:text-[1.55rem]",
+    valueClassName: "text-[1rem] leading-[1.05] lg:text-[1.45rem]",
     label: "Semua Jenjang",
     sublabel: "Pendidikan",
   },
   {
-    icon: <Globe size={24} className="text-[#064252]" strokeWidth={2.15} />,
+    icon: <Globe size={22} className="text-[#064252]" strokeWidth={2.15} />,
     value: "Nasional",
-    valueClassName: "text-[1.78rem] lg:text-[1.95rem]",
+    valueClassName: "text-[1.35rem] lg:text-[1.9rem]",
     label: "Peserta dari Seluruh",
     sublabel: "Indonesia",
   },
   {
-    icon: <Calendar size={24} className="text-[#7E032F]" strokeWidth={2.15} />,
+    icon: <Calendar size={22} className="text-[#7E032F]" strokeWidth={2.15} />,
     value: "Event Tahunan",
-    valueClassName: "text-[1.55rem] leading-[1.05] lg:text-[1.85rem]",
+    valueClassName: "text-[1.12rem] leading-[1.05] lg:text-[1.75rem]",
     label: "Diselenggarakan",
     sublabel: "Setiap Tahun",
   },
@@ -68,65 +69,72 @@ export function HomePage() {
       <HeroSection />
 
       {/* ===== Stats Strip ===== */}
-      <section className="container-hero relative z-20 mt-5 mb-12 lg:mt-6 lg:mb-16">
-        <div className="stats-strip-soft-glow relative overflow-hidden rounded-[2rem] border border-white/80 bg-[linear-gradient(90deg,rgba(255,255,255,0.6)_0%,rgba(255,255,255,0.36)_45%,rgba(194,225,223,0.26)_72%,rgba(6,66,82,0.2)_100%)] px-3 py-3 shadow-[0_20px_55px_rgba(6,66,82,0.16),inset_0_1px_0_rgba(255,255,255,0.88)] backdrop-blur-[28px] lg:px-5 lg:py-4">
-          <div className="grid grid-cols-1 overflow-hidden rounded-[1.6rem] md:grid-cols-2 xl:grid-cols-4">
-            {stats.map((stat, i) => {
-              const dividerClass = [
-                i !== stats.length - 1 ? "xl:border-r" : "",
-                i < 2 ? "md:border-b xl:border-b-0" : "",
-                i % 2 === 0 ? "md:border-r" : "",
-              ]
-                .filter(Boolean)
-                .join(" ");
-
-              return (
-                <div
-                  key={stat.label}
-                  className={`relative flex items-center gap-4 border-white/40 px-5 py-4.5 md:py-5 lg:px-7 lg:py-5 ${dividerClass}`}
-                >
-                  <div className="grid size-[60px] shrink-0 place-items-center rounded-full border border-white/75 bg-white/44 shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_14px_rgba(6,66,82,0.06)] backdrop-blur-md lg:size-[66px]">
-                    {stat.icon}
-                  </div>
-
-                  <div className="min-w-0">
-                    <p
-                      className={`font-black tracking-tight text-[#083b49] drop-shadow-[0_1px_1px_rgba(255,255,255,0.3)] ${stat.valueClassName}`}
-                    >
-                      {stat.value}
-                    </p>
-                    <p className="mt-1 text-[11px] font-bold uppercase leading-tight tracking-[0.08em] text-[#064252]/72 lg:text-[12px]">
-                      {stat.label}
-                    </p>
-                    <p className="text-[11px] font-semibold leading-snug text-[#064252]/65 lg:text-[12px]">
-                      {stat.sublabel}
-                    </p>
-                  </div>
+      <section className="container-hero relative z-20 mt-5 mb-8 lg:mt-6 lg:mb-12">
+        <div className="relative overflow-hidden rounded-[1.8rem] border border-white/80 bg-[linear-gradient(135deg,rgba(255,255,255,0.62)_0%,rgba(255,255,255,0.34)_48%,rgba(194,225,223,0.26)_72%,rgba(6,66,82,0.22)_100%)] p-3 shadow-[0_18px_46px_rgba(6,66,82,0.15),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-[28px] md:rounded-[2rem] lg:p-4">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-0 lg:overflow-hidden lg:rounded-[1.5rem]">
+            {stats.map((stat, i) => (
+              <div
+                key={stat.label}
+                className={[
+                  "relative flex min-h-[112px] flex-col justify-between rounded-[1.25rem] border border-white/55 bg-white/24 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)] backdrop-blur-md",
+                  "lg:min-h-0 lg:flex-row lg:items-center lg:justify-start lg:gap-4 lg:rounded-none lg:border-0 lg:bg-transparent lg:px-6 lg:py-5 lg:shadow-none",
+                  i !== stats.length - 1 ? "lg:border-r lg:border-white/38" : "",
+                ].join(" ")}
+              >
+                <div className="grid size-11 shrink-0 place-items-center rounded-full border border-white/75 bg-white/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_14px_rgba(6,66,82,0.07)] backdrop-blur-md lg:size-[62px]">
+                  {stat.icon}
                 </div>
-              );
-            })}
+
+                <div className="mt-3 min-w-0 lg:mt-0">
+                  <p
+                    className={`font-black tracking-tight text-[#083b49] drop-shadow-[0_1px_1px_rgba(255,255,255,0.32)] ${stat.valueClassName}`}
+                  >
+                    {stat.value}
+                  </p>
+                  <p className="mt-1 text-[9.5px] font-black uppercase leading-tight tracking-[0.08em] text-[#064252]/70 lg:text-[11px]">
+                    {stat.label}
+                  </p>
+                  <p className="text-[10px] font-semibold leading-snug text-[#064252]/62 lg:text-[11px]">
+                    {stat.sublabel}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ===== Cabang Lomba ===== */}
-      <section className="container-page relative py-10 lg:py-12">
-        <div className="absolute top-1/2 left-0 size-[400px] -translate-y-1/2 rounded-full bg-[#faadb6]/10 blur-[100px] -z-10" />
+      <section className="container-hero relative pt-4 pb-5 lg:pt-8 lg:pb-8">        <div className="pointer-events-none absolute -left-24 top-24 size-[360px] rounded-full bg-[#faadb6]/10 blur-[100px] -z-10" />
+        <div className="pointer-events-none absolute right-0 top-8 size-[420px] rounded-full bg-[#c2e1df]/16 blur-[120px] -z-10" />
 
-        <div className="flex items-center gap-4 mb-10">
-          <div className="w-1.5 h-10 bg-[#faadb6] rounded-full" />
-          <SectionHeading
-            title="Cabang Lomba Unggulan"
-            actionLabel="Lihat Semua Lomba"
-            actionHref="/lomba"
-          />
+        <div className="mb-6 flex items-end justify-between gap-4 md:mb-9">
+          <div className="flex min-w-0 items-center gap-3 md:gap-4">
+            <div className="h-9 w-1.5 shrink-0 rounded-full bg-[#faadb6] shadow-[0_0_18px_rgba(250,173,182,0.55)] md:h-10" />
+            <div className="min-w-0">
+              <p className="mb-1 hidden text-[10px] font-black uppercase tracking-[0.24em] text-[#7E032F] md:block">
+                Cabang lomba unggulan
+              </p>
+              <h2 className="games-display text-[2rem] font-black leading-[1.02] tracking-[-0.055em] text-[#064252] min-[390px]:text-[2.18rem] md:text-4xl">
+                Cabang Lomba Unggulan
+              </h2>
+            </div>
+          </div>
+
+          <Link
+            to="/lomba"
+            className="hidden shrink-0 items-center gap-2 rounded-full border border-white/55 bg-white/24 px-5 py-2.5 text-xs font-black text-[#7E032F] shadow-[inset_0_1px_0_rgba(255,255,255,0.62)] backdrop-blur-md transition hover:translate-y-[-1px] hover:bg-white/40 md:inline-flex"
+          >
+            Lihat Semua Lomba <ArrowRight size={15} />
+          </Link>
         </div>
 
         <div className="relative">
-          <div className="pointer-events-none absolute -left-5 top-1/2 z-20 hidden size-11 -translate-y-1/2 place-items-center rounded-full bg-[#faadb6] text-white shadow-[0_14px_34px_rgba(250,173,182,0.45)] md:grid">
+          <div className="pointer-events-none absolute -left-5 top-1/2 z-20 hidden size-11 -translate-y-1/2 place-items-center rounded-full bg-[#faadb6] text-white shadow-[0_14px_34px_rgba(250,173,182,0.45)] lg:grid">
             <ArrowLeft size={20} />
           </div>
-          <div className="pointer-events-none absolute -right-5 top-1/2 z-20 hidden size-11 -translate-y-1/2 place-items-center rounded-full bg-[#faadb6] text-white shadow-[0_14px_34px_rgba(250,173,182,0.45)] md:grid">
+
+          <div className="pointer-events-none absolute -right-5 top-1/2 z-20 hidden size-11 -translate-y-1/2 place-items-center rounded-full bg-[#faadb6] text-white shadow-[0_14px_34px_rgba(250,173,182,0.45)] lg:grid">
             <ArrowRight size={20} />
           </div>
 
@@ -135,21 +143,38 @@ export function HomePage() {
           {!competitions.loading && !competitions.error && competitions.data?.length === 0 ? (
             <EmptyState description="Lomba aktif belum tersedia." />
           ) : null}
+
           {competitions.data && competitions.data.length > 0 ? (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
-              {competitions.data.slice(0, 5).map((competition) => (
-                <FeaturedCompetitionCard key={competition.id} competition={competition} />
-              ))}
-            </div>
+            <>
+              <div className="hide-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3 pl-1 pr-6 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 lg:grid-cols-5">
+                {competitions.data.slice(0, 5).map((competition) => (
+                  <FeaturedCompetitionCard key={competition.id} competition={competition} />
+                ))}
+              </div>
+
+              <div className="mt-5 flex justify-center md:hidden">
+                <Link
+                  to="/lomba"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/28 px-5 py-2.5 text-xs font-black text-[#7E032F] shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] backdrop-blur-md"
+                >
+                  Lihat Semua Lomba <ArrowRight size={14} />
+                </Link>
+              </div>
+            </>
           ) : null}
         </div>
       </section>
 
       {/* ===== Timeline Horizontal ===== */}
-      <section className="container-page relative py-10 lg:py-12">
-        <div className="flex items-center gap-4 mb-10">
-          <div className="w-1.5 h-10 bg-[#faadb6] rounded-full" />
-          <SectionHeading title="Timeline GAMES 2026" />
+      <section className="container-hero relative pt-4 pb-10 lg:pt-5 lg:pb-14">
+        <div className="pointer-events-none absolute -left-16 top-10 size-[360px] rounded-full bg-[#c2e1df]/12 blur-[100px] -z-10" />
+        <div className="pointer-events-none absolute right-0 bottom-0 size-[440px] rounded-full bg-[#064252]/8 blur-[120px] -z-10" />
+
+        <div className="mb-6 flex items-center gap-4 md:mb-8">
+          <div className="h-9 w-1.5 shrink-0 rounded-full bg-[#faadb6] shadow-[0_0_18px_rgba(250,173,182,0.55)] md:h-10" />
+          <h2 className="games-display text-[1.85rem] font-black leading-tight tracking-[-0.04em] text-[#064252] min-[390px]:text-[2.05rem] md:text-4xl">
+            Timeline GAMES 2026
+          </h2>
         </div>
 
         {timelines.loading ? <LoadingState /> : null}
@@ -193,11 +218,12 @@ export function HomePage() {
   );
 }
 
-const competitionIcons = [Calculator, Atom, FlaskConical, Leaf, Code2];
+const competitionIcons = [Calculator, Atom, FlaskConical, Leaf, Code, BookOpen];
 
 function FeaturedCompetitionCard({ competition }: { competition: Competition }) {
   const iconIndex = Math.abs(competition.code.charCodeAt(0) || 0) % competitionIcons.length;
   const Icon = competitionIcons[iconIndex];
+
   const description =
     competition.short_description ||
     competition.description ||
@@ -206,21 +232,34 @@ function FeaturedCompetitionCard({ competition }: { competition: Competition }) 
   return (
     <Link
       to={`/lomba/${competition.slug}`}
-      className="glass-card-premium group flex min-h-[240px] flex-col justify-between rounded-[1.35rem] p-5 text-left"
+      className="group glass-card-premium flex min-h-[218px] w-[218px] shrink-0 snap-start flex-col justify-between rounded-[1.35rem] p-4 text-left transition sm:w-auto md:min-h-[250px] md:p-5 lg:min-h-[270px]"
     >
       <div>
-        <div className="mb-7 grid size-14 place-items-center rounded-full bg-[#770525] text-white shadow-[0_18px_36px_rgba(119,5,37,0.22)] transition group-hover:scale-105 group-hover:bg-[#004551]">
-          <Icon size={24} strokeWidth={2.4} />
+        <div className="mb-5 flex items-start justify-between gap-3 md:mb-6">
+          <div className="relative">
+            <div className="absolute inset-0 rounded-full bg-[#7E032F] opacity-25 blur-lg transition-opacity group-hover:opacity-45" />
+            <div className="relative grid size-12 place-items-center rounded-full bg-gradient-to-br from-[#7E032F] to-[#9f0a3a] text-white shadow-[0_16px_28px_rgba(126,3,47,0.22)] transition group-hover:scale-105 group-hover:from-[#064252] group-hover:to-[#0b5a63] md:size-14">
+              <Icon size={21} strokeWidth={2.25} />
+            </div>
+          </div>
+
+          <span className="rounded-full border border-white/60 bg-white/42 px-2.5 py-1 text-[8.5px] font-black uppercase tracking-[0.08em] text-[#064252]/70 backdrop-blur-md">
+            Buka
+          </span>
         </div>
-        <h3 className="text-[1.05rem] font-black leading-snug text-[#004551]">
+
+        <h3 className="line-clamp-2 text-[0.98rem] font-black leading-tight tracking-[-0.02em] text-[#064252] md:text-lg">
           {competition.name}
         </h3>
-        <p className="mt-3 line-clamp-4 text-xs font-semibold leading-6 text-[#004551]/72">
+
+        <p className="mt-3 line-clamp-3 text-[0.76rem] font-semibold leading-5 text-[#064252]/68 md:mt-4 md:line-clamp-4 md:text-sm md:leading-6">
           {description}
         </p>
       </div>
-      <span className="mt-6 inline-flex items-center gap-1 text-xs font-black text-[#770525]">
-        Selengkapnya <ArrowRight size={14} className="transition group-hover:translate-x-1" />
+
+      <span className="mt-5 inline-flex items-center gap-1 text-[0.72rem] font-black text-[#7E032F] md:text-xs">
+        Selengkapnya{" "}
+        <ArrowRight size={13} className="transition group-hover:translate-x-1" />
       </span>
     </Link>
   );

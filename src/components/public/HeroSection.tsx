@@ -10,7 +10,7 @@ export function HeroSection() {
         ========================= */}
         <div className="hero-mobile-card md:hidden">
           <div className="hero-mobile-content">
-            <span className="inline-flex rounded-full border border-[#f3c1cc] bg-[#fff3f6]/90 px-5 py-2 text-[11px] font-black uppercase tracking-[0.08em] text-[#7e032f] shadow-[0_8px_20px_rgba(126,3,47,0.08)]">
+            <span className="inline-flex rounded-full border border-[#f3c1cc] bg-[#fff3f6]/90 px-5 py-2 text-[8px] font-black uppercase tracking-[0.08em] text-[#7e032f] shadow-[0_8px_20px_rgba(126,3,47,0.08)]">
               Event Kompetisi Nasional
             </span>
 
