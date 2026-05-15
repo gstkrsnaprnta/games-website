@@ -188,27 +188,61 @@ export function HomePage() {
       </section>
 
       {/* ===== Pengumuman ===== */}
-      <section className="container-page relative py-10 lg:py-12">
-        <div className="absolute top-0 right-0 size-[500px] rounded-full bg-[#004551]/5 blur-[120px] -z-10" />
+      <section className="container-hero relative pt-4 pb-10 lg:pt-5 lg:pb-14">
+        <div className="pointer-events-none absolute -left-20 top-8 size-[380px] rounded-full bg-[#064252]/10 blur-[120px] -z-10" />
+        <div className="pointer-events-none absolute right-0 top-4 size-[460px] rounded-full bg-[#c2e1df]/14 blur-[120px] -z-10" />
 
-        <div className="flex items-center gap-4 mb-10">
-          <div className="w-1.5 h-10 bg-[#faadb6] rounded-full" />
-          <SectionHeading
-            title="Pengumuman Terbaru"
-            actionLabel="Lihat Semua Pengumuman"
-            actionHref="/pengumuman"
-          />
+        <div className="mb-6 flex items-center justify-between gap-4 md:mb-8">
+          <div className="flex min-w-0 items-center gap-4">
+            <div className="h-9 w-1.5 shrink-0 rounded-full bg-[#faadb6] shadow-[0_0_18px_rgba(250,173,182,0.55)] md:h-10" />
+
+            <div className="min-w-0">
+              <p className="mb-1 hidden text-[10px] font-black uppercase tracking-[0.24em] text-[#7E032F] md:block">
+                Informasi terbaru
+              </p>
+              <h2 className="games-display text-[1.85rem] font-black leading-tight tracking-[-0.04em] text-[#064252] min-[390px]:text-[2.05rem] md:text-4xl">
+                Pengumuman Terbaru
+              </h2>
+            </div>
+          </div>
+
+          <Link
+            to="/pengumuman"
+            className="hidden shrink-0 items-center gap-2 rounded-full border border-white/55 bg-white/24 px-5 py-2.5 text-xs font-black text-[#7E032F] shadow-[inset_0_1px_0_rgba(255,255,255,0.62)] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/40 md:inline-flex"
+          >
+            Lihat Semua Pengumuman <ArrowRight size={15} />
+          </Link>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="relative">
           {announcements.loading ? <LoadingState /> : null}
           {announcements.error ? <ErrorState message={announcements.error} /> : null}
           {!announcements.loading && !announcements.error && announcements.data?.length === 0 ? (
-            <EmptyState />
+            <EmptyState description="Pengumuman belum tersedia." />
           ) : null}
-          {announcements.data?.slice(0, 3).map((announcement) => (
-            <AnnouncementCard key={announcement.id} announcement={announcement} />
-          ))}
+
+          {announcements.data && announcements.data.length > 0 ? (
+            <>
+              <div className="grid gap-4 md:grid-cols-3 md:gap-5">
+                {announcements.data.slice(0, 3).map((announcement, index) => (
+                  <AnnouncementCard
+                    key={announcement.id}
+                    announcement={announcement}
+                    index={index}
+                  />
+                ))}
+              </div>
+
+              <div className="mt-5 flex justify-center md:hidden">
+                <Link
+                  to="/pengumuman"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/28 px-5 py-2.5 text-xs font-black text-[#7E032F] shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] backdrop-blur-md"
+                >
+                  Lihat Semua Pengumuman <ArrowRight size={14} />
+                </Link>
+              </div>
+            </>
+          ) : null}
         </div>
       </section>
 

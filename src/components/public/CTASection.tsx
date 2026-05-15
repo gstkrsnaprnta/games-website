@@ -3,75 +3,112 @@ import { Link } from "react-router-dom";
 
 export function CTASection() {
   return (
-    <section className="container-page pb-20 pt-10 relative">
-      {/* Background glow for the section */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#c2e1df]/30 to-transparent -z-10 blur-3xl" />
-      
-      <div className="cta-glass relative overflow-hidden rounded-[2.5rem] p-8 md:p-16">
-        
-        {/* Math Decor - Sigmoid Curve Graph */}
-        <div className="absolute left-10 top-1/2 -translate-y-1/2 opacity-30 pointer-events-none hidden lg:block">
-          <svg width="250" height="150" viewBox="0 0 250 150">
-            {/* Grid */}
-            <line x1="25" y1="0" x2="25" y2="150" stroke="#004551" strokeWidth="0.5" strokeDasharray="2 2" />
-            <line x1="125" y1="0" x2="125" y2="150" stroke="#004551" strokeWidth="1" />
-            <line x1="225" y1="0" x2="225" y2="150" stroke="#004551" strokeWidth="0.5" strokeDasharray="2 2" />
-            <line x1="0" y1="75" x2="250" y2="75" stroke="#004551" strokeWidth="1" />
-            
-            {/* Curve */}
-            <path d="M 0 140 C 80 140, 90 10, 250 10" fill="none" stroke="#770525" strokeWidth="2" />
-            
-            {/* Formula Text */}
-            <text x="0" y="20" fill="#004551" fontSize="14" fontFamily="serif" fontStyle="italic">
-              f(x) = 
-              <tspan x="45" y="15">1</tspan>
-              <tspan x="38" y="22">───</tspan>
-              <tspan x="35" y="32">1+e⁻ˣ</tspan>
+    <section className="container-hero relative pb-12 pt-5 md:pb-16 md:pt-8 lg:pb-20">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 rounded-full bg-[#064252]/12 blur-[80px]" />
+
+      <div className="cta-final-card cta-glass relative overflow-hidden rounded-[1.75rem] px-6 py-8 md:rounded-[2rem] md:px-10 md:py-9 lg:px-16 lg:py-10">
+        <div className="math-grid-fine opacity-25" />
+
+        {/* Left math graph */}
+        <div className="cta-math-left pointer-events-none absolute left-5 top-1/2 hidden -translate-y-1/2 opacity-45 lg:block">
+          <svg width="260" height="160" viewBox="0 0 260 160" fill="none">
+            <text
+              x="0"
+              y="24"
+              fill="#d8eeeb"
+              fontSize="15"
+              fontFamily="serif"
+              fontStyle="italic"
+            >
+              f(x) =
             </text>
+            <text
+              x="52"
+              y="18"
+              fill="#d8eeeb"
+              fontSize="13"
+              fontFamily="serif"
+              fontStyle="italic"
+            >
+              1
+            </text>
+            <line x1="42" y1="24" x2="76" y2="24" stroke="#d8eeeb" strokeWidth="1" />
+            <text
+              x="35"
+              y="40"
+              fill="#d8eeeb"
+              fontSize="13"
+              fontFamily="serif"
+              fontStyle="italic"
+            >
+              1 + e⁻ˣ
+            </text>
+
+            <line x1="35" y1="130" x2="240" y2="130" stroke="#d8eeeb" strokeWidth="1.2" opacity="0.7" />
+            <line x1="95" y1="35" x2="95" y2="145" stroke="#d8eeeb" strokeWidth="1.2" opacity="0.7" />
+
+            <path
+              d="M35 128 C78 128 88 116 104 92 C124 61 145 39 232 34"
+              stroke="#d8eeeb"
+              strokeWidth="2"
+              strokeLinecap="round"
+              opacity="0.85"
+            />
+
+            <circle cx="126" cy="68" r="3" fill="#faadb6" opacity="0.9" />
+            <line x1="35" y1="100" x2="240" y2="100" stroke="#d8eeeb" strokeWidth="0.7" strokeDasharray="5 8" opacity="0.42" />
+            <line x1="35" y1="70" x2="240" y2="70" stroke="#d8eeeb" strokeWidth="0.7" strokeDasharray="5 8" opacity="0.3" />
           </svg>
         </div>
 
-        {/* Math Decor - Geometric Wireframe */}
-        <div className="absolute right-10 bottom-0 opacity-20 pointer-events-none hidden lg:block">
-          <svg width="200" height="150" viewBox="0 0 200 150">
-            {/* Cube wireframe */}
-            <polygon points="100,50 150,30 150,80 100,100" fill="none" stroke="#004551" strokeWidth="1.5" />
-            <polygon points="50,70 100,50 100,100 50,120" fill="none" stroke="#004551" strokeWidth="1.5" />
-            <polygon points="100,50 150,30 100,10 50,30" fill="none" stroke="#004551" strokeWidth="1.5" />
-            {/* Inner lines */}
-            <line x1="50" y1="30" x2="50" y2="70" stroke="#004551" strokeWidth="1.5" />
-            <line x1="100" y1="10" x2="100" y2="50" stroke="#004551" strokeWidth="1.5" />
-            
-            {/* Pyramid wireframe */}
-            <polygon points="140,140 180,110 190,150" fill="none" stroke="#004551" strokeWidth="1.5" />
-            <line x1="160" y1="70" x2="140" y2="140" stroke="#004551" strokeWidth="1.5" />
-            <line x1="160" y1="70" x2="180" y2="110" stroke="#004551" strokeWidth="1.5" />
-            <line x1="160" y1="70" x2="190" y2="150" stroke="#004551" strokeWidth="1.5" />
+        {/* Right wireframe */}
+        <div className="cta-geo-right pointer-events-none absolute right-6 top-1/2 hidden -translate-y-1/2 opacity-35 lg:block">
+          <svg width="260" height="180" viewBox="0 0 260 180" fill="none">
+            <polygon points="116,36 176,66 116,96 56,66" stroke="#ffffff" strokeWidth="1.5" />
+            <polygon points="56,66 116,96 116,158 56,126" stroke="#ffffff" strokeWidth="1.5" />
+            <polygon points="176,66 116,96 116,158 176,126" stroke="#ffffff" strokeWidth="1.5" />
+            <line x1="116" y1="36" x2="116" y2="96" stroke="#ffffff" strokeWidth="1.2" opacity="0.8" />
+
+            <polygon points="178,150 234,104 246,166" stroke="#ffffff" strokeWidth="1.5" opacity="0.8" />
+            <line x1="210" y1="38" x2="178" y2="150" stroke="#ffffff" strokeWidth="1.5" opacity="0.8" />
+            <line x1="210" y1="38" x2="234" y2="104" stroke="#ffffff" strokeWidth="1.5" opacity="0.8" />
+            <line x1="210" y1="38" x2="246" y2="166" stroke="#ffffff" strokeWidth="1.5" opacity="0.8" />
+
+            <circle cx="210" cy="38" r="3" fill="#faadb6" />
+            <circle cx="116" cy="96" r="3" fill="#c2e1df" />
           </svg>
         </div>
 
-        <div className="relative text-center z-10 max-w-2xl mx-auto">
-          <p className="text-sm font-black uppercase tracking-[0.24em] text-[#004551]/60">
+        {/* Mobile decoration */}
+        <div className="pointer-events-none absolute -right-16 -bottom-16 size-52 rounded-full border border-white/20 bg-[#064252]/12 md:hidden" />
+        <div className="pointer-events-none absolute -left-16 top-0 size-48 rounded-full bg-[#064252]/18 blur-3xl md:hidden" />
+
+        <div className="relative z-10 mx-auto max-w-2xl text-center">
+          <p className="text-[0.68rem] font-black uppercase tracking-[0.22em] text-[#064252]/68 md:text-sm">
             Siap Jadi Bagian dari
           </p>
-          <h2 className="games-display mt-2 text-4xl font-black md:text-5xl lg:text-6xl text-[#770525] drop-shadow-sm">
+
+          <h2 className="games-display mt-2 text-[2.35rem] font-black leading-[0.95] tracking-[-0.04em] text-[#7E032F] drop-shadow-[0_8px_18px_rgba(126,3,47,0.12)] md:text-5xl lg:text-[3.55rem]">
             GAMES 2026?
           </h2>
-          <p className="mx-auto mt-4 max-w-md text-base leading-7 text-[#004551]/75 font-medium">
+
+          <p className="mx-auto mt-4 max-w-md text-[0.9rem] font-semibold leading-7 text-[#064252]/74 md:text-base">
             Tunjukkan kemampuan terbaikmu dan raih prestasi tingkat nasional!
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+
+          <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row md:mt-8 md:gap-4">
             <Link
               to="/daftar"
-              className="btn-glossy-maroon inline-flex items-center gap-2 rounded-full px-8 py-4 font-black text-white"
+              className="btn-glossy-maroon inline-flex h-12 w-full items-center justify-center gap-2 rounded-full px-7 text-sm font-black text-white sm:w-auto md:h-13 md:px-8"
             >
-              Daftar Sekarang <ArrowRight size={18} />
+              Daftar Sekarang <ArrowRight size={17} />
             </Link>
+
             <a
               href="#"
-              className="btn-glass-outline inline-flex items-center gap-2 rounded-full px-8 py-4 font-black text-[#004551]"
+              className="btn-glass-outline inline-flex h-12 w-full items-center justify-center gap-2 rounded-full px-7 text-sm font-black text-[#064252] sm:w-auto md:h-13 md:px-8"
             >
-              Unduh Brosur <Download size={18} />
+              Unduh Brosur <Download size={17} />
             </a>
           </div>
         </div>
