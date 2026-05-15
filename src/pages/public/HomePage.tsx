@@ -27,10 +27,34 @@ import type { Competition } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
 
 const stats = [
-  { icon: <Trophy size={28} className="text-[#770525]" />, value: "5+", label: "Cabang Lomba", sublabel: "Matematika & Sains" },
-  { icon: <Users size={28} className="text-[#004551]" />, value: "SD – Mahasiswa", label: "Semua Jenjang", sublabel: "Pendidikan" },
-  { icon: <Globe size={28} className="text-[#004551]" />, value: "Nasional", label: "Peserta dari Seluruh", sublabel: "Indonesia" },
-  { icon: <Calendar size={28} className="text-[#770525]" />, value: "Event Tahunan", label: "Diselenggarakan", sublabel: "Setiap Tahun" },
+  {
+    icon: <Trophy size={24} className="text-[#7E032F]" strokeWidth={2.15} />,
+    value: "5+",
+    valueClassName: "text-[1.9rem] lg:text-[2.15rem]",
+    label: "Cabang Lomba",
+    sublabel: "Matematika & Sains",
+  },
+  {
+    icon: <Users size={24} className="text-[#064252]" strokeWidth={2.15} />,
+    value: "SD – Mahasiswa",
+    valueClassName: "text-[1.28rem] leading-[1.05] lg:text-[1.55rem]",
+    label: "Semua Jenjang",
+    sublabel: "Pendidikan",
+  },
+  {
+    icon: <Globe size={24} className="text-[#064252]" strokeWidth={2.15} />,
+    value: "Nasional",
+    valueClassName: "text-[1.78rem] lg:text-[1.95rem]",
+    label: "Peserta dari Seluruh",
+    sublabel: "Indonesia",
+  },
+  {
+    icon: <Calendar size={24} className="text-[#7E032F]" strokeWidth={2.15} />,
+    value: "Event Tahunan",
+    valueClassName: "text-[1.55rem] leading-[1.05] lg:text-[1.85rem]",
+    label: "Diselenggarakan",
+    sublabel: "Setiap Tahun",
+  },
 ];
 
 export function HomePage() {
@@ -44,24 +68,44 @@ export function HomePage() {
       <HeroSection />
 
       {/* ===== Stats Strip ===== */}
-      <section className="container-page relative z-20 mt-4 mb-12 lg:mt-8 lg:mb-16">
-        <div className="rounded-[2.5rem] p-4 lg:p-5 flex flex-col md:flex-row justify-between items-center bg-gradient-to-r from-[rgba(255,255,255,0.6)] via-[rgba(255,255,255,0.3)] to-[rgba(194,225,223,0.3)] backdrop-blur-[40px] shadow-[0_24px_60px_rgba(0,69,81,0.2),inset_0_1px_0_rgba(255,255,255,1)] border border-[rgba(255,255,255,0.8)]">
-          {stats.map((stat, i) => (
-            <div key={stat.label} className={`flex w-full items-center justify-center gap-5 px-6 py-4 md:py-2 ${i !== stats.length - 1 ? "md:border-r border-[#004551]/15" : ""}`}>
-              <div className="shrink-0 grid size-14 place-items-center rounded-full bg-white/50 shadow-inner border border-white/60">
-                {stat.icon}
-              </div>
-              <div className="flex flex-col">
-                <p className="text-[1.35rem] font-black text-[#002b32] leading-none mb-1 tracking-tight drop-shadow-sm">{stat.value}</p>
-                <p className="text-[11px] font-bold text-[#004551]/75 leading-tight uppercase tracking-wider">
-                  {stat.label}
-                </p>
-                <p className="text-[11px] font-semibold text-[#0b5a63]/70 leading-tight">
-                  {stat.sublabel}
-                </p>
-              </div>
-            </div>
-          ))}
+      <section className="container-hero relative z-20 mt-5 mb-12 lg:mt-6 lg:mb-16">
+        <div className="stats-strip-soft-glow relative overflow-hidden rounded-[2rem] border border-white/80 bg-[linear-gradient(90deg,rgba(255,255,255,0.6)_0%,rgba(255,255,255,0.36)_45%,rgba(194,225,223,0.26)_72%,rgba(6,66,82,0.2)_100%)] px-3 py-3 shadow-[0_20px_55px_rgba(6,66,82,0.16),inset_0_1px_0_rgba(255,255,255,0.88)] backdrop-blur-[28px] lg:px-5 lg:py-4">
+          <div className="grid grid-cols-1 overflow-hidden rounded-[1.6rem] md:grid-cols-2 xl:grid-cols-4">
+            {stats.map((stat, i) => {
+              const dividerClass = [
+                i !== stats.length - 1 ? "xl:border-r" : "",
+                i < 2 ? "md:border-b xl:border-b-0" : "",
+                i % 2 === 0 ? "md:border-r" : "",
+              ]
+                .filter(Boolean)
+                .join(" ");
+
+              return (
+                <div
+                  key={stat.label}
+                  className={`relative flex items-center gap-4 border-white/40 px-5 py-4.5 md:py-5 lg:px-7 lg:py-5 ${dividerClass}`}
+                >
+                  <div className="grid size-[60px] shrink-0 place-items-center rounded-full border border-white/75 bg-white/44 shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_14px_rgba(6,66,82,0.06)] backdrop-blur-md lg:size-[66px]">
+                    {stat.icon}
+                  </div>
+
+                  <div className="min-w-0">
+                    <p
+                      className={`font-black tracking-tight text-[#083b49] drop-shadow-[0_1px_1px_rgba(255,255,255,0.3)] ${stat.valueClassName}`}
+                    >
+                      {stat.value}
+                    </p>
+                    <p className="mt-1 text-[11px] font-bold uppercase leading-tight tracking-[0.08em] text-[#064252]/72 lg:text-[12px]">
+                      {stat.label}
+                    </p>
+                    <p className="text-[11px] font-semibold leading-snug text-[#064252]/65 lg:text-[12px]">
+                      {stat.sublabel}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
@@ -107,10 +151,12 @@ export function HomePage() {
           <div className="w-1.5 h-10 bg-[#faadb6] rounded-full" />
           <SectionHeading title="Timeline GAMES 2026" />
         </div>
-        
+
         {timelines.loading ? <LoadingState /> : null}
         {timelines.error ? <ErrorState message={timelines.error} /> : null}
-        {!timelines.loading && !timelines.error && timelines.data?.length === 0 ? <EmptyState /> : null}
+        {!timelines.loading && !timelines.error && timelines.data?.length === 0 ? (
+          <EmptyState />
+        ) : null}
         {timelines.data && timelines.data.length > 0 ? (
           <TimelineHorizontal items={timelines.data.slice(0, 5)} />
         ) : null}
@@ -132,7 +178,9 @@ export function HomePage() {
         <div className="grid gap-6 md:grid-cols-3">
           {announcements.loading ? <LoadingState /> : null}
           {announcements.error ? <ErrorState message={announcements.error} /> : null}
-          {!announcements.loading && !announcements.error && announcements.data?.length === 0 ? <EmptyState /> : null}
+          {!announcements.loading && !announcements.error && announcements.data?.length === 0 ? (
+            <EmptyState />
+          ) : null}
           {announcements.data?.slice(0, 3).map((announcement) => (
             <AnnouncementCard key={announcement.id} announcement={announcement} />
           ))}
