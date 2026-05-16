@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowRight, CalendarDays, Filter, Rocket } from "lucide-react";
+import { ArrowRight, Filter, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CompetitionCard } from "../../components/public/CompetitionCard";
 import { EmptyState } from "../../components/shared/EmptyState";
@@ -8,6 +8,7 @@ import { LoadingState } from "../../components/shared/LoadingState";
 import { getCompetitions } from "../../services/competitions";
 import type { Competition } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
+import { Calendar } from "lucide-react";
 
 const filters = ["Semua", "SD", "SMP", "SMA", "Mahasiswa", "Individu", "Tim", "Pendaftaran Dibuka"];
 
@@ -22,52 +23,95 @@ export function CompetitionsPage() {
 
   return (
     <>
-      <section className="container-page pt-28 md:pt-32">
-        <div className="hero-glass relative grid min-h-[360px] overflow-hidden rounded-[2.35rem] md:grid-cols-[1fr_0.95fr]">
-          <div className="relative z-10 flex flex-col justify-center p-7 md:p-10 lg:p-12">
-            <p className="mb-5 inline-flex w-fit rounded-full border border-[#faadb6]/45 bg-[#faadb6]/22 px-4 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-[#770525]">
-              Cabang Lomba GAMES 2026
-            </p>
-            <h1 className="games-display max-w-xl text-4xl font-black leading-[1.02] text-[#004551] md:text-5xl lg:text-6xl">
-              Pilih Cabang Lomba <span className="text-[#770525]">Terbaikmu</span>
-            </h1>
-            <p className="mt-5 max-w-md text-sm font-semibold leading-7 text-[#004551]/78 md:text-base">
-              Temukan kompetisi yang sesuai dengan jenjang dan kemampuanmu. Tunjukkan prestasimu dan raih pengalaman terbaik!
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Link to="/daftar" className="btn-glossy-maroon inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-black text-white">
-                Daftar Sekarang <Rocket size={16} />
-              </Link>
-              <Link to="/timeline" className="btn-glass-outline inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-black text-[#004551]">
-                Lihat Timeline <CalendarDays size={16} />
-              </Link>
+      {/* ===== Hero Lomba ===== */}
+      <section className="container-hero relative pt-28 pb-3 md:pt-32 md:pb-8">        <div className="inner-page-hero inner-competition-hero relative overflow-hidden rounded-[2rem] border border-white/90 px-6 py-8 shadow-[0_24px_60px_rgba(6,68,82,0.14),inset_0_1px_0_rgba(255,255,255,0.95)] md:grid md:min-h-[360px] md:grid-cols-[0.9fr_1.1fr] md:items-center md:rounded-[2.35rem] md:px-12 md:py-12 lg:px-14">
+        {/* Mobile/Desktop visual background */}
+        <div className="competition-hero-visual pointer-events-none absolute inset-0">
+          <div className="competition-hero-orb">
+            <svg viewBox="0 0 120 120" className="h-full w-full">
+              <circle cx="60" cy="60" r="43" fill="none" stroke="rgba(216,238,235,0.45)" strokeWidth="1.2" strokeDasharray="5 5" />
+              <ellipse cx="60" cy="60" rx="50" ry="16" fill="none" stroke="rgba(216,238,235,0.48)" strokeWidth="1.4" />
+              <ellipse cx="60" cy="60" rx="16" ry="50" fill="none" stroke="rgba(216,238,235,0.48)" strokeWidth="1.4" />
+              <line x1="60" y1="10" x2="60" y2="110" stroke="rgba(216,238,235,0.38)" strokeWidth="1.1" />
+              <line x1="10" y1="60" x2="110" y2="60" stroke="rgba(216,238,235,0.38)" strokeWidth="1.1" />
+            </svg>
+
+            <div className="absolute inset-0 grid place-items-center">
+              <div className="text-center text-white">
+                <div className="text-[3.2rem] font-black leading-none drop-shadow-[0_0_18px_rgba(216,238,235,0.6)] md:text-[4.5rem]">
+                  Σ
+                </div>
+                <div className="-mt-1 text-lg font-black md:text-2xl">k²</div>
+              </div>
             </div>
           </div>
-          <CompetitionHeroVisual />
+
+          <div className="competition-hero-cube" />
+          <div className="competition-hero-pyramid" />
+
+          <div className="competition-chip competition-chip-top">a² + b² = c²</div>
+          <div className="competition-chip competition-chip-mid">f(x) = sin x</div>
         </div>
+
+        {/* Content */}
+        <div className="relative z-10 max-w-[16.8rem] md:max-w-lg">
+          <span className="inline-flex max-w-full rounded-full border border-[#faadb6]/55 bg-[#fff3f6]/88 px-4 py-2 text-[0.62rem] font-black uppercase tracking-[0.12em] text-[#7E032F] shadow-[0_8px_20px_rgba(126,3,47,0.08)] backdrop-blur-md md:text-xs">
+            Cabang Lomba GAMES 2026
+          </span>
+
+          <h1 className="games-display mt-5 text-[2.18rem] font-black leading-[0.96] tracking-[-0.055em] text-[#064452] min-[390px]:text-[2.42rem] md:text-[4.25rem] lg:text-[4.8rem]">
+            Pilih Cabang
+            <br />
+            Lomba
+            <br />
+            <span className="text-[#7E032F]">Terbaikmu</span>
+          </h1>
+
+          <p className="mt-5 max-w-[15rem] text-[0.84rem] font-semibold leading-6 text-[#064452]/78 min-[390px]:max-w-[16.5rem] min-[390px]:text-[0.9rem] md:max-w-md md:text-base md:leading-7">
+            Temukan kompetisi yang sesuai dengan jenjang dan kemampuanmu.
+            <span className="hidden md:inline"> Tunjukkan prestasimu dan raih pengalaman terbaik!</span>
+          </p>
+
+          <div className="mt-6 flex w-full max-w-[260px] flex-col items-start gap-3 md:mt-8 md:max-w-none md:flex-row">
+            <Link
+              to="/daftar"
+              className="primary-glossy inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-5 text-sm font-black text-white md:h-12 md:w-auto md:px-8"
+            >
+              Daftar Sekarang
+              <Rocket size={15} className="text-[#ffd5df]" />
+            </Link>
+
+            <Link
+              to="/timeline"
+              className="btn-glass-outline inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-5 text-sm font-black text-[#064452] md:h-12 md:w-auto md:px-8"
+            >
+              Lihat Timeline
+              <Calendar size={15} />
+            </Link>
+          </div>
+        </div>
+      </div>
       </section>
 
-      <section className="container-page py-10 md:py-12">
-        <div className="hide-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pb-2">
-          {filters.map((filter) => (
-            <button
-              key={filter}
-              type="button"
-              onClick={() => setActiveFilter(filter)}
-              className={`shrink-0 rounded-full px-5 py-3 text-sm font-black transition ${
-                activeFilter === filter
-                  ? "btn-glossy-maroon text-white"
-                  : "border border-white/70 bg-white/55 text-[#004551] shadow-[0_12px_30px_rgba(0,69,81,0.08)] backdrop-blur-2xl hover:bg-white/75"
+      <section className="container-hero pt-2 pb-10 md:pt-8 md:pb-12">       <div className="hide-scrollbar -mx-1 flex gap-3 overflow-x-auto px-1 pb-3">
+        {filters.map((filter) => (
+          <button
+            key={filter}
+            type="button"
+            onClick={() => setActiveFilter(filter)}
+            className={`shrink-0 rounded-full px-5 py-3 text-sm font-black transition ${activeFilter === filter
+              ? "btn-glossy-maroon text-white"
+              : "border border-white/70 bg-white/55 text-[#004551] shadow-[0_12px_30px_rgba(0,69,81,0.08)] backdrop-blur-2xl hover:bg-white/75"
               }`}
-            >
-              {filter === "Pendaftaran Dibuka" ? (
-                <span className="inline-flex items-center gap-2">
-                  <Filter size={14} /> {filter}
-                </span>
-              ) : filter}
-            </button>
-          ))}
-        </div>
+          >
+            {filter === "Pendaftaran Dibuka" ? (
+              <span className="inline-flex items-center gap-2">
+                <Filter size={14} /> {filter}
+              </span>
+            ) : filter}
+          </button>
+        ))}
+      </div>
 
         <div className="mb-8">
           {loading ? <LoadingState /> : null}
@@ -84,29 +128,68 @@ export function CompetitionsPage() {
         </div>
       </section>
 
-      <section className="container-page pb-20">
-        <div className="cta-glass relative overflow-hidden rounded-[2rem] p-6 md:grid md:grid-cols-[1fr_auto] md:items-center md:gap-8 md:p-8">
-          <div className="pointer-events-none absolute left-6 top-1/2 hidden -translate-y-1/2 opacity-25 md:block">
-            <svg width="180" height="120" viewBox="0 0 180 120">
-              <polygon points="90,10 150,42 150,98 90,116 30,98 30,42" fill="none" stroke="#004551" strokeWidth="1.5" />
-              <line x1="30" y1="42" x2="90" y2="72" stroke="#004551" strokeWidth="1.5" />
-              <line x1="150" y1="42" x2="90" y2="72" stroke="#004551" strokeWidth="1.5" />
-              <line x1="90" y1="116" x2="90" y2="72" stroke="#004551" strokeWidth="1.5" />
+      {/* ===== Bottom CTA ===== */}
+      <section className="container-hero relative mt-8 pb-12 md:mt-10 md:pb-14">
+        <div className="relative overflow-hidden rounded-[1.65rem] border border-white/85 bg-[linear-gradient(90deg,rgba(194,225,223,0.54)_0%,rgba(248,240,231,0.78)_35%,rgba(255,255,255,0.9)_100%)] px-6 py-6 shadow-[0_18px_44px_rgba(6,68,82,0.12),inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-[24px] md:px-8 md:py-7">
+          {/* left geometry */}
+          <div className="pointer-events-none absolute left-0 top-0 hidden h-full w-[260px] opacity-35 md:block">
+            <svg
+              className="absolute left-8 top-1/2 -translate-y-1/2"
+              width="150"
+              height="120"
+              viewBox="0 0 150 120"
+              fill="none"
+            >
+              <polygon
+                points="75,10 130,38 75,66 20,38"
+                stroke="#064452"
+                strokeWidth="1.4"
+                opacity="0.55"
+              />
+              <polygon
+                points="20,38 75,66 75,112 20,84"
+                stroke="#064452"
+                strokeWidth="1.4"
+                opacity="0.42"
+              />
+              <polygon
+                points="130,38 75,66 75,112 130,84"
+                stroke="#064452"
+                strokeWidth="1.4"
+                opacity="0.42"
+              />
             </svg>
+
+            <div className="absolute inset-y-0 left-0 w-full bg-[radial-gradient(circle_at_0%_50%,rgba(6,68,82,0.32),transparent_62%)]" />
           </div>
-          <div className="relative md:pl-56">
-            <h2 className="text-2xl font-black text-[#004551]">Belum yakin memilih lomba?</h2>
-            <p className="mt-2 max-w-xl text-sm font-semibold leading-7 text-[#004551]/70">
-              Baca panduan lomba atau hubungi panitia untuk memastikan kategori yang sesuai dengan kemampuanmu.
-            </p>
-          </div>
-          <div className="relative mt-6 flex flex-wrap gap-3 md:mt-0">
-            <Link to="/faq" className="btn-glass-outline inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-black text-[#004551]">
-              Lihat Panduan <ArrowRight size={15} />
-            </Link>
-            <Link to="/kontak" className="btn-glossy-maroon inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-black text-white">
-              Hubungi Panitia
-            </Link>
+
+          <div className="relative z-10 grid gap-5 md:grid-cols-[1fr_auto] md:items-center">
+            <div className="md:pl-[190px]">
+              <h2 className="games-display text-[1.45rem] font-black leading-tight tracking-[-0.03em] text-[#7E032F] md:text-2xl">
+                Belum yakin memilih lomba?
+              </h2>
+
+              <p className="mt-2 max-w-xl text-sm font-semibold leading-6 text-[#064452]/72">
+                Baca panduan lomba atau hubungi panitia untuk memastikan kategori yang sesuai dengan kemampuanmu.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row md:justify-end">
+              <Link
+                to="/lomba"
+                className="btn-glass-outline inline-flex h-11 items-center justify-center gap-2 rounded-full px-6 text-sm font-black text-[#064452]"
+              >
+                Lihat Panduan
+                <ArrowRight size={15} />
+              </Link>
+
+              <Link
+                to="/kontak"
+                className="btn-glossy-maroon inline-flex h-11 items-center justify-center gap-2 rounded-full px-6 text-sm font-black text-white"
+              >
+                Hubungi Panitia
+              </Link>
+            </div>
           </div>
         </div>
       </section>

@@ -1546,17 +1546,13 @@ textarea {
   pointer-events: none;
   border-radius: inherit;
   background:
-    linear-gradient(
-      115deg,
+    linear-gradient(115deg,
       rgba(255, 255, 255, 0.24) 0%,
       rgba(255, 255, 255, 0.08) 26%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 50% 10%,
+      transparent 50%),
+    radial-gradient(circle at 50% 10%,
       rgba(255, 255, 255, 0.28),
-      transparent 32%
-    );
+      transparent 32%);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.8),
     inset 0 -1px 0 rgba(194, 225, 223, 0.28);
@@ -1570,12 +1566,10 @@ textarea {
   bottom: 1px;
   height: 1px;
   pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(214, 255, 249, 0.85),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(214, 255, 249, 0.85),
+      transparent);
   box-shadow:
     0 0 12px rgba(194, 225, 223, 0.44),
     0 0 28px rgba(120, 240, 225, 0.18);
@@ -1592,13 +1586,11 @@ textarea {
     background:
       radial-gradient(circle at 88% 92%, rgba(6, 66, 82, 0.42), transparent 38%),
       radial-gradient(circle at 8% 12%, rgba(194, 225, 223, 0.42), transparent 34%),
-      linear-gradient(
-        145deg,
+      linear-gradient(145deg,
         rgba(255, 255, 255, 0.9) 0%,
         rgba(248, 240, 231, 0.82) 44%,
         rgba(194, 225, 223, 0.48) 74%,
-        rgba(6, 66, 82, 0.62) 100%
-      );
+        rgba(6, 66, 82, 0.62) 100%);
   }
 }
 
@@ -1610,70 +1602,52 @@ textarea {
 
 body {
   background:
-    radial-gradient(
-      ellipse at 96% 3%,
+    radial-gradient(ellipse at 96% 3%,
       rgba(6, 68, 82, 0.92) 0%,
       rgba(6, 68, 82, 0.74) 16%,
       rgba(95, 166, 165, 0.34) 34%,
-      transparent 55%
-    ),
-    radial-gradient(
-      ellipse at 0% 86%,
+      transparent 55%),
+    radial-gradient(ellipse at 0% 86%,
       rgba(6, 68, 82, 0.88) 0%,
       rgba(6, 68, 82, 0.68) 18%,
       rgba(95, 166, 165, 0.3) 38%,
-      transparent 62%
-    ),
-    radial-gradient(
-      ellipse at 58% 42%,
+      transparent 62%),
+    radial-gradient(ellipse at 58% 42%,
       rgba(194, 225, 223, 0.28) 0%,
       rgba(194, 225, 223, 0.16) 28%,
-      transparent 58%
-    ),
-    linear-gradient(
-      135deg,
+      transparent 58%),
+    linear-gradient(135deg,
       #f8f0e7 0%,
       #f4efe8 24%,
       #e9f2ef 46%,
       #d7e9e6 64%,
-      #b4d4d1 100%
-    );
+      #b4d4d1 100%);
   background-attachment: fixed;
 }
 
 /* Softer global light/glass haze */
 body::before {
   background:
-    linear-gradient(
-      115deg,
+    linear-gradient(115deg,
       rgba(255, 255, 255, 0.42) 0%,
       rgba(255, 255, 255, 0.18) 30%,
-      transparent 52%
-    ),
-    radial-gradient(
-      circle at 20% 10%,
+      transparent 52%),
+    radial-gradient(circle at 20% 10%,
       rgba(255, 255, 255, 0.36),
-      transparent 24%
-    ),
-    radial-gradient(
-      circle at 92% 18%,
+      transparent 24%),
+    radial-gradient(circle at 92% 18%,
       rgba(6, 68, 82, 0.18),
-      transparent 32%
-    ),
-    radial-gradient(
-      circle at 10% 92%,
+      transparent 32%),
+    radial-gradient(circle at 10% 92%,
       rgba(6, 68, 82, 0.22),
-      transparent 36%
-    );
+      transparent 36%);
 }
 
 /* Make dot texture subtler */
 body::after {
   opacity: 0.14;
-  background-image: radial-gradient(
-    rgba(255, 255, 255, 0.5) 1px,
-    transparent 1px
-  );
+  background-image: radial-gradient(rgba(255, 255, 255, 0.5) 1px,
+      transparent 1px);
   background-size: 24px 24px;
 }
 
@@ -1683,25 +1657,19 @@ body::after {
 
 .hero-glass {
   background:
-    radial-gradient(
-      circle at 78% 36%,
+    radial-gradient(circle at 78% 36%,
       rgba(194, 225, 223, 0.46),
-      transparent 28%
-    ),
-    radial-gradient(
-      circle at 96% 42%,
+      transparent 28%),
+    radial-gradient(circle at 96% 42%,
       rgba(6, 68, 82, 0.82),
       rgba(6, 68, 82, 0.52) 32%,
-      transparent 58%
-    ),
-    linear-gradient(
-      105deg,
+      transparent 58%),
+    linear-gradient(105deg,
       rgba(255, 255, 255, 0.92) 0%,
       rgba(248, 240, 231, 0.88) 32%,
       rgba(194, 225, 223, 0.42) 55%,
       rgba(95, 166, 165, 0.42) 70%,
-      rgba(6, 68, 82, 0.9) 100%
-    );
+      rgba(6, 68, 82, 0.9) 100%);
 }
 
 /* =========================================
@@ -1710,21 +1678,1439 @@ body::after {
 
 .glass-card-premium {
   background:
-    radial-gradient(
-      circle at 15% 0%,
+    radial-gradient(circle at 15% 0%,
       rgba(255, 255, 255, 0.78),
-      transparent 36%
-    ),
-    linear-gradient(
-      135deg,
+      transparent 36%),
+    linear-gradient(135deg,
       rgba(255, 255, 255, 0.66) 0%,
       rgba(248, 240, 231, 0.34) 42%,
       rgba(194, 225, 223, 0.24) 72%,
-      rgba(6, 68, 82, 0.08) 100%
-    );
+      rgba(6, 68, 82, 0.08) 100%);
 }
 
 .glass-panel,
 .glass-panel-premium {
   border-color: rgba(255, 255, 255, 0.78);
+}
+
+/* =========================================
+   READABILITY FIX
+   Make glass UI easier to read
+========================================= */
+
+/* 1. Body: kurangi hijau merata, buat cream lebih dominan */
+body {
+  background:
+    radial-gradient(ellipse at 96% 4%,
+      rgba(6, 68, 82, 0.86) 0%,
+      rgba(6, 68, 82, 0.62) 16%,
+      rgba(95, 166, 165, 0.26) 34%,
+      transparent 54%),
+    radial-gradient(ellipse at 0% 88%,
+      rgba(6, 68, 82, 0.76) 0%,
+      rgba(6, 68, 82, 0.5) 18%,
+      rgba(95, 166, 165, 0.22) 38%,
+      transparent 62%),
+    linear-gradient(135deg,
+      #f8f0e7 0%,
+      #f6efe7 24%,
+      #eef3ef 46%,
+      #dbecea 68%,
+      #b8d8d5 100%);
+  background-attachment: fixed;
+}
+
+/* 2. Kurangi dot/noise supaya teks lebih bersih */
+body::after {
+  opacity: 0.08;
+}
+
+/* 3. Card glass dibuat lebih solid supaya teks terbaca */
+.glass-card-premium {
+  background:
+    radial-gradient(circle at 14% 0%,
+      rgba(255, 255, 255, 0.9),
+      transparent 34%),
+    linear-gradient(135deg,
+      rgba(255, 255, 255, 0.76) 0%,
+      rgba(248, 240, 231, 0.56) 42%,
+      rgba(216, 238, 235, 0.46) 72%,
+      rgba(194, 225, 223, 0.34) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.92) !important;
+  box-shadow:
+    0 18px 42px rgba(6, 68, 82, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.98),
+    inset 0 -1px 0 rgba(194, 225, 223, 0.26) !important;
+}
+
+/* 4. Text di card jangan terlalu transparan */
+.glass-card-premium h3,
+.glass-card-premium h4 {
+  color: #043945 !important;
+}
+
+.glass-card-premium p {
+  color: rgba(4, 57, 69, 0.82) !important;
+  font-weight: 600;
+}
+
+/* 5. Link card lebih jelas */
+.glass-card-premium a,
+.glass-card-premium span {
+  text-shadow: none;
+}
+
+/* 6. Section heading lebih gelap dan jelas */
+section h2 {
+  color: #043945 !important;
+}
+
+/* 7. Badge kecil jangan terlalu pucat */
+.glass-card-premium [class*="text-[#064252]/70"],
+.glass-card-premium [class*="text-[#064252]/68"],
+.glass-card-premium [class*="text-[#064252]/62"],
+.glass-card-premium [class*="text-[#064252]/58"] {
+  color: rgba(4, 57, 69, 0.82) !important;
+}
+
+/* 8. Stats strip lebih readable */
+.stats-strip-soft-glow,
+.stats-strip-soft-glow+*,
+section .stats-strip-soft-glow {
+  color: #043945;
+}
+
+/* 9. Timeline panel lebih solid */
+.timeline-readable-panel,
+.timeline-readable-panel article,
+.timeline-readable-panel>div {
+  background-color: rgba(255, 255, 255, 0.34);
+}
+
+/* 10. Untuk card timeline dan pengumuman */
+article {
+  text-rendering: geometricPrecision;
+}
+
+/* 11. Tombol outline lebih putih agar terlihat */
+.btn-glass-outline {
+  background: rgba(255, 255, 255, 0.66) !important;
+  border-color: rgba(255, 255, 255, 0.88) !important;
+  color: #043945 !important;
+  box-shadow:
+    0 10px 24px rgba(6, 68, 82, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+}
+
+/* 12. Mobile: tambah kontras karena layar kecil lebih sulit dibaca */
+@media (max-width: 767px) {
+  .glass-card-premium {
+    background:
+      linear-gradient(145deg,
+        rgba(255, 255, 255, 0.84) 0%,
+        rgba(248, 240, 231, 0.62) 46%,
+        rgba(216, 238, 235, 0.48) 100%) !important;
+  }
+
+  .glass-card-premium p {
+    color: rgba(4, 57, 69, 0.86) !important;
+  }
+
+  section h2 {
+    color: #043945 !important;
+  }
+}
+
+/* =========================================================
+   FINAL COLOR BALANCE — GAMES PUBLIC WEBSITE
+   Goal:
+   - Body lebih cream
+   - Card lebih putih
+   - Text lebih pekat
+   - Hijau tua #064452 hanya sebagai aksen area tertentu
+========================================================= */
+
+:root {
+  --games-cream: #f8f0e7;
+  --games-cream-soft: #fbf7f1;
+  --games-teal-dark: #064452;
+  --games-teal-text: #043945;
+  --games-mint: #c2e1df;
+  --games-maroon: #7e032f;
+  --games-pink: #faadb6;
+}
+
+/* =========================
+   1. GLOBAL BACKGROUND
+   Cream dominant, teal only corner glow
+========================= */
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  color: var(--games-teal-text);
+  background:
+    radial-gradient(ellipse at 98% 2%,
+      rgba(6, 68, 82, 0.9) 0%,
+      rgba(6, 68, 82, 0.64) 15%,
+      rgba(95, 166, 165, 0.22) 32%,
+      transparent 54%),
+    radial-gradient(ellipse at 0% 86%,
+      rgba(6, 68, 82, 0.82) 0%,
+      rgba(6, 68, 82, 0.5) 18%,
+      rgba(95, 166, 165, 0.2) 36%,
+      transparent 62%),
+    radial-gradient(ellipse at 52% 36%,
+      rgba(194, 225, 223, 0.16) 0%,
+      transparent 46%),
+    linear-gradient(135deg,
+      #f8f0e7 0%,
+      #fbf7f1 26%,
+      #f2f3ed 48%,
+      #e6f0ed 68%,
+      #d5e9e5 100%) !important;
+  background-attachment: fixed;
+}
+
+/* Kurangi noise/dot agar teks lebih bersih */
+body::after {
+  opacity: 0.07 !important;
+}
+
+/* Kurangi haze hijau global */
+body::before {
+  opacity: 0.78 !important;
+  background:
+    linear-gradient(115deg,
+      rgba(255, 255, 255, 0.5) 0%,
+      rgba(255, 255, 255, 0.22) 30%,
+      transparent 54%),
+    radial-gradient(circle at 94% 12%,
+      rgba(6, 68, 82, 0.18),
+      transparent 32%),
+    radial-gradient(circle at 6% 88%,
+      rgba(6, 68, 82, 0.2),
+      transparent 38%) !important;
+}
+
+/* =========================
+   2. TEXT READABILITY
+========================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--games-teal-text);
+}
+
+section h2,
+.games-display {
+  color: var(--games-teal-text);
+}
+
+p {
+  color: rgba(4, 57, 69, 0.78);
+}
+
+/* Paksa text yang terlalu transparan jadi lebih readable */
+[class*="text-[#064252]/"],
+[class*="text-[#004551]/"],
+[class*="text-[#0b5a63]/"] {
+  color: rgba(4, 57, 69, 0.8) !important;
+}
+
+/* Judul tetap pekat */
+h1[class*="text-[#064252]"],
+h2[class*="text-[#064252]"],
+h3[class*="text-[#064252]"],
+.games-display[class*="text-[#064252]"] {
+  color: var(--games-teal-text) !important;
+}
+
+/* Maroon tetap kuat */
+.text-\[\#770525\],
+.text-\[\#7E032F\],
+.text-\[\#7e032f\] {
+  color: var(--games-maroon) !important;
+}
+
+/* =========================
+   3. NAVBAR
+   Tetap glass, tapi lebih clean
+========================= */
+
+.glass-pill-nav {
+  background:
+    linear-gradient(90deg,
+      rgba(255, 255, 255, 0.82) 0%,
+      rgba(248, 240, 231, 0.68) 34%,
+      rgba(216, 238, 235, 0.46) 72%,
+      rgba(6, 68, 82, 0.28) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.88) !important;
+  box-shadow:
+    0 18px 42px rgba(6, 68, 82, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(194, 225, 223, 0.28) !important;
+}
+
+/* =========================
+   4. HERO
+   Hijau tua hanya kuat di kanan hero
+========================= */
+
+.hero-glass {
+  background:
+    radial-gradient(circle at 78% 38%,
+      rgba(194, 225, 223, 0.42),
+      transparent 26%),
+    radial-gradient(circle at 100% 42%,
+      rgba(6, 68, 82, 0.92) 0%,
+      rgba(6, 68, 82, 0.66) 32%,
+      transparent 60%),
+    linear-gradient(105deg,
+      rgba(255, 255, 255, 0.94) 0%,
+      rgba(248, 240, 231, 0.9) 34%,
+      rgba(216, 238, 235, 0.48) 56%,
+      rgba(95, 166, 165, 0.42) 72%,
+      rgba(6, 68, 82, 0.86) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.hero-visual-panel {
+  background:
+    radial-gradient(circle at 74% 44%,
+      rgba(6, 68, 82, 0.26),
+      transparent 42%) !important;
+}
+
+/* Hero mobile tetap ada teal, tapi tidak banjir seluruh card */
+.hero-mobile-card {
+  background:
+    radial-gradient(circle at 92% 58%,
+      rgba(6, 68, 82, 0.58),
+      rgba(6, 68, 82, 0.32) 25%,
+      transparent 48%),
+    radial-gradient(circle at 82% 38%,
+      rgba(194, 225, 223, 0.52),
+      transparent 38%),
+    linear-gradient(145deg,
+      rgba(255, 255, 255, 0.94) 0%,
+      rgba(248, 240, 231, 0.9) 42%,
+      rgba(216, 238, 235, 0.56) 70%,
+      rgba(6, 68, 82, 0.52) 100%) !important;
+}
+
+/* =========================
+   5. GLASS CARDS
+   Card lebih putih agar text kebaca
+========================= */
+
+.glass-card-premium,
+.glass-panel,
+.glass-panel-premium {
+  background:
+    radial-gradient(circle at 14% 0%,
+      rgba(255, 255, 255, 0.86),
+      transparent 34%),
+    linear-gradient(135deg,
+      rgba(255, 255, 255, 0.76) 0%,
+      rgba(248, 240, 231, 0.58) 42%,
+      rgba(216, 238, 235, 0.44) 74%,
+      rgba(194, 225, 223, 0.28) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.9) !important;
+  box-shadow:
+    0 18px 42px rgba(6, 68, 82, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.98),
+    inset 0 -1px 0 rgba(194, 225, 223, 0.24) !important;
+}
+
+.glass-card-premium h3,
+.glass-card-premium h4,
+.glass-panel h3,
+.glass-panel-premium h3 {
+  color: var(--games-teal-text) !important;
+}
+
+.glass-card-premium p,
+.glass-panel p,
+.glass-panel-premium p {
+  color: rgba(4, 57, 69, 0.78) !important;
+  font-weight: 600;
+}
+
+/* =========================
+   6. STATS STRIP
+   Dibuat lebih putih, tidak terlalu teal
+========================= */
+
+.stats-strip-soft-glow,
+section .stats-strip-soft-glow {
+  background:
+    linear-gradient(90deg,
+      rgba(255, 255, 255, 0.72) 0%,
+      rgba(248, 240, 231, 0.52) 42%,
+      rgba(216, 238, 235, 0.36) 72%,
+      rgba(6, 68, 82, 0.14) 100%) !important;
+}
+
+/* untuk strip stats yang pakai inline Tailwind bg arbitrary */
+.container-hero>div[class*="bg-[linear-gradient"] {
+  border-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* =========================
+   7. TIMELINE
+   Area timeline boleh sedikit teal, tapi card text tetap jelas
+========================= */
+
+section:has(.timeline-home-panel),
+.timeline-home-panel {
+  background: transparent;
+}
+
+.timeline-home-panel {
+  background:
+    radial-gradient(circle at 95% 20%,
+      rgba(6, 68, 82, 0.24),
+      transparent 44%),
+    linear-gradient(135deg,
+      rgba(255, 255, 255, 0.34) 0%,
+      rgba(216, 238, 235, 0.2) 52%,
+      rgba(6, 68, 82, 0.12) 100%) !important;
+}
+
+.timeline-home-panel h3,
+.timeline-home-panel p,
+.timeline-home-panel span {
+  color: var(--games-teal-text) !important;
+}
+
+/* Kalau belum pakai class timeline-home-panel, fallback untuk timeline wrapper */
+section [class*="rounded-[1.8rem]"][class*="backdrop-blur"] {
+  color: var(--games-teal-text);
+}
+
+/* =========================
+   8. PENGUMUMAN
+   Hijau tua hanya di card pertama / panel tertentu
+========================= */
+
+.glass-panel-dark {
+  background:
+    linear-gradient(135deg,
+      rgba(6, 68, 82, 0.78) 0%,
+      rgba(6, 68, 82, 0.56) 48%,
+      rgba(194, 225, 223, 0.22) 100%) !important;
+  border-color: rgba(194, 225, 223, 0.44) !important;
+}
+
+/* Announcement card baru: bikin text lebih kontras */
+article p {
+  color: rgba(4, 57, 69, 0.78);
+}
+
+/* =========================
+   9. CTA
+   Hijau tua hanya di sisi kiri CTA
+========================= */
+
+.cta-glass,
+.cta-final-card {
+  background:
+    radial-gradient(ellipse at 0% 50%,
+      rgba(6, 68, 82, 0.74) 0%,
+      rgba(6, 68, 82, 0.46) 22%,
+      rgba(95, 166, 165, 0.22) 38%,
+      transparent 58%),
+    linear-gradient(90deg,
+      rgba(6, 68, 82, 0.44) 0%,
+      rgba(216, 238, 235, 0.4) 30%,
+      rgba(248, 240, 231, 0.86) 62%,
+      rgba(255, 255, 255, 0.9) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.cta-glass h2,
+.cta-final-card h2 {
+  color: var(--games-maroon) !important;
+}
+
+.cta-glass p,
+.cta-final-card p {
+  color: rgba(4, 57, 69, 0.76) !important;
+}
+
+/* =========================
+   10. BUTTONS
+========================= */
+
+.btn-glass-outline {
+  background: rgba(255, 255, 255, 0.72) !important;
+  border-color: rgba(255, 255, 255, 0.9) !important;
+  color: var(--games-teal-text) !important;
+  box-shadow:
+    0 10px 24px rgba(6, 68, 82, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+.primary-glossy,
+.btn-glossy-maroon {
+  background:
+    linear-gradient(135deg,
+      #7e032f 0%,
+      #a60b3a 52%,
+      #7e032f 100%) !important;
+}
+
+/* =========================
+   11. FOOTER
+   Footer boleh full hijau tua
+========================= */
+
+footer {
+  background: #064452 !important;
+  color: white !important;
+}
+
+footer p,
+footer a,
+footer span,
+footer h3,
+footer h4 {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+
+/* =========================
+   12. MOBILE READABILITY
+========================= */
+
+@media (max-width: 767px) {
+  body {
+    background:
+      radial-gradient(ellipse at 100% 0%,
+        rgba(6, 68, 82, 0.72) 0%,
+        rgba(6, 68, 82, 0.42) 18%,
+        transparent 48%),
+      radial-gradient(ellipse at 0% 92%,
+        rgba(6, 68, 82, 0.68) 0%,
+        rgba(6, 68, 82, 0.38) 22%,
+        transparent 58%),
+      linear-gradient(145deg,
+        #f8f0e7 0%,
+        #fbf7f1 34%,
+        #eef4f1 66%,
+        #d9ece8 100%) !important;
+  }
+
+  .glass-card-premium,
+  .glass-panel,
+  .glass-panel-premium {
+    background:
+      linear-gradient(145deg,
+        rgba(255, 255, 255, 0.84) 0%,
+        rgba(248, 240, 231, 0.66) 46%,
+        rgba(216, 238, 235, 0.44) 100%) !important;
+  }
+
+  .glass-card-premium p,
+  .glass-panel p,
+  .glass-panel-premium p {
+    color: rgba(4, 57, 69, 0.84) !important;
+  }
+
+  section h2 {
+    color: var(--games-teal-text) !important;
+  }
+}
+
+/* =========================================
+   PUBLIC PAGE THEMES
+   Home = cinematic glass
+   Inner pages = cream editorial
+========================================= */
+
+.public-theme-home {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 96% 3%,
+      rgba(6, 68, 82, 0.9),
+      rgba(6, 68, 82, 0.54) 22%,
+      transparent 56%),
+    radial-gradient(ellipse at 0% 88%,
+      rgba(6, 68, 82, 0.72),
+      transparent 56%),
+    linear-gradient(135deg,
+      #f8f0e7 0%,
+      #eef4f1 48%,
+      #c2e1df 100%);
+}
+
+.public-theme-inner {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 94% 6%,
+      rgba(6, 68, 82, 0.36),
+      rgba(194, 225, 223, 0.2) 28%,
+      transparent 56%),
+    radial-gradient(ellipse at 0% 92%,
+      rgba(6, 68, 82, 0.2),
+      rgba(194, 225, 223, 0.12) 32%,
+      transparent 62%),
+    linear-gradient(135deg,
+      #f8f0e7 0%,
+      #fbf7f1 34%,
+      #f2efeb 62%,
+      #eef4f1 100%);
+}
+
+.public-theme-inner .glass-card-premium,
+.public-theme-inner .glass-panel,
+.public-theme-inner .glass-panel-premium {
+  background:
+    radial-gradient(circle at 14% 0%,
+      rgba(255, 255, 255, 0.88),
+      transparent 34%),
+    linear-gradient(135deg,
+      rgba(255, 255, 255, 0.82) 0%,
+      rgba(248, 240, 231, 0.68) 48%,
+      rgba(216, 238, 235, 0.36) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.92) !important;
+}
+
+.public-theme-inner h1,
+.public-theme-inner h2,
+.public-theme-inner h3 {
+  color: #064452;
+}
+
+.public-theme-inner p {
+  color: rgba(6, 68, 82, 0.78);
+}
+
+/* Same visual width system for inner page sections */
+.container-hero {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+@media (max-width: 767px) {
+  .container-hero {
+    width: min(100% - 28px, 1180px);
+  }
+}
+
+/* =========================================
+   Inner Competition Hero
+   /lomba mobile + desktop
+========================================= */
+
+.inner-page-hero {
+  background:
+    radial-gradient(circle at 84% 42%,
+      rgba(6, 68, 82, 0.76) 0%,
+      rgba(6, 68, 82, 0.54) 26%,
+      rgba(95, 166, 165, 0.22) 46%,
+      transparent 65%),
+    radial-gradient(circle at 8% 18%,
+      rgba(255, 255, 255, 0.88),
+      transparent 38%),
+    linear-gradient(105deg,
+      rgba(255, 255, 255, 0.94) 0%,
+      rgba(248, 240, 231, 0.9) 35%,
+      rgba(216, 238, 235, 0.5) 58%,
+      rgba(6, 68, 82, 0.72) 100%);
+}
+
+.competition-hero-visual {
+  z-index: 1;
+}
+
+.competition-hero-visual::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.18) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.22;
+  mask-image: linear-gradient(90deg, transparent 0%, black 42%, black 100%);
+}
+
+.competition-hero-orb {
+  position: absolute;
+  right: 9%;
+  top: 50%;
+  width: 330px;
+  height: 330px;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 38% 30%, rgba(255, 255, 255, 0.16), transparent 34%),
+    rgba(6, 68, 82, 0.18);
+  box-shadow:
+    inset 0 0 90px rgba(194, 225, 223, 0.28),
+    0 0 70px rgba(194, 225, 223, 0.26);
+}
+
+.competition-hero-cube {
+  position: absolute;
+  right: 39%;
+  bottom: 22%;
+  width: 58px;
+  height: 58px;
+  opacity: 0.56;
+  background:
+    linear-gradient(45deg, transparent 45%, rgba(216, 238, 235, 0.8) 46%, rgba(216, 238, 235, 0.8) 54%, transparent 55%),
+    linear-gradient(-45deg, transparent 45%, rgba(216, 238, 235, 0.8) 46%, rgba(216, 238, 235, 0.8) 54%, transparent 55%);
+  border: 1.5px solid rgba(216, 238, 235, 0.62);
+  transform: rotate(45deg);
+  box-shadow: 0 0 20px rgba(194, 225, 223, 0.28);
+}
+
+.competition-hero-pyramid {
+  position: absolute;
+  right: 12%;
+  top: 24%;
+  width: 90px;
+  height: 90px;
+  opacity: 0.7;
+  clip-path: polygon(52% 8%, 100% 88%, 12% 76%);
+  background:
+    linear-gradient(135deg, rgba(250, 173, 182, 0.34), rgba(126, 3, 47, 0.54));
+  border: 1px solid rgba(250, 173, 182, 0.55);
+  filter: drop-shadow(0 0 20px rgba(250, 173, 182, 0.25));
+}
+
+.competition-chip {
+  position: absolute;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.86);
+  background: rgba(255, 255, 255, 0.74);
+  padding: 0.48rem 0.85rem;
+  color: #064452;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 900;
+  box-shadow:
+    0 10px 26px rgba(6, 68, 82, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.competition-chip-top {
+  right: 8%;
+  top: 23%;
+}
+
+.competition-chip-mid {
+  right: 37%;
+  top: 44%;
+  color: #7e032f;
+}
+
+/* Mobile version like reference */
+@media (max-width: 767px) {
+  .inner-competition-hero {
+    min-height: 430px;
+    padding: 1.65rem 1.45rem 1.75rem;
+    border-radius: 1.85rem;
+    background:
+      radial-gradient(circle at 82% 73%,
+        rgba(6, 68, 82, 0.76) 0%,
+        rgba(6, 68, 82, 0.5) 25%,
+        rgba(95, 166, 165, 0.22) 46%,
+        transparent 66%),
+      radial-gradient(circle at 10% 12%,
+        rgba(255, 255, 255, 0.94),
+        transparent 44%),
+      linear-gradient(132deg,
+        rgba(255, 255, 255, 0.94) 0%,
+        rgba(248, 240, 231, 0.9) 42%,
+        rgba(216, 238, 235, 0.48) 66%,
+        rgba(6, 68, 82, 0.72) 100%);
+  }
+
+  .competition-hero-visual::before {
+    opacity: 0.16;
+    mask-image: linear-gradient(110deg, transparent 0%, black 50%, black 100%);
+  }
+
+  .competition-hero-orb {
+    right: -78px;
+    top: auto;
+    bottom: -74px;
+    width: 245px;
+    height: 245px;
+    transform: none;
+    opacity: 0.95;
+  }
+
+  .competition-hero-pyramid {
+    right: 8px;
+    top: 94px;
+    width: 84px;
+    height: 84px;
+    opacity: 0.65;
+  }
+
+  .competition-hero-cube {
+    right: 118px;
+    bottom: 40px;
+    width: 46px;
+    height: 46px;
+    opacity: 0.58;
+  }
+
+  .competition-chip-top {
+    display: none;
+  }
+
+  .competition-chip-mid {
+    display: none;
+  }
+}
+
+@media (max-width: 390px) {
+  .inner-competition-hero {
+    min-height: 410px;
+    padding: 1.45rem 1.25rem 1.55rem;
+  }
+
+  .competition-hero-orb {
+    right: -88px;
+    bottom: -82px;
+    width: 235px;
+    height: 235px;
+  }
+
+  .competition-hero-pyramid {
+    right: -2px;
+    top: 96px;
+    width: 76px;
+    height: 76px;
+  }
+}
+
+/* =========================================
+   Inner Competition Hero
+   /lomba mobile + desktop
+========================================= */
+
+.inner-page-hero {
+  background:
+    radial-gradient(circle at 84% 42%,
+      rgba(6, 68, 82, 0.76) 0%,
+      rgba(6, 68, 82, 0.54) 26%,
+      rgba(95, 166, 165, 0.22) 46%,
+      transparent 65%),
+    radial-gradient(circle at 8% 18%,
+      rgba(255, 255, 255, 0.88),
+      transparent 38%),
+    linear-gradient(105deg,
+      rgba(255, 255, 255, 0.94) 0%,
+      rgba(248, 240, 231, 0.9) 35%,
+      rgba(216, 238, 235, 0.5) 58%,
+      rgba(6, 68, 82, 0.72) 100%);
+}
+
+.competition-hero-visual {
+  z-index: 1;
+}
+
+.competition-hero-visual::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.18) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.22;
+  mask-image: linear-gradient(90deg, transparent 0%, black 42%, black 100%);
+}
+
+.competition-hero-orb {
+  position: absolute;
+  right: 9%;
+  top: 50%;
+  width: 330px;
+  height: 330px;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 38% 30%, rgba(255, 255, 255, 0.16), transparent 34%),
+    rgba(6, 68, 82, 0.18);
+  box-shadow:
+    inset 0 0 90px rgba(194, 225, 223, 0.28),
+    0 0 70px rgba(194, 225, 223, 0.26);
+}
+
+.competition-hero-cube {
+  position: absolute;
+  right: 39%;
+  bottom: 22%;
+  width: 58px;
+  height: 58px;
+  opacity: 0.56;
+  background:
+    linear-gradient(45deg, transparent 45%, rgba(216, 238, 235, 0.8) 46%, rgba(216, 238, 235, 0.8) 54%, transparent 55%),
+    linear-gradient(-45deg, transparent 45%, rgba(216, 238, 235, 0.8) 46%, rgba(216, 238, 235, 0.8) 54%, transparent 55%);
+  border: 1.5px solid rgba(216, 238, 235, 0.62);
+  transform: rotate(45deg);
+  box-shadow: 0 0 20px rgba(194, 225, 223, 0.28);
+}
+
+.competition-hero-pyramid {
+  position: absolute;
+  right: 12%;
+  top: 24%;
+  width: 90px;
+  height: 90px;
+  opacity: 0.7;
+  clip-path: polygon(52% 8%, 100% 88%, 12% 76%);
+  background:
+    linear-gradient(135deg, rgba(250, 173, 182, 0.34), rgba(126, 3, 47, 0.54));
+  border: 1px solid rgba(250, 173, 182, 0.55);
+  filter: drop-shadow(0 0 20px rgba(250, 173, 182, 0.25));
+}
+
+.competition-chip {
+  position: absolute;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.86);
+  background: rgba(255, 255, 255, 0.74);
+  padding: 0.48rem 0.85rem;
+  color: #064452;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 900;
+  box-shadow:
+    0 10px 26px rgba(6, 68, 82, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.competition-chip-top {
+  right: 8%;
+  top: 23%;
+}
+
+.competition-chip-mid {
+  right: 37%;
+  top: 44%;
+  color: #7e032f;
+}
+
+/* Mobile version like reference */
+@media (max-width: 767px) {
+  .inner-competition-hero {
+    min-height: 430px;
+    padding: 1.65rem 1.45rem 1.75rem;
+    border-radius: 1.85rem;
+    background:
+      radial-gradient(circle at 82% 73%,
+        rgba(6, 68, 82, 0.76) 0%,
+        rgba(6, 68, 82, 0.5) 25%,
+        rgba(95, 166, 165, 0.22) 46%,
+        transparent 66%),
+      radial-gradient(circle at 10% 12%,
+        rgba(255, 255, 255, 0.94),
+        transparent 44%),
+      linear-gradient(132deg,
+        rgba(255, 255, 255, 0.94) 0%,
+        rgba(248, 240, 231, 0.9) 42%,
+        rgba(216, 238, 235, 0.48) 66%,
+        rgba(6, 68, 82, 0.72) 100%);
+  }
+
+  .competition-hero-visual::before {
+    opacity: 0.16;
+    mask-image: linear-gradient(110deg, transparent 0%, black 50%, black 100%);
+  }
+
+  .competition-hero-orb {
+    right: -78px;
+    top: auto;
+    bottom: -74px;
+    width: 245px;
+    height: 245px;
+    transform: none;
+    opacity: 0.95;
+  }
+
+  .competition-hero-pyramid {
+    right: 8px;
+    top: 94px;
+    width: 84px;
+    height: 84px;
+    opacity: 0.65;
+  }
+
+  .competition-hero-cube {
+    right: 118px;
+    bottom: 40px;
+    width: 46px;
+    height: 46px;
+    opacity: 0.58;
+  }
+
+  .competition-chip-top {
+    display: none;
+  }
+
+  .competition-chip-mid {
+    display: none;
+  }
+}
+
+@media (max-width: 390px) {
+  .inner-competition-hero {
+    min-height: 410px;
+    padding: 1.45rem 1.25rem 1.55rem;
+  }
+
+  .competition-hero-orb {
+    right: -88px;
+    bottom: -82px;
+    width: 235px;
+    height: 235px;
+  }
+
+  .competition-hero-pyramid {
+    right: -2px;
+    top: 96px;
+    width: 76px;
+    height: 76px;
+  }
+}
+
+/* =========================================
+   /lomba hero mobile refinement
+========================================= */
+
+@media (max-width: 767px) {
+  .inner-competition-hero {
+    min-height: 390px;
+    padding: 1.45rem 1.35rem 1.55rem;
+    border-radius: 1.75rem;
+  }
+
+  .inner-competition-hero .competition-hero-visual {
+    z-index: 1;
+  }
+
+  .inner-competition-hero>div:not(.competition-hero-visual) {
+    position: relative;
+    z-index: 5;
+  }
+
+  .competition-hero-orb {
+    right: -54px;
+    bottom: 18px;
+    top: auto;
+    width: 190px;
+    height: 190px;
+    transform: none;
+    opacity: 0.55;
+  }
+
+  .competition-hero-orb .text-\[3\.2rem\] {
+    font-size: 2.35rem !important;
+  }
+
+  .competition-hero-pyramid {
+    right: 12px;
+    top: 132px;
+    width: 64px;
+    height: 64px;
+    opacity: 0.38;
+  }
+
+  .competition-hero-cube {
+    right: 112px;
+    bottom: 42px;
+    width: 38px;
+    height: 38px;
+    opacity: 0.38;
+  }
+
+  .competition-hero-visual::before {
+    opacity: 0.1;
+  }
+}
+
+@media (max-width: 390px) {
+  .inner-competition-hero {
+    min-height: 375px;
+    padding: 1.35rem 1.2rem 1.45rem;
+  }
+
+  .competition-hero-orb {
+    right: -64px;
+    bottom: 18px;
+    width: 180px;
+    height: 180px;
+  }
+
+  .competition-hero-pyramid {
+    right: 4px;
+    top: 128px;
+    width: 58px;
+    height: 58px;
+  }
+}
+
+/* =========================================
+   Mobile overflow safety for competition detail
+========================================= */
+
+@media (max-width: 767px) {
+  .container-hero {
+    overflow-x: hidden;
+  }
+
+  .public-theme-inner {
+    overflow-x: hidden;
+  }
+
+  .public-theme-inner details,
+  .public-theme-inner section,
+  .public-theme-inner article,
+  .public-theme-inner div {
+    min-width: 0;
+  }
+
+  .public-theme-inner p,
+  .public-theme-inner h1,
+  .public-theme-inner h2,
+  .public-theme-inner h3,
+  .public-theme-inner span {
+    overflow-wrap: anywhere;
+  }
+}
+
+/* =========================================
+   TIMELINE HERO CLEAN FINAL
+   Smooth blend, no hard vertical split
+========================================= */
+
+.timeline-page-hero {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(
+      circle at 9% 15%,
+      rgba(255, 255, 255, 0.96) 0%,
+      rgba(248, 240, 231, 0.94) 24%,
+      rgba(248, 240, 231, 0.48) 45%,
+      transparent 66%
+    ),
+    radial-gradient(
+      circle at 86% 70%,
+      rgba(6, 68, 82, 0.68) 0%,
+      rgba(6, 68, 82, 0.42) 24%,
+      rgba(194, 225, 223, 0.2) 50%,
+      transparent 74%
+    ),
+    linear-gradient(
+      116deg,
+      #f8f0e7 0%,
+      #f8f0e7 30%,
+      #edf4f2 53%,
+      #b7d3d2 72%,
+      #739da2 88%,
+      #064452 100%
+    );
+  box-shadow:
+    0 24px 64px rgba(6, 68, 82, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.96);
+}
+
+.timeline-page-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(248, 240, 231, 0.9) 0%,
+      rgba(248, 240, 231, 0.66) 28%,
+      rgba(248, 240, 231, 0.24) 48%,
+      rgba(248, 240, 231, 0.06) 62%,
+      transparent 76%
+    );
+}
+
+.timeline-page-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 76% 55%,
+      rgba(194, 225, 223, 0.22) 0%,
+      rgba(194, 225, 223, 0.1) 28%,
+      transparent 58%
+    );
+}
+
+.timeline-page-hero-soft {
+  box-shadow:
+    0 24px 64px rgba(6, 68, 82, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.94),
+    inset 90px 0 130px rgba(255, 255, 255, 0.08),
+    inset -90px 0 130px rgba(194, 225, 223, 0.06);
+}
+
+/* Visual wrapper */
+.timeline-hero-visual {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Jangan pakai rectangle solid. Ini full overlay dengan fade halus. */
+.timeline-hero-teal {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      transparent 38%,
+      rgba(194, 225, 223, 0.06) 52%,
+      rgba(6, 68, 82, 0.2) 74%,
+      rgba(6, 68, 82, 0.38) 100%
+    ),
+    radial-gradient(
+      circle at 78% 58%,
+      rgba(194, 225, 223, 0.28) 0%,
+      rgba(194, 225, 223, 0.12) 28%,
+      transparent 62%
+    );
+}
+
+/* Grid / garis-garis kanan */
+.timeline-hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.11) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.11) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.35;
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    transparent 32%,
+    rgba(0, 0, 0, 0.18) 48%,
+    rgba(0, 0, 0, 0.82) 68%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    transparent 32%,
+    rgba(0, 0, 0, 0.18) 48%,
+    rgba(0, 0, 0, 0.82) 68%,
+    rgba(0, 0, 0, 1) 100%
+  );
+}
+
+/* Formula */
+.timeline-formula {
+  position: absolute;
+  z-index: 2;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 900;
+  color: rgba(224, 241, 240, 0.66);
+  text-shadow: 0 1px 10px rgba(6, 68, 82, 0.18);
+  white-space: nowrap;
+}
+
+.timeline-formula-sin {
+  right: 2.2rem;
+  top: 2.6rem;
+  font-size: 0.84rem;
+}
+
+.timeline-formula-pythagoras {
+  right: 1.8rem;
+  top: 7.1rem;
+  font-size: 0.72rem;
+}
+
+.timeline-formula-pi {
+  right: 3rem;
+  bottom: 2rem;
+  font-size: 0.72rem;
+}
+
+/* Object calendar/cube/pyramid */
+.timeline-hero-object {
+  position: absolute;
+  z-index: 2;
+  right: -2.3rem;
+  bottom: 1.9rem;
+  width: 13.3rem;
+  aspect-ratio: 1;
+  opacity: 0.64;
+  filter: saturate(0.96);
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 767px) {
+  .timeline-page-hero {
+    min-height: 430px;
+  }
+
+  .timeline-hero-grid {
+    background-size: 26px 26px;
+    opacity: 0.28;
+    mask-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      transparent 34%,
+      rgba(0, 0, 0, 0.14) 50%,
+      rgba(0, 0, 0, 0.84) 70%,
+      rgba(0, 0, 0, 1) 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      transparent 34%,
+      rgba(0, 0, 0, 0.14) 50%,
+      rgba(0, 0, 0, 0.84) 70%,
+      rgba(0, 0, 0, 1) 100%
+    );
+  }
+
+  .timeline-hero-object {
+    right: -2.4rem;
+    bottom: 1.75rem;
+    width: 13rem;
+    opacity: 0.58;
+  }
+
+  .timeline-hero-object .animate-float,
+  .timeline-hero-object .animate-float-reverse {
+    opacity: 0.7;
+  }
+
+  .timeline-formula-sin {
+    right: 1.3rem;
+    top: 2.1rem;
+    font-size: 0.7rem;
+  }
+
+  .timeline-formula-pythagoras {
+    right: 1rem;
+    top: 6.8rem;
+    font-size: 0.66rem;
+  }
+
+  .timeline-formula-pi {
+    right: 2rem;
+    bottom: 1.65rem;
+    font-size: 0.66rem;
+  }
+}
+
+@media (max-width: 374px) {
+  .timeline-page-hero {
+    min-height: 415px;
+  }
+
+  .timeline-hero-object {
+    right: -3.5rem;
+    bottom: 1.55rem;
+    width: 12.4rem;
+    opacity: 0.52;
+  }
+
+  .timeline-formula-sin {
+    display: none;
+  }
+}
+
+/* =========================================
+   DESKTOP / TABLET
+========================================= */
+
+@media (min-width: 768px) {
+  .timeline-hero-visual {
+    position: relative;
+    inset: auto;
+    display: flex;
+    min-height: 390px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .timeline-hero-teal {
+    position: absolute;
+    inset: 0;
+  }
+
+  .timeline-hero-grid {
+    opacity: 0.32;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+
+  .timeline-formula-sin {
+    left: 3.5rem;
+    right: auto;
+    top: 3rem;
+    display: block;
+    font-size: 1.2rem;
+  }
+
+  .timeline-formula-pythagoras {
+    right: 3.7rem;
+    top: 6.2rem;
+    font-size: 1.05rem;
+  }
+
+  .timeline-formula-pi {
+    left: 52%;
+    right: auto;
+    bottom: 2.8rem;
+    font-size: 1rem;
+  }
+
+  .timeline-hero-object {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: 21rem;
+    opacity: 0.92;
+  }
 }
