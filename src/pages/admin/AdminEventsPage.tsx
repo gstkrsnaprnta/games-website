@@ -10,6 +10,8 @@ import { formatDate } from "../../utils/date";
 import { useAsyncData } from "../../utils/useAsyncData";
 import { AdminPageState, BooleanBadge } from "./adminPageUtils";
 
+// ─── Types ───────────────────────────────────────────────────────────────────
+
 type EventForm = {
   id?: string;
   year: string;
@@ -31,14 +33,175 @@ const emptyForm: EventForm = {
   is_active: false,
 };
 
+// ─── Event Form Modal ─────────────────────────────────────────────────────────
+
+type EventFormModalProps = {
+  isOpen: boolean;
+  form: EventForm;
+  saving: boolean;
+  formError: string;
+  onChange: (updater: (prev: EventForm) => EventForm) => void;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onClose: () => void;
+};
+
+function EventFormModal({ isOpen, form, saving, formError, onChange, onSubmit, onClose }: EventFormModalProps) {
+  if (!isOpen) return null;
+
+  const isEditing = Boolean(form.id);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ animation: "fadeIn 0.15s ease-out" }}
+    >
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      {/* Modal Panel */}
+      <div
+        className="relative z-10 w-full max-w-2xl rounded-2xl bg-white shadow-2xl ring-1 ring-slate-200"
+        style={{ animation: "scaleUp 0.2s ease-out" }}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+          <div>
+            <h2 className="text-lg font-black text-slate-950">
+              {isEditing ? "Edit Event" : "Tambah Event"}
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              {isEditing ? `Memperbarui data event · ID: ${form.id?.slice(0, 8)}…` : "Isi detail event baru di bawah ini."}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            aria-label="Tutup modal"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Form Body */}
+        <form onSubmit={onSubmit} className="px-6 py-5">
+          <div className="grid gap-4 md:grid-cols-2">
+            <FormInput
+              label="Year"
+              type="number"
+              value={form.year}
+              onChange={(e) => onChange((cur) => ({ ...cur, year: e.target.value }))}
+              required
+            />
+            <FormInput
+              label="Name"
+              value={form.name}
+              onChange={(e) => onChange((cur) => ({ ...cur, name: e.target.value }))}
+              required
+            />
+            <FormInput
+              label="Theme"
+              value={form.theme}
+              onChange={(e) => onChange((cur) => ({ ...cur, theme: e.target.value }))}
+            />
+            <div className="grid gap-4 md:grid-cols-2">
+              <FormInput
+                label="Start date"
+                type="date"
+                value={form.start_date}
+                onChange={(e) => onChange((cur) => ({ ...cur, start_date: e.target.value }))}
+              />
+              <FormInput
+                label="End date"
+                type="date"
+                value={form.end_date}
+                onChange={(e) => onChange((cur) => ({ ...cur, end_date: e.target.value }))}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <FormTextarea
+                label="Description"
+                value={form.description}
+                onChange={(e) => onChange((cur) => ({ ...cur, description: e.target.value }))}
+              />
+            </div>
+            <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={form.is_active}
+                onChange={(e) => onChange((cur) => ({ ...cur, is_active: e.target.checked }))}
+                className="rounded"
+              />
+              Jadikan event aktif
+            </label>
+          </div>
+
+          {formError && (
+            <div className="mt-4">
+              <ErrorState message={formError} />
+            </div>
+          )}
+
+          {/* Footer Actions */}
+          <div className="mt-5 flex justify-end gap-3 border-t border-slate-100 pt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              disabled={saving}
+              className="rounded-lg bg-cyan-600 px-5 py-2 text-sm font-bold text-white transition hover:bg-cyan-700 disabled:bg-slate-400 disabled:cursor-not-allowed"
+            >
+              {saving ? "Menyimpan…" : isEditing ? "Update Event" : "Simpan Event"}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Keyframe styles injected inline */}
+      <style>{`
+        @keyframes fadeIn  { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes scaleUp { from { opacity: 0; transform: scale(0.95) translateY(8px) } to { opacity: 1; transform: scale(1) translateY(0) } }
+      `}</style>
+    </div>
+  );
+}
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
+
 export function AdminEventsPage() {
   const { data, error, loading, reload } = useAsyncData(getAdminEvents, []);
+
   const [form, setForm] = useState<EventForm>(emptyForm);
   const [formError, setFormError] = useState("");
   const [saving, setSaving] = useState(false);
-  const [confirm, setConfirm] = useState<{ title: string; description: string; onConfirm: () => Promise<void> } | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  function editEvent(event: Event) {
+  const [confirm, setConfirm] = useState<{
+    title: string;
+    description: string;
+    onConfirm: () => Promise<void>;
+  } | null>(null);
+
+  // ── Helpers ──────────────────────────────────────────────────────────────
+
+  function openCreateModal() {
+    setForm(emptyForm);
+    setFormError("");
+    setIsModalOpen(true);
+  }
+
+  function openEditModal(event: Event) {
     setForm({
       id: event.id,
       year: String(event.year),
@@ -49,11 +212,22 @@ export function AdminEventsPage() {
       end_date: event.end_date ?? "",
       is_active: event.is_active,
     });
+    setFormError("");
+    setIsModalOpen(true);
   }
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  function closeModal() {
+    setIsModalOpen(false);
+    setForm(emptyForm);
     setFormError("");
+  }
+
+  // ── Submit ───────────────────────────────────────────────────────────────
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setFormError("");
+
     const year = Number(form.year);
     if (!year || !form.name.trim()) {
       setFormError("Year dan name wajib diisi.");
@@ -80,9 +254,11 @@ export function AdminEventsPage() {
       return;
     }
 
-    setForm(emptyForm);
+    closeModal();
     reload();
   }
+
+  // ── Confirm Actions ──────────────────────────────────────────────────────
 
   function requestSetActive(event: Event) {
     setConfirm({
@@ -108,35 +284,30 @@ export function AdminEventsPage() {
     });
   }
 
+  // ── Render ───────────────────────────────────────────────────────────────
+
   return (
     <section>
-      <h1 className="text-2xl font-black text-slate-950">Events</h1>
-      <p className="mt-2 text-sm text-slate-600">Kelola event tahunan dan pilih satu event aktif.</p>
+      {/* Page Header */}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-black text-slate-950">Events</h1>
+          <p className="mt-1 text-sm text-slate-600">Kelola event tahunan dan pilih satu event aktif.</p>
+        </div>
+        <button
+          onClick={openCreateModal}
+          className="flex shrink-0 items-center gap-2 rounded-xl bg-cyan-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-cyan-700 active:scale-95"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+          </svg>
+          Tambah Event
+        </button>
+      </div>
 
-      <form onSubmit={handleSubmit} className="mt-6 grid gap-4 rounded-lg border border-slate-200 bg-white p-4 md:grid-cols-2">
-        <FormInput label="Year" type="number" value={form.year} onChange={(event) => setForm((current) => ({ ...current, year: event.target.value }))} required />
-        <FormInput label="Name" value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} required />
-        <FormInput label="Theme" value={form.theme} onChange={(event) => setForm((current) => ({ ...current, theme: event.target.value }))} />
-        <div className="grid gap-4 md:grid-cols-2">
-          <FormInput label="Start date" type="date" value={form.start_date} onChange={(event) => setForm((current) => ({ ...current, start_date: event.target.value }))} />
-          <FormInput label="End date" type="date" value={form.end_date} onChange={(event) => setForm((current) => ({ ...current, end_date: event.target.value }))} />
-        </div>
-        <div className="md:col-span-2">
-          <FormTextarea label="Description" value={form.description} onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))} />
-        </div>
-        <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-          <input type="checkbox" checked={form.is_active} onChange={(event) => setForm((current) => ({ ...current, is_active: event.target.checked }))} />
-          Jadikan event aktif
-        </label>
-        <div className="flex items-end gap-2">
-          <button disabled={saving} className="rounded-lg bg-cyan-600 px-4 py-2 text-sm font-bold text-white disabled:bg-slate-400">{saving ? "Menyimpan..." : form.id ? "Update Event" : "Tambah Event"}</button>
-          {form.id ? <button type="button" onClick={() => setForm(emptyForm)} className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-bold">Batal</button> : null}
-        </div>
-        {formError ? <div className="md:col-span-2"><ErrorState message={formError} /></div> : null}
-      </form>
-
+      {/* Table */}
       <AdminPageState loading={loading} error={error} isEmpty={!data?.length} emptyDescription="Belum ada event." />
-      <div className="mt-4">
+      <div className="mt-5">
         <DataTable>
           <table className="w-full min-w-[860px] text-left text-sm">
             <thead className="bg-slate-50 text-slate-600">
@@ -154,14 +325,35 @@ export function AdminEventsPage() {
                 <tr key={event.id} className="border-t border-slate-100 align-top">
                   <td className="p-3 font-bold text-cyan-700">{event.year}</td>
                   <td className="p-3 font-semibold text-slate-950">{event.name}</td>
-                  <td className="p-3">{event.theme ?? "-"}</td>
-                  <td className="p-3">{formatDate(event.start_date)} - {formatDate(event.end_date)}</td>
-                  <td className="p-3"><BooleanBadge value={event.is_active} /></td>
+                  <td className="p-3 text-slate-600">{event.theme ?? "-"}</td>
+                  <td className="p-3 text-slate-600">
+                    {formatDate(event.start_date)} – {formatDate(event.end_date)}
+                  </td>
+                  <td className="p-3">
+                    <BooleanBadge value={event.is_active} />
+                  </td>
                   <td className="p-3">
                     <div className="flex flex-wrap gap-2">
-                      <button onClick={() => editEvent(event)} className="rounded-lg border border-slate-300 px-3 py-1 text-xs font-bold">Edit</button>
-                      {!event.is_active ? <button onClick={() => requestSetActive(event)} className="rounded-lg border border-emerald-300 px-3 py-1 text-xs font-bold text-emerald-700">Set Aktif</button> : null}
-                      <button onClick={() => requestDelete(event)} className="rounded-lg border border-rose-300 px-3 py-1 text-xs font-bold text-rose-700">Hapus</button>
+                      <button
+                        onClick={() => openEditModal(event)}
+                        className="rounded-lg border border-slate-300 px-3 py-1 text-xs font-bold text-slate-700 transition hover:bg-slate-50"
+                      >
+                        Edit
+                      </button>
+                      {!event.is_active && (
+                        <button
+                          onClick={() => requestSetActive(event)}
+                          className="rounded-lg border border-emerald-300 px-3 py-1 text-xs font-bold text-emerald-700 transition hover:bg-emerald-50"
+                        >
+                          Set Aktif
+                        </button>
+                      )}
+                      <button
+                        onClick={() => requestDelete(event)}
+                        className="rounded-lg border border-rose-300 px-3 py-1 text-xs font-bold text-rose-700 transition hover:bg-rose-50"
+                      >
+                        Hapus
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -170,6 +362,19 @@ export function AdminEventsPage() {
           </table>
         </DataTable>
       </div>
+
+      {/* Form Modal */}
+      <EventFormModal
+        isOpen={isModalOpen}
+        form={form}
+        saving={saving}
+        formError={formError}
+        onChange={setForm}
+        onSubmit={handleSubmit}
+        onClose={closeModal}
+      />
+
+      {/* Confirm Dialog */}
       <ConfirmDialog
         open={Boolean(confirm)}
         title={confirm?.title ?? ""}

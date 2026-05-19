@@ -6,7 +6,6 @@ import {
   BookOpen,
   CalendarDays,
   Check,
-  ChevronDown,
   CircleDot,
   Code,
   Download,
@@ -33,13 +32,13 @@ import type { Competition } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
 
 const iconMap: Record<string, ReactNode> = {
-  LCT: <Trophy size={30} />,
-  OLIM: <BookOpen size={30} />,
-  FIS: <Atom size={30} />,
-  KIM: <FlaskConical size={30} />,
-  BIO: <Microscope size={30} />,
-  KS: <Code size={30} />,
-  LKTI: <FileText size={30} />,
+  LCT: <Trophy size={34} />,
+  OLIM: <BookOpen size={34} />,
+  FIS: <Atom size={34} />,
+  KIM: <FlaskConical size={34} />,
+  BIO: <Microscope size={34} />,
+  KS: <Code size={34} />,
+  LKTI: <FileText size={34} />,
 };
 
 type DetailTimeline = {
@@ -127,169 +126,189 @@ export function CompetitionDetailPage() {
   );
 
   return (
-    <main className="container-hero overflow-hidden pb-10 pt-24 md:pb-16 md:pt-32">      {/* Back only */}
-      <div className="mb-4 md:mb-6">
+    <main className="container-hero pb-14 pt-28 md:pb-18 md:pt-32">
+      {/* Back button only */}
+      <div className="mb-6">
         <Link
           to="/lomba"
-          className="inline-grid size-10 place-items-center rounded-full border border-white/80 bg-white/70 text-[#064452] shadow-[0_10px_24px_rgba(6,68,82,0.1),inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-xl transition hover:-translate-x-1 hover:bg-white"
+          className="inline-grid size-11 place-items-center rounded-full border border-white/80 bg-white/62 text-[#064452] shadow-[0_14px_32px_rgba(6,68,82,0.12),inset_0_1px_0_rgba(255,255,255,0.92)] backdrop-blur-2xl transition hover:-translate-x-1 hover:bg-white/85"
           aria-label="Kembali ke daftar lomba"
         >
-          <ArrowLeft size={18} />
+          <ArrowLeft size={19} />
         </Link>
       </div>
 
-      {/* Hero summary */}
-      <section className="relative overflow-hidden rounded-[1.75rem] border border-white/90 bg-[linear-gradient(145deg,rgba(255,255,255,0.88)_0%,rgba(248,240,231,0.78)_52%,rgba(216,238,235,0.32)_100%)] px-5 py-6 text-center shadow-[0_18px_46px_rgba(6,68,82,0.1),inset_0_1px_0_rgba(255,255,255,0.96)] backdrop-blur-[24px] md:rounded-[2.35rem] md:px-10 md:py-10">
-        <div className="pointer-events-none absolute -right-24 top-0 size-64 rounded-full bg-[#c2e1df]/28 blur-3xl" />
-        <div className="pointer-events-none absolute -left-24 bottom-0 size-60 rounded-full bg-[#f8f0e7]/80 blur-3xl" />
+      {/* Header detail */}
+      <section className="relative overflow-hidden rounded-[2rem] border border-white/90 bg-[linear-gradient(145deg,rgba(255,255,255,0.86)_0%,rgba(248,240,231,0.78)_44%,rgba(216,238,235,0.34)_100%)] px-6 py-8 text-center shadow-[0_22px_58px_rgba(6,68,82,0.12),inset_0_1px_0_rgba(255,255,255,0.96)] backdrop-blur-[26px] md:rounded-[2.4rem] md:px-10 md:py-10">
+        <div className="pointer-events-none absolute -right-20 top-0 size-64 rounded-full bg-[#c2e1df]/28 blur-3xl" />
+        <div className="pointer-events-none absolute -left-24 bottom-0 size-64 rounded-full bg-[#f8f0e7]/70 blur-3xl" />
 
         <div className="relative z-10">
-          <div className="mx-auto grid size-16 place-items-center rounded-full bg-gradient-to-br from-[#7E032F] to-[#a60b3a] text-white shadow-[0_18px_42px_rgba(126,3,47,0.26)] md:size-22">
-            {iconMap[competition.code] ?? <BookOpen size={30} />}
+          <div className="mx-auto grid size-20 place-items-center rounded-full bg-gradient-to-br from-[#7E032F] to-[#a60b3a] text-white shadow-[0_22px_50px_rgba(126,3,47,0.28)] md:size-24">
+            {iconMap[competition.code] ?? <BookOpen size={34} />}
           </div>
 
-          <div className="mt-4 flex justify-center">
+          <div className="mt-5 flex justify-center">
             <span
               className={
                 isOpen
-                  ? "rounded-full border border-[#c2e1df]/70 bg-[#c2e1df]/60 px-3.5 py-1.5 text-[11px] font-black text-[#064452]"
-                  : "rounded-full border border-stone-200 bg-stone-100/80 px-3.5 py-1.5 text-[11px] font-black text-stone-600"
+                  ? "rounded-full border border-[#c2e1df]/70 bg-[#c2e1df]/60 px-4 py-2 text-xs font-black text-[#064452]"
+                  : "rounded-full border border-stone-200 bg-stone-100/80 px-4 py-2 text-xs font-black text-stone-600"
               }
             >
               {isOpen ? "Pendaftaran Dibuka" : "Pendaftaran Ditutup"}
             </span>
           </div>
 
-          <h1 className="games-display mx-auto mt-4 max-w-3xl text-[2rem] font-black leading-[1.05] tracking-[-0.04em] text-[#064452] md:text-5xl">
+          <h1 className="games-display mx-auto mt-5 max-w-3xl text-[2.15rem] font-black leading-tight tracking-[-0.04em] text-[#064452] md:text-5xl">
             {competition.name}
           </h1>
 
-          <p className="mx-auto mt-2 max-w-2xl text-sm font-bold leading-6 text-[#064452]/72 md:text-lg md:leading-7">
+          <p className="mx-auto mt-2 max-w-2xl text-base font-bold leading-7 text-[#064452]/72 md:text-lg">
             {competition.short_description || extra.subtitle}
           </p>
 
-          <div className="mt-4 flex flex-wrap justify-center gap-2">
+          <div className="mt-5 flex flex-wrap justify-center gap-2">
             {competition.participant_levels?.map((level) => (
               <span
                 key={level}
-                className="rounded-full border border-[#faadb6]/45 bg-[#faadb6]/24 px-3 py-1.5 text-[11px] font-black text-[#7E032F]"
+                className="rounded-full border border-[#faadb6]/45 bg-[#faadb6]/24 px-4 py-2 text-xs font-black text-[#7E032F]"
               >
                 {level}
               </span>
             ))}
 
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/85 bg-white/66 px-3 py-1.5 text-[11px] font-black text-[#064452]">
-              <Users size={12} />
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/85 bg-white/62 px-4 py-2 text-xs font-black text-[#064452]">
+              <Users size={13} />
               {competition.competition_type === "team" ? "Tim" : "Individu"}
             </span>
 
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/85 bg-white/66 px-3 py-1.5 text-[11px] font-black text-[#064452]">
-              <WalletCards size={12} />
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/85 bg-white/62 px-4 py-2 text-xs font-black text-[#064452]">
+              <WalletCards size={13} />
               {priceLabel}
             </span>
           </div>
 
-          <p className="mx-auto mt-5 max-w-2xl text-sm font-semibold leading-7 text-[#064452]/76 md:text-base md:leading-8">
+          <p className="mx-auto mt-7 max-w-2xl text-sm font-semibold leading-8 text-[#064452]/76 md:text-base">
             {competition.description ||
               competition.short_description ||
               extra.subtitle}
           </p>
 
-          <div className="mx-auto mt-6 grid max-w-[320px] gap-3 sm:max-w-none sm:grid-cols-2 sm:justify-center md:flex">
+          <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
             {isOpen ? (
               <Link
                 to="/daftar"
-                className="btn-glossy-maroon inline-flex h-11 items-center justify-center gap-2 rounded-full px-6 text-sm font-black text-white md:h-12 md:px-8"
+                className="btn-glossy-maroon inline-flex h-12 items-center justify-center gap-2 rounded-full px-8 text-sm font-black text-white"
               >
-                Daftar Sekarang <Rocket size={15} />
+                Daftar Sekarang <Rocket size={16} />
               </Link>
             ) : null}
 
             {competition.guidebook_url ? (
               <a
                 href={competition.guidebook_url}
-                className="btn-glass-outline inline-flex h-11 items-center justify-center gap-2 rounded-full px-6 text-sm font-black text-[#064452] md:h-12 md:px-8"
+                className="btn-glass-outline inline-flex h-12 items-center justify-center gap-2 rounded-full px-8 text-sm font-black text-[#064452]"
               >
-                Unduh Panduan <Download size={15} />
+                Unduh Panduan <Download size={16} />
               </a>
             ) : (
               <a
                 href="#dokumen-panduan"
-                className="btn-glass-outline inline-flex h-11 items-center justify-center gap-2 rounded-full px-6 text-sm font-black text-[#064452] md:h-12 md:px-8"
+                className="btn-glass-outline inline-flex h-12 items-center justify-center gap-2 rounded-full px-8 text-sm font-black text-[#064452]"
               >
-                Lihat Panduan <FileText size={15} />
+                Lihat Panduan <FileText size={16} />
               </a>
             )}
           </div>
         </div>
       </section>
 
-      {/* Mobile quick information */}
-      <section className="mt-4 grid grid-cols-2 gap-2.5 md:mt-6 md:grid-cols-3 md:gap-4">        <InfoCard
-        icon={<Users size={18} />}
-        label="Jenjang"
-        value={competition.participant_levels?.join(", ") || "-"}
-      />
+      {/* Quick info cards */}
+      <section className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <InfoCard
-          icon={<Users size={18} />}
-          label="Tipe"
+          icon={<Users size={20} />}
+          label="Jenjang Peserta"
+          value={competition.participant_levels?.join(", ") || "-"}
+        />
+        <InfoCard
+          icon={<Users size={20} />}
+          label="Tipe Peserta"
           value={
             competition.competition_type === "team"
-              ? `${competition.min_members}-${competition.max_members} orang`
+              ? `Tim (${competition.min_members}-${competition.max_members} orang)`
               : "Individu"
           }
         />
         <InfoCard
-          icon={<WalletCards size={18} />}
-          label="Biaya"
+          icon={<WalletCards size={20} />}
+          label="Biaya Pendaftaran"
           value={priceLabel}
         />
         <InfoCard
-          icon={<Trophy size={18} />}
-          label="Kuota"
+          icon={<Trophy size={20} />}
+          label="Kuota Peserta"
           value={extra.quotaLabel}
         />
         <InfoCard
-          icon={<CalendarDays size={18} />}
-          label="Daftar"
+          icon={<CalendarDays size={20} />}
+          label="Periode Pendaftaran"
           value={formatPeriod(competition)}
         />
         <InfoCard
-          icon={<MapPin size={18} />}
+          icon={<MapPin size={20} />}
           label="Pelaksanaan"
           value={extra.eventPeriod}
         />
       </section>
 
-      <div className="mt-6 grid gap-4 md:mt-8 md:gap-6">
-        <ResponsiveSection
-          icon={<CalendarDays size={20} />}
+      {/* Content sections */}
+      <div className="mt-7 grid gap-6">
+        <DetailSection
+          icon={<CalendarDays size={21} />}
           title="Timeline Kompetisi"
-          defaultOpen
         >
-          <TimelineContent items={extra.timelines} />
-        </ResponsiveSection>
+          <div className="relative mt-5 space-y-4">
+            <div className="absolute bottom-5 left-[1.03rem] top-5 w-px rounded-full bg-gradient-to-b from-[#c2e1df] via-[#9fd8d4] to-[#7E032F]/55" />
 
-        <ResponsiveSection
-          icon={<CircleDot size={20} />}
-          title="Tahapan Kompetisi"
-          defaultOpen
-        >
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {extra.timelines.map((item, index) => (
+              <div key={`${item.title}-${index}`} className="relative flex gap-4">
+                <div className="relative z-10 grid size-9 shrink-0 place-items-center rounded-full border border-white/85 bg-white/75 shadow-sm">
+                  <div className="size-2.5 rounded-full bg-[#0b5a63]" />
+                </div>
+
+                <div className="min-w-0 pb-2">
+                  <h3 className="text-sm font-black text-[#064452]">
+                    {item.title}
+                  </h3>
+                  <p className="mt-1 text-xs font-bold text-[#064452]/55">
+                    {item.date}
+                  </p>
+                  {item.description ? (
+                    <p className="mt-2 text-sm font-semibold leading-6 text-[#064452]/72">
+                      {item.description}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+            ))}
+          </div>
+        </DetailSection>
+
+        <DetailSection icon={<CircleDot size={21} />} title="Tahapan Kompetisi">
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
             {extra.stages.map((stage, index) => (
               <div
                 key={stage.title}
-                className="flex gap-3 rounded-2xl border border-white/75 bg-white/56 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
+                className="flex gap-4 rounded-2xl border border-white/75 bg-white/52 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
               >
-                <div className="grid size-8 shrink-0 place-items-center rounded-full bg-[#c2e1df]/70 text-xs font-black text-[#064452]">
+                <div className="grid size-9 shrink-0 place-items-center rounded-full bg-[#c2e1df]/70 text-sm font-black text-[#064452]">
                   {index + 1}
                 </div>
                 <div>
-                  <h3 className="text-sm font-black text-[#064452]">
-                    {stage.title}
-                  </h3>
+                  <h3 className="font-black text-[#064452]">{stage.title}</h3>
                   {stage.description ? (
-                    <p className="mt-1 text-xs font-semibold leading-5 text-[#064452]/68 md:text-sm md:leading-6">
+                    <p className="mt-1 text-sm font-semibold leading-6 text-[#064452]/68">
                       {stage.description}
                     </p>
                   ) : null}
@@ -297,38 +316,38 @@ export function CompetitionDetailPage() {
               </div>
             ))}
           </div>
-        </ResponsiveSection>
+        </DetailSection>
 
-        <ResponsiveSection icon={<BookOpen size={20} />} title="Materi Kompetisi">
-          <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        <DetailSection icon={<BookOpen size={21} />} title="Materi Kompetisi">
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {extra.materials.map((material) => (
               <div
                 key={material}
-                className="flex items-center gap-2.5 rounded-2xl border border-white/75 bg-white/56 px-3.5 py-3 text-xs font-black text-[#064452] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] md:text-sm"
+                className="flex items-center gap-3 rounded-2xl border border-white/75 bg-white/50 px-4 py-3 text-sm font-black text-[#064452] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
               >
-                <Sparkles size={14} className="shrink-0 text-[#0b5a63]" />
+                <Sparkles size={15} className="shrink-0 text-[#0b5a63]" />
                 {material}
               </div>
             ))}
           </div>
-        </ResponsiveSection>
+        </DetailSection>
 
-        <ResponsiveSection icon={<Trophy size={20} />} title="Mekanisme Lomba">
-          <div className="mt-4 grid gap-3">
+        <DetailSection icon={<Trophy size={21} />} title="Mekanisme Lomba">
+          <div className="mt-5 grid gap-4">
             {extra.mechanisms.map((mechanism) => (
               <article
                 key={mechanism.title}
-                className="rounded-2xl border border-white/75 bg-white/54 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] md:p-5"
+                className="rounded-2xl border border-white/75 bg-white/48 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
               >
-                <h3 className="text-sm font-black text-[#064452] md:text-base">
+                <h3 className="font-black text-[#064452]">
                   {mechanism.title}
                 </h3>
-                <ul className="mt-3 grid gap-2 text-xs font-semibold leading-5 text-[#064452]/72 md:text-sm md:leading-6">
+                <ul className="mt-3 grid gap-2 text-sm font-semibold leading-6 text-[#064452]/72">
                   {mechanism.items.map((item) => (
-                    <li key={item} className="flex gap-2.5">
+                    <li key={item} className="flex gap-3">
                       <Check
-                        size={15}
-                        className="mt-0.5 shrink-0 text-[#0b5a63]"
+                        size={16}
+                        className="mt-1 shrink-0 text-[#0b5a63]"
                       />
                       <span>{item}</span>
                     </li>
@@ -337,72 +356,68 @@ export function CompetitionDetailPage() {
               </article>
             ))}
           </div>
-        </ResponsiveSection>
+        </DetailSection>
 
-        <ResponsiveSection icon={<ShieldCheck size={20} />} title="Persyaratan">
-          <ul className="mt-4 grid gap-2.5 text-xs font-semibold leading-5 text-[#064452]/74 md:text-sm md:leading-7">
+        <DetailSection icon={<ShieldCheck size={21} />} title="Persyaratan">
+          <ul className="mt-5 grid gap-3 text-sm font-semibold leading-7 text-[#064452]/74">
             {extra.requirements.map((rule) => (
-              <li key={rule} className="flex gap-2.5">
-                <Check size={16} className="mt-0.5 shrink-0 text-[#0b5a63]" />
+              <li key={rule} className="flex gap-3">
+                <Check size={18} className="mt-1 shrink-0 text-[#0b5a63]" />
                 <span>{rule}</span>
               </li>
             ))}
           </ul>
-        </ResponsiveSection>
+        </DetailSection>
 
-        <ResponsiveSection icon={<WalletCards size={20} />} title="Biaya Pendaftaran">
-          <div className="mt-4 grid gap-3">
+        <DetailSection icon={<WalletCards size={21} />} title="Biaya Pendaftaran">
+          <div className="mt-5 grid gap-3">
             {extra.fees.map((fee) => (
               <div
                 key={fee.label}
-                className="flex items-center justify-between gap-4 rounded-2xl border border-white/75 bg-white/56 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
+                className="flex items-center justify-between gap-4 rounded-2xl border border-white/75 bg-white/50 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
               >
                 <div>
-                  <h3 className="text-sm font-black text-[#064452]">
-                    {fee.label}
-                  </h3>
+                  <h3 className="font-black text-[#064452]">{fee.label}</h3>
                   {fee.period ? (
                     <p className="mt-1 text-xs font-semibold text-[#064452]/58">
                       {fee.period}
                     </p>
                   ) : null}
                 </div>
-                <p className="shrink-0 text-sm font-black text-[#7E032F]">
-                  {fee.price}
-                </p>
+                <p className="text-sm font-black text-[#7E032F]">{fee.price}</p>
               </div>
             ))}
           </div>
-        </ResponsiveSection>
+        </DetailSection>
 
-        <ResponsiveSection icon={<MessageCircle size={20} />} title="Kontak Panitia">
-          <div className="mt-4 grid gap-2.5 text-sm font-semibold text-[#064452]/74">
-            <ContactRow icon={<Phone size={16} />} value={extra.contactPhone} />
-            <ContactRow icon={<Mail size={16} />} value={extra.contactEmail} />
+        <DetailSection icon={<MessageCircle size={21} />} title="Kontak Panitia">
+          <div className="mt-5 grid gap-3 text-sm font-semibold text-[#064452]/74">
+            <ContactRow icon={<Phone size={17} />} value={extra.contactPhone} />
+            <ContactRow icon={<Mail size={17} />} value={extra.contactEmail} />
             <ContactRow
-              icon={<MessageCircle size={16} />}
+              icon={<MessageCircle size={17} />}
               value={extra.contactInstagram}
             />
           </div>
-        </ResponsiveSection>
+        </DetailSection>
 
-        <ResponsiveSection
+        <DetailSection
           id="dokumen-panduan"
-          icon={<Download size={20} />}
+          icon={<Download size={21} />}
           title="Dokumen & Panduan"
         >
-          <div className="mt-4 grid gap-3">
+          <div className="mt-5 grid gap-3">
             {extra.downloads.map((download) => (
               <div
                 key={download.title}
-                className="flex items-center justify-between gap-3 rounded-2xl border border-white/75 bg-white/58 p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] md:p-4"
+                className="flex items-center justify-between gap-4 rounded-2xl border border-white/75 bg-white/55 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
               >
-                <div className="flex min-w-0 items-center gap-3">
-                  <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#faadb6]/28 text-[#7E032F]">
-                    <FileText size={18} />
+                <div className="flex min-w-0 items-center gap-4">
+                  <div className="grid size-11 shrink-0 place-items-center rounded-xl bg-[#faadb6]/28 text-[#7E032F]">
+                    <FileText size={20} />
                   </div>
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-black text-[#064452]">
+                    <p className="truncate font-black text-[#064452]">
                       {download.title}
                     </p>
                     <p className="mt-1 text-xs font-semibold text-[#064452]/55">
@@ -414,25 +429,25 @@ export function CompetitionDetailPage() {
                 {download.url ? (
                   <a
                     href={download.url}
-                    className="grid size-9 shrink-0 place-items-center rounded-full border border-[#064452]/10 bg-white/76 text-[#064452]"
+                    className="grid size-10 shrink-0 place-items-center rounded-full border border-[#064452]/10 bg-white/70 text-[#064452]"
                     aria-label={`Unduh ${download.title}`}
                   >
-                    <Download size={16} />
+                    <Download size={18} />
                   </a>
                 ) : (
-                  <span className="shrink-0 rounded-full bg-stone-100 px-3 py-1 text-[11px] font-bold text-stone-500">
+                  <span className="shrink-0 rounded-full bg-stone-100 px-3 py-1 text-xs font-bold text-stone-500">
                     Segera
                   </span>
                 )}
               </div>
             ))}
           </div>
-        </ResponsiveSection>
+        </DetailSection>
 
-        <section className="relative overflow-hidden rounded-[1.6rem] border border-white/90 bg-[linear-gradient(135deg,rgba(194,225,223,0.5)_0%,rgba(248,240,231,0.78)_48%,rgba(255,255,255,0.9)_100%)] p-5 shadow-[0_16px_38px_rgba(6,68,82,0.1),inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-[24px] md:p-8">
-          <div className="relative z-10 grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
+        <section className="relative overflow-hidden rounded-[1.8rem] border border-white/90 bg-[linear-gradient(90deg,rgba(194,225,223,0.5)_0%,rgba(248,240,231,0.78)_42%,rgba(255,255,255,0.9)_100%)] p-6 shadow-[0_18px_44px_rgba(6,68,82,0.12),inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-[24px] md:p-8">
+          <div className="relative z-10 grid gap-5 md:grid-cols-[1fr_auto] md:items-center">
             <div>
-              <h2 className="games-display text-[1.45rem] font-black leading-tight text-[#7E032F] md:text-2xl">
+              <h2 className="games-display text-2xl font-black leading-tight text-[#7E032F]">
                 Siap untuk bergabung?
               </h2>
               <p className="mt-2 text-sm font-semibold leading-6 text-[#064452]/72">
@@ -444,12 +459,12 @@ export function CompetitionDetailPage() {
             {isOpen ? (
               <Link
                 to="/daftar"
-                className="btn-glossy-maroon inline-flex h-11 items-center justify-center gap-2 rounded-full px-7 text-sm font-black text-white md:h-12"
+                className="btn-glossy-maroon inline-flex h-12 items-center justify-center gap-2 rounded-full px-8 text-sm font-black text-white"
               >
                 Daftar Sekarang <ArrowRight size={16} />
               </Link>
             ) : (
-              <span className="inline-flex h-11 items-center justify-center rounded-full bg-white/60 px-7 text-sm font-black text-[#064452]/55">
+              <span className="inline-flex h-12 items-center justify-center rounded-full bg-white/60 px-8 text-sm font-black text-[#064452]/55">
                 Pendaftaran Ditutup
               </span>
             )}
@@ -460,117 +475,30 @@ export function CompetitionDetailPage() {
   );
 }
 
-function ResponsiveSection({
+function DetailSection({
   id,
   icon,
   title,
   children,
-  defaultOpen = false,
 }: {
   id?: string;
   icon: ReactNode;
   title: string;
   children: ReactNode;
-  defaultOpen?: boolean;
 }) {
   return (
-    <>
-      {/* Desktop/tablet expanded */}
-      <section
-        id={id}
-        className="hidden overflow-hidden rounded-[1.6rem] border border-white/88 bg-white/64 p-7 shadow-[0_16px_38px_rgba(6,68,82,0.09),inset_0_1px_0_rgba(255,255,255,0.96)] backdrop-blur-[22px] md:block"
-      >
-        <SectionTitle icon={icon} title={title} />
-        <div className="min-w-0 max-w-full overflow-hidden">{children}</div>
-      </section>
-
-      {/* Mobile accordion */}
-      <details
-        id={id}
-        open={defaultOpen}
-        className="group max-w-full overflow-hidden rounded-[1.25rem] border border-white/88 bg-white/72 shadow-[0_12px_28px_rgba(6,68,82,0.08),inset_0_1px_0_rgba(255,255,255,0.96)] backdrop-blur-[22px] md:hidden"
-      >
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3.5">
-          <SectionTitle icon={icon} title={title} compact />
-          <ChevronDown
-            size={17}
-            className="shrink-0 text-[#064452] transition group-open:rotate-180"
-          />
-        </summary>
-
-        <div className="min-w-0 max-w-full overflow-hidden border-t border-[#064452]/8 px-4 pb-4 pt-3">
-          {children}
+    <section
+      id={id}
+      className="rounded-[1.6rem] border border-white/88 bg-white/62 p-5 shadow-[0_16px_38px_rgba(6,68,82,0.09),inset_0_1px_0_rgba(255,255,255,0.96)] backdrop-blur-[22px] md:p-7"
+    >
+      <div className="flex items-center gap-3">
+        <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#c2e1df]/55 text-[#064452]">
+          {icon}
         </div>
-      </details>
-    </>
-  );
-}
-function SectionTitle({
-  icon,
-  title,
-  compact = false,
-}: {
-  icon: ReactNode;
-  title: string;
-  compact?: boolean;
-}) {
-  return (
-    <div className="flex min-w-0 items-center gap-3">
-      <div
-        className={[
-          "grid shrink-0 place-items-center rounded-xl bg-[#c2e1df]/55 text-[#064452]",
-          compact ? "size-8" : "size-10",
-        ].join(" ")}
-      >
-        {icon}
+        <h2 className="text-xl font-black text-[#064452]">{title}</h2>
       </div>
-
-      <h2
-        className={[
-          "min-w-0 truncate font-black text-[#064452]",
-          compact ? "text-[0.98rem]" : "text-xl",
-        ].join(" ")}
-      >
-        {title}
-      </h2>
-    </div>
-  );
-}
-
-function TimelineContent({ items }: { items: DetailTimeline[] }) {
-  return (
-    <div className="relative mt-1 max-w-full overflow-hidden">
-      <div className="absolute bottom-4 left-[0.86rem] top-4 w-px rounded-full bg-gradient-to-b from-[#c2e1df] via-[#9fd8d4] to-[#7E032F]/45" />
-
-      <div className="grid gap-3">
-        {items.map((item, index) => (
-          <div
-            key={`${item.title}-${index}`}
-            className="relative grid min-w-0 grid-cols-[1.75rem_1fr] gap-3"
-          >
-            <div className="relative z-10 grid size-7 place-items-center rounded-full border border-white/85 bg-white/82 shadow-sm">
-              <div className="size-2.5 rounded-full bg-[#0b5a63]" />
-            </div>
-
-            <article className="min-w-0 overflow-hidden rounded-2xl border border-white/70 bg-white/46 px-3.5 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.88)]">
-              <h3 className="break-words text-[0.9rem] font-black leading-snug text-[#064452]">
-                {item.title}
-              </h3>
-
-              <p className="mt-1 inline-flex max-w-full rounded-full bg-[#c2e1df]/45 px-2.5 py-1 text-[0.68rem] font-black leading-none text-[#064452]/75">
-                {item.date}
-              </p>
-
-              {item.description ? (
-                <p className="mt-2 break-words text-[0.76rem] font-semibold leading-5 text-[#064452]/70">
-                  {item.description}
-                </p>
-              ) : null}
-            </article>
-          </div>
-        ))}
-      </div>
-    </div>
+      {children}
+    </section>
   );
 }
 
@@ -584,19 +512,15 @@ function InfoCard({
   value: string;
 }) {
   return (
-    <div className="min-w-0 overflow-hidden rounded-[1.1rem] border border-white/88 bg-white/68 p-3 shadow-[0_10px_24px_rgba(6,68,82,0.07),inset_0_1px_0_rgba(255,255,255,0.94)] backdrop-blur-[18px] md:p-5">
-      <div className="grid size-8 place-items-center rounded-xl border border-white/75 bg-white/72 text-[#064452] shadow-inner md:size-11">
+    <div className="flex items-start gap-4 rounded-[1.35rem] border border-white/88 bg-white/62 p-5 shadow-[0_14px_34px_rgba(6,68,82,0.08),inset_0_1px_0_rgba(255,255,255,0.94)] backdrop-blur-[22px]">
+      <div className="grid size-11 shrink-0 place-items-center rounded-xl border border-white/75 bg-white/62 text-[#064452] shadow-inner">
         {icon}
       </div>
-
-      <div className="mt-2.5 min-w-0">
-        <p className="truncate text-[0.58rem] font-black uppercase tracking-[0.1em] text-[#064452]/48 md:text-[11px]">
+      <div>
+        <p className="text-[11px] font-black uppercase tracking-[0.12em] text-[#064452]/50">
           {label}
         </p>
-
-        <p className="mt-1 line-clamp-2 break-words text-[0.72rem] font-black leading-4 text-[#064452] md:text-sm md:leading-5">
-          {value}
-        </p>
+        <p className="mt-1 text-sm font-black text-[#064452]">{value}</p>
       </div>
     </div>
   );
@@ -604,9 +528,9 @@ function InfoCard({
 
 function ContactRow({ icon, value }: { icon: ReactNode; value: string }) {
   return (
-    <div className="flex items-center gap-3 rounded-2xl border border-white/70 bg-white/48 px-4 py-3">
+    <div className="flex items-center gap-3 rounded-2xl border border-white/70 bg-white/45 px-4 py-3">
       <span className="text-[#0b5a63]">{icon}</span>
-      <span className="break-all">{value}</span>
+      <span>{value}</span>
     </div>
   );
 }
@@ -631,18 +555,18 @@ function formatPeriod(competition: Competition) {
 
   const open = competition.registration_open_at
     ? new Date(competition.registration_open_at).toLocaleDateString("id-ID", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    })
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      })
     : "Dibuka";
 
   const close = competition.registration_close_at
     ? new Date(competition.registration_close_at).toLocaleDateString("id-ID", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    })
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      })
     : "Ditentukan panitia";
 
   return `${open} - ${close}`;
@@ -787,22 +711,10 @@ function getCompetitionExtra(competition: Competition): CompetitionExtra {
         "Strategi Cepat Tepat",
       ],
       stages: [
-        {
-          title: "Babak Penyisihan",
-          description: "Sesi soal tertulis atau kuis cepat.",
-        },
-        {
-          title: "Babak Semifinal",
-          description: "Tim terbaik melaju ke sesi adu cepat.",
-        },
-        {
-          title: "Babak Final",
-          description: "Finalis menyelesaikan soal dengan sistem rebutan.",
-        },
-        {
-          title: "Awarding",
-          description: "Penetapan dan pengumuman pemenang.",
-        },
+        { title: "Babak Penyisihan", description: "Sesi soal tertulis atau kuis cepat." },
+        { title: "Babak Semifinal", description: "Tim terbaik melaju ke sesi adu cepat." },
+        { title: "Babak Final", description: "Finalis menyelesaikan soal dengan sistem rebutan." },
+        { title: "Awarding", description: "Penetapan dan pengumuman pemenang." },
       ],
       mechanisms: [
         {
@@ -838,18 +750,9 @@ function getCompetitionExtra(competition: Competition): CompetitionExtra {
         "Problem Solving",
       ],
       stages: [
-        {
-          title: "Penyisihan",
-          description: "Tes soal pilihan dan isian singkat.",
-        },
-        {
-          title: "Semifinal",
-          description: "Soal uraian dengan pembahasan mendalam.",
-        },
-        {
-          title: "Final",
-          description: "Sesi pemecahan masalah tingkat lanjut.",
-        },
+        { title: "Penyisihan", description: "Tes soal pilihan dan isian singkat." },
+        { title: "Semifinal", description: "Soal uraian dengan pembahasan mendalam." },
+        { title: "Final", description: "Sesi pemecahan masalah tingkat lanjut." },
       ],
     };
   }
@@ -939,21 +842,13 @@ function getCompetitionExtra(competition: Competition): CompetitionExtra {
         "Presentasi Karya",
       ],
       stages: [
-        {
-          title: "Pengumpulan Abstrak",
-          description: "Peserta mengirimkan abstrak sesuai tema lomba.",
-        },
-        {
-          title: "Seleksi Karya",
-          description: "Panitia dan juri menilai karya tulis peserta.",
-        },
-        {
-          title: "Presentasi Final",
-          description: "Finalis mempresentasikan karya di depan dewan juri.",
-        },
+        { title: "Pengumpulan Abstrak", description: "Peserta mengirimkan abstrak sesuai tema lomba." },
+        { title: "Seleksi Karya", description: "Panitia dan juri menilai karya tulis peserta." },
+        { title: "Presentasi Final", description: "Finalis mempresentasikan karya di depan dewan juri." },
       ],
     };
   }
 
   return defaultExtra;
 }
+
