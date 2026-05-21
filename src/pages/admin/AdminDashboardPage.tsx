@@ -20,14 +20,29 @@ export function AdminDashboardPage() {
 
     async function loadStats() {
       setLoading(true);
-      const [competitions, announcements, registrations, pendingRegistrations] = await Promise.all([
-        supabase.from("competitions").select("id", { count: "exact", head: true }),
-        supabase.from("announcements").select("id", { count: "exact", head: true }),
-        supabase.from("registrations").select("id", { count: "exact", head: true }),
-        supabase.from("registrations").select("id", { count: "exact", head: true }).eq("registration_status", "pending"),
-      ]);
+      const [competitions, announcements, registrations, pendingRegistrations] =
+        await Promise.all([
+          supabase
+            .from("competitions")
+            .select("id", { count: "exact", head: true }),
+          supabase
+            .from("announcements")
+            .select("id", { count: "exact", head: true }),
+          supabase
+            .from("registrations")
+            .select("id", { count: "exact", head: true }),
+          supabase
+            .from("registrations")
+            .select("id", { count: "exact", head: true })
+            .eq("registration_status", "pending"),
+        ]);
 
-      const firstError = [competitions.error, announcements.error, registrations.error, pendingRegistrations.error].find(Boolean);
+      const firstError = [
+        competitions.error,
+        announcements.error,
+        registrations.error,
+        pendingRegistrations.error,
+      ].find(Boolean);
 
       if (!isMounted) return;
       setLoading(false);
@@ -59,11 +74,14 @@ export function AdminDashboardPage() {
         {loading ? <LoadingState /> : null}
         {error ? <ErrorState message={error} /> : null}
       </div>
-      <div className="mt-6 grid gap-4 md:grid-cols-3">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
         <StatCard label="Total lomba" value={stats?.competitions ?? 0} />
         <StatCard label="Total pengumuman" value={stats?.announcements ?? 0} />
         <StatCard label="Total peserta" value={stats?.registrations ?? 0} />
-        <StatCard label="Peserta pending" value={stats?.pendingRegistrations ?? 0} />
+        <StatCard
+          label="Peserta pending"
+          value={stats?.pendingRegistrations ?? 0}
+        />
       </div>
     </section>
   );
