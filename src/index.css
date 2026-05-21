@@ -3255,3 +3255,52 @@ footer h4 {
         rgba(6, 68, 82, 0.22) 100%) !important;
   }
 }
+
+/* =========================================
+   PUBLIC THEME INNER — FINAL
+   Tempel di paling bawah index.css
+========================================= */
+
+.public-theme-inner {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 96% 3%,
+      rgba(0, 69, 81, 0.95) 0%,
+      rgba(0, 69, 81, 0.70) 20%,
+      rgba(95, 166, 165, 0.30) 40%,
+      transparent 58%),
+    radial-gradient(ellipse at 0% 88%,
+      rgba(0, 69, 81, 0.90) 0%,
+      rgba(0, 69, 81, 0.58) 20%,
+      rgba(95, 166, 165, 0.24) 40%,
+      transparent 62%),
+    radial-gradient(ellipse at 52% 42%,
+      rgba(194, 225, 223, 0.18) 0%,
+      transparent 50%),
+    linear-gradient(135deg,
+      #f8f0e7 0%,
+      #eef4f1 38%,
+      #c2e1df 68%,
+      #004551 100%);
+  background-attachment: fixed;
+}
+
+@media (max-width: 767px) {
+  .public-theme-inner {
+    background:
+      radial-gradient(ellipse at 100% 0%,
+        rgba(0, 69, 81, 0.92) 0%,
+        rgba(0, 69, 81, 0.60) 22%,
+        transparent 50%),
+      radial-gradient(ellipse at 0% 94%,
+        rgba(0, 69, 81, 0.88) 0%,
+        rgba(0, 69, 81, 0.52) 24%,
+        transparent 56%),
+      linear-gradient(145deg,
+        #f8f0e7 0%,
+        #eef4f1 45%,
+        #c2e1df 72%,
+        #004551 100%);
+    background-attachment: fixed;
+  }
+}
