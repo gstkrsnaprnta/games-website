@@ -205,38 +205,38 @@ function matchesFilter(competition: Competition, filter: string) {
   return competition.participant_levels?.includes(filter) ?? false;
 }
 
-function CompetitionHeroVisual() {
-  return (
-    <div className="relative hidden min-h-[360px] items-center justify-center overflow-hidden md:flex">
-      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-[#c2e1df]/25 to-[#004551]/55" />
-      <div className="absolute right-8 top-8 h-px w-48 rotate-90 bg-[#c2e1df]/40" />
-      <div className="relative aspect-square w-[340px]">
-        <div className="absolute inset-8 rounded-full bg-[#004551]/42 shadow-[inset_0_0_72px_rgba(194,225,223,0.62),0_0_54px_rgba(194,225,223,0.35)] backdrop-blur-xl" />
-        <div className="absolute inset-8 rounded-full border border-[#c2e1df]/60" />
-        <div className="absolute inset-14 rounded-full border border-dashed border-[#c2e1df]/55" />
-        <div className="absolute left-1/2 top-10 h-[260px] w-px -translate-x-1/2 bg-[#c2e1df]/48" />
-        <div className="absolute left-10 top-1/2 h-px w-[260px] -translate-y-1/2 bg-[#c2e1df]/48" />
-        <div className="absolute inset-0 grid place-items-center text-white">
-          <span className="text-7xl font-black drop-shadow-[0_0_28px_rgba(216,238,235,1)]">Σ</span>
-          <span className="absolute left-[58%] top-[46%] text-4xl font-black">k²</span>
-        </div>
-        <div className="absolute -right-2 top-14 size-24 animate-float">
-          <svg viewBox="0 0 100 100" className="drop-shadow-[0_0_18px_rgba(250,173,182,0.7)]">
-            <polygon points="50,8 92,82 12,78" fill="#770525" opacity="0.5" stroke="#faadb6" strokeWidth="2" />
-            <line x1="50" y1="8" x2="60" y2="70" stroke="#faadb6" strokeWidth="2" />
-          </svg>
-        </div>
-        <div className="absolute bottom-8 left-2 size-20 animate-float-reverse">
-          <svg viewBox="0 0 100 100" className="drop-shadow-[0_0_18px_rgba(194,225,223,0.7)]">
-            <polygon points="50,10 82,30 82,72 50,92 18,72 18,30" fill="rgba(194,225,223,0.24)" stroke="#c2e1df" strokeWidth="2" />
-            <line x1="18" y1="30" x2="50" y2="50" stroke="#c2e1df" strokeWidth="2" />
-            <line x1="82" y1="30" x2="50" y2="50" stroke="#c2e1df" strokeWidth="2" />
-            <line x1="50" y1="92" x2="50" y2="50" stroke="#c2e1df" strokeWidth="2" />
-          </svg>
-        </div>
-        <div className="glass-chip absolute right-3 top-5 rounded-xl px-4 py-2 font-mono text-xs font-black text-[#004551]">a² + b² = c²</div>
-        <div className="glass-chip absolute left-0 top-36 rounded-xl px-4 py-2 font-mono text-xs font-black text-[#770525]">f(x) = sin x</div>
-      </div>
-    </div>
-  );
-}
+// function CompetitionHeroVisual() {
+//   return (
+//     <div className="relative hidden min-h-[360px] items-center justify-center overflow-hidden md:flex">
+//       <div className="absolute inset-0 bg-gradient-to-br from-transparent via-[#c2e1df]/25 to-[#004551]/55" />
+//       <div className="absolute right-8 top-8 h-px w-48 rotate-90 bg-[#c2e1df]/40" />
+//       <div className="relative aspect-square w-[340px]">
+//         <div className="absolute inset-8 rounded-full bg-[#004551]/42 shadow-[inset_0_0_72px_rgba(194,225,223,0.62),0_0_54px_rgba(194,225,223,0.35)] backdrop-blur-xl" />
+//         <div className="absolute inset-8 rounded-full border border-[#c2e1df]/60" />
+//         <div className="absolute inset-14 rounded-full border border-dashed border-[#c2e1df]/55" />
+//         <div className="absolute left-1/2 top-10 h-[260px] w-px -translate-x-1/2 bg-[#c2e1df]/48" />
+//         <div className="absolute left-10 top-1/2 h-px w-[260px] -translate-y-1/2 bg-[#c2e1df]/48" />
+//         <div className="absolute inset-0 grid place-items-center text-white">
+//           <span className="text-7xl font-black drop-shadow-[0_0_28px_rgba(216,238,235,1)]">Σ</span>
+//           <span className="absolute left-[58%] top-[46%] text-4xl font-black">k²</span>
+//         </div>
+//         <div className="absolute -right-2 top-14 size-24 animate-float">
+//           <svg viewBox="0 0 100 100" className="drop-shadow-[0_0_18px_rgba(250,173,182,0.7)]">
+//             <polygon points="50,8 92,82 12,78" fill="#770525" opacity="0.5" stroke="#faadb6" strokeWidth="2" />
+//             <line x1="50" y1="8" x2="60" y2="70" stroke="#faadb6" strokeWidth="2" />
+//           </svg>
+//         </div>
+//         <div className="absolute bottom-8 left-2 size-20 animate-float-reverse">
+//           <svg viewBox="0 0 100 100" className="drop-shadow-[0_0_18px_rgba(194,225,223,0.7)]">
+//             <polygon points="50,10 82,30 82,72 50,92 18,72 18,30" fill="rgba(194,225,223,0.24)" stroke="#c2e1df" strokeWidth="2" />
+//             <line x1="18" y1="30" x2="50" y2="50" stroke="#c2e1df" strokeWidth="2" />
+//             <line x1="82" y1="30" x2="50" y2="50" stroke="#c2e1df" strokeWidth="2" />
+//             <line x1="50" y1="92" x2="50" y2="50" stroke="#c2e1df" strokeWidth="2" />
+//           </svg>
+//         </div>
+//         <div className="glass-chip absolute right-3 top-5 rounded-xl px-4 py-2 font-mono text-xs font-black text-[#004551]">a² + b² = c²</div>
+//         <div className="glass-chip absolute left-0 top-36 rounded-xl px-4 py-2 font-mono text-xs font-black text-[#770525]">f(x) = sin x</div>
+//       </div>
+//     </div>
+//   );
+// }
