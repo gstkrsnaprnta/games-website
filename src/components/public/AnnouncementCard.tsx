@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import type { Announcement } from "../../types/models";
 import { formatDate } from "../../utils/date";
 
-const announcementIcons = [FileText, PlaySquare, Rocket, Megaphone, Bell];
+// const announcementIcons = [FileText, PlaySquare, Rocket, Megaphone, Bell];
 
 function getAnnouncementIcon(category?: string) {
   const text = `${category ?? ""}`.toLowerCase();
