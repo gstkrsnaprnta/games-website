@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 import { AnnouncementCard } from "../../components/public/AnnouncementCard";
 import { CTASection } from "../../components/public/CTASection";
 import { HeroSection } from "../../components/public/HeroSection";
-import { SectionHeading } from "../../components/public/SectionHeading";
+// import { SectionHeading } from "../../components/public/SectionHeading";
 import { TimelineHorizontal } from "../../components/public/TimelineItem";
 import { EmptyState } from "../../components/shared/EmptyState";
 import { ErrorState } from "../../components/shared/ErrorState";
