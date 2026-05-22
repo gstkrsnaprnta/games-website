@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { CSVExportButton } from "../../components/admin/CSVExportButton";
 import { DataTable } from "../../components/admin/DataTable";
-import { FilterBar } from "../../components/admin/FilterBar";
+// import { FilterBar } from "../../components/admin/FilterBar";
 import { FormSelect } from "../../components/admin/FormSelect";
 import { SearchInput } from "../../components/admin/SearchInput";
 import { StatusBadge } from "../../components/shared/StatusBadge";
