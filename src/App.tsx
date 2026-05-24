@@ -14,6 +14,7 @@ import { AdminRegistrationDetailPage } from "./pages/admin/AdminRegistrationDeta
 import { AdminRegistrationsPage } from "./pages/admin/AdminRegistrationsPage";
 import { AdminSponsorsPage } from "./pages/admin/AdminSponsorsPage";
 import { AdminTimelinesPage } from "./pages/admin/AdminTimelinesPage";
+import { AboutPage } from "./pages/public/AboutPage";
 import { AnnouncementDetailPage } from "./pages/public/AnnouncementDetailPage";
 import { AnnouncementsPage } from "./pages/public/AnnouncementsPage";
 import { CheckStatusPage } from "./pages/public/CheckStatusPage";
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
       { path: "/daftar", element: <RegisterPage /> },
       { path: "/cek-status", element: <CheckStatusPage /> },
       { path: "/kontak", element: <ContactPage /> },
+      { path: "/tentang", element: <AboutPage /> },
     ],
   },
   { path: "/admin/login", element: <AdminLoginPage /> },

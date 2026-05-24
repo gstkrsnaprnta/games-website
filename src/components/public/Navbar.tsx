@@ -4,7 +4,7 @@ import { Link, NavLink } from "react-router-dom";
 
 const links = [
   ["Beranda", "/"],
-  ["Tentang", "/#tentang"],
+  ["Tentang", "/tentang"],
   ["Lomba", "/lomba"],
   ["Timeline", "/timeline"],
   ["Pengumuman", "/pengumuman"],
