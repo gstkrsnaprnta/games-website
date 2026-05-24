@@ -1,5 +1,7 @@
 import { Globe, Mail, MessageCircle, Trophy } from "lucide-react";
 import { Link } from "react-router-dom";
+import { getSponsors, type Sponsor } from "../../services/sponsors";
+import { useAsyncData } from "../../utils/useAsyncData";
 
 const navLinks = [
   { label: "Beranda", href: "/" },
@@ -9,13 +11,138 @@ const navLinks = [
   { label: "Cek Status", href: "/cek-status" },
 ];
 
+/* ─────────────────────────────────────────────
+   Tier config
+───────────────────────────────────────────── */
+const tierConfig: Record<string, { height: string; opacity: string }> = {
+  platinum: { height: "h-10 md:h-12", opacity: "opacity-90 hover:opacity-100" },
+  gold: { height: "h-8 md:h-10", opacity: "opacity-70 hover:opacity-90" },
+  silver: { height: "h-6 md:h-8", opacity: "opacity-50 hover:opacity-75" },
+  sponsor: { height: "h-6 md:h-7", opacity: "opacity-45 hover:opacity-70" },
+};
+
+function tierOrder(type: string | null) {
+  const order: Record<string, number> = {
+    platinum: 0,
+    gold: 1,
+    silver: 2,
+    sponsor: 3,
+  };
+  return order[type ?? "sponsor"] ?? 99;
+}
+
+/* ─────────────────────────────────────────────
+   Sponsor logo item
+───────────────────────────────────────────── */
+function SponsorLogo({ sponsor }: { sponsor: Sponsor }) {
+  const cfg =
+    tierConfig[sponsor.sponsor_type ?? "sponsor"] ?? tierConfig.sponsor;
+
+  const inner = sponsor.logo_url ? (
+    <img
+      src={sponsor.logo_url}
+      alt={sponsor.name}
+      className={`${cfg.height} w-auto object-contain transition-all duration-200 ${cfg.opacity} brightness-0 invert`}
+    />
+  ) : (
+    <span className="px-3 text-[10px] font-black uppercase tracking-widest text-white/35">
+      {sponsor.name}
+    </span>
+  );
+
+  if (sponsor.website_url) {
+    return (
+      <a
+        href={sponsor.website_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={sponsor.name}
+        className="flex items-center justify-center rounded-lg border border-white/8 bg-white/4 px-4 py-2 backdrop-blur-sm transition hover:bg-white/10"
+      >
+        {inner}
+      </a>
+    );
+  }
+
+  return (
+    <div
+      title={sponsor.name}
+      className="flex items-center justify-center rounded-lg border border-white/8 bg-white/4 px-4 py-2 backdrop-blur-sm"
+    >
+      {inner}
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   Sponsor section
+───────────────────────────────────────────── */
+function SponsorsSection() {
+  const { data, loading } = useAsyncData<Sponsor[]>(async () => ({ data: await getSponsors(), error: null }), []);
+
+  // Don't render the section at all if loading failed or no sponsors
+  if (loading || !data || data.length === 0) return null;
+
+  // Group by tier
+  const sorted = [...data].sort(
+    (a, b) => tierOrder(a.sponsor_type) - tierOrder(b.sponsor_type),
+  );
+
+  const platinum = sorted.filter((s) => s.sponsor_type === "platinum");
+  const gold = sorted.filter((s) => s.sponsor_type === "gold");
+  const rest = sorted.filter(
+    (s) => s.sponsor_type !== "platinum" && s.sponsor_type !== "gold",
+  );
+
+  return (
+    <div className="mt-8 border-t border-white/10 pt-6 md:mt-10 md:pt-8">
+      <p className="mb-5 text-center text-[10px] font-black uppercase tracking-[0.22em] text-white/35">
+        SPONSOR
+      </p>
+
+      <div className="flex flex-col items-center gap-4">
+        {/* Platinum — largest, centered row */}
+        {platinum.length > 0 && (
+          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
+            {platinum.map((s) => (
+              <SponsorLogo key={s.id} sponsor={s} />
+            ))}
+          </div>
+        )}
+
+        {/* Gold */}
+        {gold.length > 0 && (
+          <div className="flex flex-wrap items-center justify-center gap-3 md:gap-5">
+            {gold.map((s) => (
+              <SponsorLogo key={s.id} sponsor={s} />
+            ))}
+          </div>
+        )}
+
+        {/* Silver & general */}
+        {rest.length > 0 && (
+          <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4">
+            {rest.map((s) => (
+              <SponsorLogo key={s.id} sponsor={s} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   Footer
+───────────────────────────────────────────── */
 export function Footer() {
   return (
-    <footer className="relative mt-0 overflow-hidden bg-[#064452] text-white">      {/* Decorative glows */}
+    <footer className="relative mt-0 overflow-hidden bg-[#064452] text-white">
+      {/* Decorative glows */}
       <div className="pointer-events-none absolute -left-20 -top-20 size-56 rounded-full bg-[#faadb6]/10 blur-3xl" />
       <div className="pointer-events-none absolute -right-20 bottom-0 size-64 rounded-full bg-[#c2e1df]/10 blur-3xl" />
 
-      {/* Math decorations - hidden on mobile to keep footer clean */}
+      {/* Math decorations */}
       <span
         className="math-symbol math-symbol-light pointer-events-none hidden text-3xl md:block"
         style={{ top: "18%", right: "8%" }}
@@ -40,7 +167,6 @@ export function Footer() {
               <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[#7E032F] to-[#9b0b34] text-white shadow-lg">
                 <Trophy size={18} className="text-[#faadb6]" />
               </span>
-
               <div>
                 <h2 className="games-display text-lg font-black leading-none text-white md:text-xl">
                   GAMES 2026
@@ -64,7 +190,6 @@ export function Footer() {
               <h3 className="text-sm font-black text-white md:text-base">
                 Navigasi
               </h3>
-
               <div className="mt-3 grid gap-2.5 text-xs font-medium text-white/62 md:mt-5 md:gap-3 md:text-sm">
                 {navLinks.map((link) => (
                   <Link
@@ -84,7 +209,6 @@ export function Footer() {
               <h3 className="text-sm font-black text-white md:text-base">
                 Kontak
               </h3>
-
               <div className="mt-3 grid gap-3 text-xs font-medium text-white/62 md:mt-5 md:gap-4 md:text-sm">
                 <a
                   href="mailto:panitia@games.example"
@@ -93,7 +217,6 @@ export function Footer() {
                   <Mail size={15} className="mt-0.5 shrink-0 text-[#faadb6]" />
                   <span className="break-all">panitia@games.example</span>
                 </a>
-
                 <a
                   href="#"
                   className="flex items-start gap-2.5 transition hover:text-white"
@@ -112,7 +235,6 @@ export function Footer() {
               <h3 className="text-sm font-black text-white md:text-base">
                 Sosial Media
               </h3>
-
               <div className="mt-3 flex flex-wrap gap-3 text-xs font-medium text-white/68 md:mt-5 md:grid md:gap-4 md:text-sm">
                 <a
                   href="#"
@@ -123,7 +245,6 @@ export function Footer() {
                   </span>
                   <span>@games.official</span>
                 </a>
-
                 <a
                   href="#"
                   className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 transition hover:bg-white/10 hover:text-white md:border-0 md:bg-transparent md:px-0 md:py-0"
@@ -140,13 +261,13 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Copyright */}
-        <div className="mt-8 border-t border-white/10 pt-5 md:mt-10 md:pt-6">
-          <div className="flex flex-col items-start justify-between gap-3 text-[11px] font-medium text-white/45 sm:flex-row sm:items-center">
-            <p>
-              © 2026 GAMES — Gebyar Matematika Sains. All rights reserved.
-            </p>
+        {/* ===== Sponsors ===== */}
+        <SponsorsSection />
 
+        {/* Copyright */}
+        <div className="mt-6 border-t border-white/10 pt-5 md:mt-8 md:pt-6">
+          <div className="flex flex-col items-start justify-between gap-3 text-[11px] font-medium text-white/45 sm:flex-row sm:items-center">
+            <p>© 2026 GAMES — Gebyar Matematika Sains. All rights reserved.</p>
             <div className="flex gap-5">
               <Link to="/faq" className="transition hover:text-white">
                 FAQ
