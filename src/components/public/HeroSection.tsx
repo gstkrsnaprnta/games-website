@@ -1,5 +1,6 @@
 import { FileText, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
+import maskot from "../../assets/maskot.png"; // sesuaikan path
 
 export function HeroSection() {
   return (
@@ -64,7 +65,7 @@ export function HeroSection() {
             </div>
 
             <img
-              src="/assets/maskot.png"
+              src={maskot}
               alt=""
               className="hero-mobile-mascot"
               draggable={false}
@@ -159,7 +160,7 @@ export function HeroSection() {
 
             <div className="hero-mascot-wrap pointer-events-none absolute bottom-[-10px] right-[3%] z-30 flex items-end justify-center xl:right-[4%]">
               <img
-                src="/assets/maskot.png"
+                src={maskot}
                 alt="Maskot GAMES 2026"
                 className="hero-mascot-img w-[330px] max-w-none select-none xl:w-[365px]"
                 draggable={false}
