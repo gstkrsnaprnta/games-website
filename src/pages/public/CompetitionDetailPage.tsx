@@ -28,7 +28,7 @@ import { EmptyState } from "../../components/shared/EmptyState";
 import { ErrorState } from "../../components/shared/ErrorState";
 import { LoadingState } from "../../components/shared/LoadingState";
 import { getCompetitionBySlug } from "../../services/competitions";
-import type { Competition } from "../../types/models";
+import type { Competition, Timeline } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
 
 const iconMap: Record<string, ReactNode> = {
@@ -41,9 +41,11 @@ const iconMap: Record<string, ReactNode> = {
   LKTI: <FileText size={34} />,
 };
 
+// ─── Types ────────────────────────────────────────────────────────────────────
+
 type DetailTimeline = {
   title: string;
-  date: string;
+  dateLabel: string; // sudah diformat, siap tampil
   description?: string;
 };
 
@@ -86,6 +88,45 @@ type CompetitionExtra = {
   downloads: DetailDownload[];
 };
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+const DATE_FMT: Intl.DateTimeFormatOptions = {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+};
+
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString("id-ID", DATE_FMT);
+}
+
+/** Buat label tanggal dari start_date + end_date opsional. */
+function buildDateLabel(start: string, end: string | null): string {
+  const startLabel = formatDate(start);
+  if (!end || end === start) return startLabel;
+  // Jika bulan+tahun sama, cukup tampilkan "1 - 10 Juni 2026"
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  if (
+    startDate.getMonth() === endDate.getMonth() &&
+    startDate.getFullYear() === endDate.getFullYear()
+  ) {
+    return `${startDate.getDate()} - ${formatDate(end)}`;
+  }
+  return `${startLabel} – ${formatDate(end)}`;
+}
+
+/** Ubah array Timeline dari DB ke DetailTimeline untuk tampilan. */
+function toDetailTimelines(timelines: Timeline[]): DetailTimeline[] {
+  return timelines.map((t) => ({
+    title: t.title,
+    dateLabel: buildDateLabel(t.start_date, t.end_date),
+    description: t.description ?? undefined,
+  }));
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
 export function CompetitionDetailPage() {
   const { slug } = useParams();
   const {
@@ -127,7 +168,7 @@ export function CompetitionDetailPage() {
 
   return (
     <main className="container-hero pb-14 pt-28 md:pb-18 md:pt-32">
-      {/* Back button only */}
+      {/* Back button */}
       <div className="mb-6">
         <Link
           to="/lomba"
@@ -138,7 +179,7 @@ export function CompetitionDetailPage() {
         </Link>
       </div>
 
-      {/* Header detail */}
+      {/* Header */}
       <section className="relative overflow-hidden rounded-[2rem] border border-white/90 bg-[linear-gradient(145deg,rgba(255,255,255,0.86)_0%,rgba(248,240,231,0.78)_44%,rgba(216,238,235,0.34)_100%)] px-6 py-8 text-center shadow-[0_22px_58px_rgba(6,68,82,0.12),inset_0_1px_0_rgba(255,255,255,0.96)] backdrop-blur-[26px] md:rounded-[2.4rem] md:px-10 md:py-10">
         <div className="pointer-events-none absolute -right-20 top-0 size-64 rounded-full bg-[#c2e1df]/28 blur-3xl" />
         <div className="pointer-events-none absolute -left-24 bottom-0 size-64 rounded-full bg-[#f8f0e7]/70 blur-3xl" />
@@ -177,12 +218,10 @@ export function CompetitionDetailPage() {
                 {level}
               </span>
             ))}
-
             <span className="inline-flex items-center gap-1.5 rounded-full border border-white/85 bg-white/62 px-4 py-2 text-xs font-black text-[#064452]">
               <Users size={13} />
               {competition.competition_type === "team" ? "Tim" : "Individu"}
             </span>
-
             <span className="inline-flex items-center gap-1.5 rounded-full border border-white/85 bg-white/62 px-4 py-2 text-xs font-black text-[#064452]">
               <WalletCards size={13} />
               {priceLabel}
@@ -204,7 +243,6 @@ export function CompetitionDetailPage() {
                 Daftar Sekarang <Rocket size={16} />
               </Link>
             ) : null}
-
             {competition.guidebook_url ? (
               <a
                 href={competition.guidebook_url}
@@ -264,25 +302,27 @@ export function CompetitionDetailPage() {
 
       {/* Content sections */}
       <div className="mt-7 grid gap-6">
+        {/* Timeline */}
         <DetailSection
           icon={<CalendarDays size={21} />}
           title="Timeline Kompetisi"
         >
           <div className="relative mt-5 space-y-4">
             <div className="absolute bottom-5 left-[1.03rem] top-5 w-px rounded-full bg-gradient-to-b from-[#c2e1df] via-[#9fd8d4] to-[#7E032F]/55" />
-
             {extra.timelines.map((item, index) => (
-              <div key={`${item.title}-${index}`} className="relative flex gap-4">
+              <div
+                key={`${item.title}-${index}`}
+                className="relative flex gap-4"
+              >
                 <div className="relative z-10 grid size-9 shrink-0 place-items-center rounded-full border border-white/85 bg-white/75 shadow-sm">
                   <div className="size-2.5 rounded-full bg-[#0b5a63]" />
                 </div>
-
                 <div className="min-w-0 pb-2">
                   <h3 className="text-sm font-black text-[#064452]">
                     {item.title}
                   </h3>
                   <p className="mt-1 text-xs font-bold text-[#064452]/55">
-                    {item.date}
+                    {item.dateLabel}
                   </p>
                   {item.description ? (
                     <p className="mt-2 text-sm font-semibold leading-6 text-[#064452]/72">
@@ -295,6 +335,7 @@ export function CompetitionDetailPage() {
           </div>
         </DetailSection>
 
+        {/* Tahapan */}
         <DetailSection icon={<CircleDot size={21} />} title="Tahapan Kompetisi">
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             {extra.stages.map((stage, index) => (
@@ -318,6 +359,7 @@ export function CompetitionDetailPage() {
           </div>
         </DetailSection>
 
+        {/* Materi */}
         <DetailSection icon={<BookOpen size={21} />} title="Materi Kompetisi">
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {extra.materials.map((material) => (
@@ -332,6 +374,7 @@ export function CompetitionDetailPage() {
           </div>
         </DetailSection>
 
+        {/* Mekanisme */}
         <DetailSection icon={<Trophy size={21} />} title="Mekanisme Lomba">
           <div className="mt-5 grid gap-4">
             {extra.mechanisms.map((mechanism) => (
@@ -339,9 +382,7 @@ export function CompetitionDetailPage() {
                 key={mechanism.title}
                 className="rounded-2xl border border-white/75 bg-white/48 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
               >
-                <h3 className="font-black text-[#064452]">
-                  {mechanism.title}
-                </h3>
+                <h3 className="font-black text-[#064452]">{mechanism.title}</h3>
                 <ul className="mt-3 grid gap-2 text-sm font-semibold leading-6 text-[#064452]/72">
                   {mechanism.items.map((item) => (
                     <li key={item} className="flex gap-3">
@@ -358,6 +399,7 @@ export function CompetitionDetailPage() {
           </div>
         </DetailSection>
 
+        {/* Persyaratan */}
         <DetailSection icon={<ShieldCheck size={21} />} title="Persyaratan">
           <ul className="mt-5 grid gap-3 text-sm font-semibold leading-7 text-[#064452]/74">
             {extra.requirements.map((rule) => (
@@ -369,7 +411,11 @@ export function CompetitionDetailPage() {
           </ul>
         </DetailSection>
 
-        <DetailSection icon={<WalletCards size={21} />} title="Biaya Pendaftaran">
+        {/* Biaya */}
+        <DetailSection
+          icon={<WalletCards size={21} />}
+          title="Biaya Pendaftaran"
+        >
           <div className="mt-5 grid gap-3">
             {extra.fees.map((fee) => (
               <div
@@ -390,7 +436,11 @@ export function CompetitionDetailPage() {
           </div>
         </DetailSection>
 
-        <DetailSection icon={<MessageCircle size={21} />} title="Kontak Panitia">
+        {/* Kontak */}
+        <DetailSection
+          icon={<MessageCircle size={21} />}
+          title="Kontak Panitia"
+        >
           <div className="mt-5 grid gap-3 text-sm font-semibold text-[#064452]/74">
             <ContactRow icon={<Phone size={17} />} value={extra.contactPhone} />
             <ContactRow icon={<Mail size={17} />} value={extra.contactEmail} />
@@ -401,6 +451,7 @@ export function CompetitionDetailPage() {
           </div>
         </DetailSection>
 
+        {/* Dokumen */}
         <DetailSection
           id="dokumen-panduan"
           icon={<Download size={21} />}
@@ -425,7 +476,6 @@ export function CompetitionDetailPage() {
                     </p>
                   </div>
                 </div>
-
                 {download.url ? (
                   <a
                     href={download.url}
@@ -444,6 +494,7 @@ export function CompetitionDetailPage() {
           </div>
         </DetailSection>
 
+        {/* CTA */}
         <section className="relative overflow-hidden rounded-[1.8rem] border border-white/90 bg-[linear-gradient(90deg,rgba(194,225,223,0.5)_0%,rgba(248,240,231,0.78)_42%,rgba(255,255,255,0.9)_100%)] p-6 shadow-[0_18px_44px_rgba(6,68,82,0.12),inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-[24px] md:p-8">
           <div className="relative z-10 grid gap-5 md:grid-cols-[1fr_auto] md:items-center">
             <div>
@@ -455,7 +506,6 @@ export function CompetitionDetailPage() {
                 GAMES 2026.
               </p>
             </div>
-
             {isOpen ? (
               <Link
                 to="/daftar"
@@ -474,6 +524,8 @@ export function CompetitionDetailPage() {
     </main>
   );
 }
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
 
 function DetailSection({
   id,
@@ -535,12 +587,10 @@ function ContactRow({ icon, value }: { icon: ReactNode; value: string }) {
   );
 }
 
-function formatCurrency(
-  value: number,
-  type: Competition["competition_type"],
-) {
-  if (value <= 0) return "Gratis";
+// ─── Formatters ───────────────────────────────────────────────────────────────
 
+function formatCurrency(value: number, type: Competition["competition_type"]) {
+  if (value <= 0) return "Gratis";
   return `${new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
@@ -552,7 +602,6 @@ function formatPeriod(competition: Competition) {
   if (!competition.registration_open_at && !competition.registration_close_at) {
     return "1 Juni - 31 Juli 2026";
   }
-
   const open = competition.registration_open_at
     ? new Date(competition.registration_open_at).toLocaleDateString("id-ID", {
         day: "2-digit",
@@ -560,7 +609,6 @@ function formatPeriod(competition: Competition) {
         year: "numeric",
       })
     : "Dibuka";
-
   const close = competition.registration_close_at
     ? new Date(competition.registration_close_at).toLocaleDateString("id-ID", {
         day: "2-digit",
@@ -568,19 +616,60 @@ function formatPeriod(competition: Competition) {
         year: "numeric",
       })
     : "Ditentukan panitia";
-
   return `${open} - ${close}`;
 }
+  
+// ─── Default timelines (fallback) ─────────────────────────────────────────────
+
+const DEFAULT_TIMELINES: DetailTimeline[] = [
+  {
+    title: "Pembukaan Pendaftaran",
+    dateLabel: "1 Juni 2026",
+    description: "Peserta dapat mengisi formulir pendaftaran secara online.",
+  },
+  {
+    title: "Penutupan Pendaftaran",
+    dateLabel: "31 Juli 2026",
+    description: "Batas akhir pengisian formulir dan pembayaran.",
+  },
+  {
+    title: "Seleksi & Verifikasi",
+    dateLabel: "1 - 10 Agustus 2026",
+    description: "Panitia melakukan verifikasi data dan berkas peserta.",
+  },
+  {
+    title: "Technical Meeting",
+    dateLabel: "15 September 2026",
+    description: "Peserta menerima arahan teknis pelaksanaan lomba.",
+  },
+  {
+    title: "Pelaksanaan Lomba",
+    dateLabel: "20 - 23 September 2026",
+    description: "Kompetisi dilaksanakan sesuai jadwal resmi panitia.",
+  },
+  {
+    title: "Pengumuman Pemenang",
+    dateLabel: "30 September 2026",
+    description: "Pengumuman juara dan proses penyerahan penghargaan.",
+  },
+];
+
+// ─── getCompetitionExtra ──────────────────────────────────────────────────────
 
 function getCompetitionExtra(competition: Competition): CompetitionExtra {
   const code = competition.code?.toUpperCase() ?? "";
   const name = competition.name?.toLowerCase() ?? "";
-  const typeLabel =
-    competition.competition_type === "team" ? "tim" : "peserta";
+  const typeLabel = competition.competition_type === "team" ? "tim" : "peserta";
   const priceLabel = formatCurrency(
     competition.registration_fee,
     competition.competition_type,
   );
+
+  // Timelines: pakai data dari DB jika ada, fallback ke default
+  const resolvedTimelines: DetailTimeline[] =
+    Array.isArray(competition.timelines) && competition.timelines.length > 0
+      ? toDetailTimelines(competition.timelines)
+      : DEFAULT_TIMELINES;
 
   const defaultExtra: CompetitionExtra = {
     subtitle:
@@ -595,38 +684,7 @@ function getCompetitionExtra(competition: Competition): CompetitionExtra {
     contactPhone: "+62 858-8560-6308",
     contactEmail: "panitia@games.example",
     contactInstagram: "@games.official",
-    timelines: [
-      {
-        title: "Pembukaan Pendaftaran",
-        date: "1 Juni 2026",
-        description: "Peserta dapat mengisi formulir pendaftaran secara online.",
-      },
-      {
-        title: "Penutupan Pendaftaran",
-        date: "31 Juli 2026",
-        description: "Batas akhir pengisian formulir dan pembayaran.",
-      },
-      {
-        title: "Seleksi & Verifikasi",
-        date: "1 - 10 Agustus 2026",
-        description: "Panitia melakukan verifikasi data dan berkas peserta.",
-      },
-      {
-        title: "Technical Meeting",
-        date: "15 September 2026",
-        description: "Peserta menerima arahan teknis pelaksanaan lomba.",
-      },
-      {
-        title: "Pelaksanaan Lomba",
-        date: "20 - 23 September 2026",
-        description: "Kompetisi dilaksanakan sesuai jadwal resmi panitia.",
-      },
-      {
-        title: "Pengumuman Pemenang",
-        date: "30 September 2026",
-        description: "Pengumuman juara dan proses penyerahan penghargaan.",
-      },
-    ],
+    timelines: resolvedTimelines,
     stages: [
       {
         title: "Pendaftaran",
@@ -711,10 +769,22 @@ function getCompetitionExtra(competition: Competition): CompetitionExtra {
         "Strategi Cepat Tepat",
       ],
       stages: [
-        { title: "Babak Penyisihan", description: "Sesi soal tertulis atau kuis cepat." },
-        { title: "Babak Semifinal", description: "Tim terbaik melaju ke sesi adu cepat." },
-        { title: "Babak Final", description: "Finalis menyelesaikan soal dengan sistem rebutan." },
-        { title: "Awarding", description: "Penetapan dan pengumuman pemenang." },
+        {
+          title: "Babak Penyisihan",
+          description: "Sesi soal tertulis atau kuis cepat.",
+        },
+        {
+          title: "Babak Semifinal",
+          description: "Tim terbaik melaju ke sesi adu cepat.",
+        },
+        {
+          title: "Babak Final",
+          description: "Finalis menyelesaikan soal dengan sistem rebutan.",
+        },
+        {
+          title: "Awarding",
+          description: "Penetapan dan pengumuman pemenang.",
+        },
       ],
       mechanisms: [
         {
@@ -750,9 +820,18 @@ function getCompetitionExtra(competition: Competition): CompetitionExtra {
         "Problem Solving",
       ],
       stages: [
-        { title: "Penyisihan", description: "Tes soal pilihan dan isian singkat." },
-        { title: "Semifinal", description: "Soal uraian dengan pembahasan mendalam." },
-        { title: "Final", description: "Sesi pemecahan masalah tingkat lanjut." },
+        {
+          title: "Penyisihan",
+          description: "Tes soal pilihan dan isian singkat.",
+        },
+        {
+          title: "Semifinal",
+          description: "Soal uraian dengan pembahasan mendalam.",
+        },
+        {
+          title: "Final",
+          description: "Sesi pemecahan masalah tingkat lanjut.",
+        },
       ],
     };
   }
@@ -842,13 +921,21 @@ function getCompetitionExtra(competition: Competition): CompetitionExtra {
         "Presentasi Karya",
       ],
       stages: [
-        { title: "Pengumpulan Abstrak", description: "Peserta mengirimkan abstrak sesuai tema lomba." },
-        { title: "Seleksi Karya", description: "Panitia dan juri menilai karya tulis peserta." },
-        { title: "Presentasi Final", description: "Finalis mempresentasikan karya di depan dewan juri." },
+        {
+          title: "Pengumpulan Abstrak",
+          description: "Peserta mengirimkan abstrak sesuai tema lomba.",
+        },
+        {
+          title: "Seleksi Karya",
+          description: "Panitia dan juri menilai karya tulis peserta.",
+        },
+        {
+          title: "Presentasi Final",
+          description: "Finalis mempresentasikan karya di depan dewan juri.",
+        },
       ],
     };
   }
 
   return defaultExtra;
 }
-

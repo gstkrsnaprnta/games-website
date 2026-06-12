@@ -1,5 +1,10 @@
 import { supabase } from "../lib/supabase";
-import type { PaymentMethod, PaymentStatus, RegistrationStatus, SubmissionStatus } from "../types/models";
+import type {
+  PaymentMethod,
+  PaymentStatus,
+  RegistrationStatus,
+  SubmissionStatus,
+} from "../types/models";
 
 export type AdminRegistrationRow = {
   id: string;
@@ -21,7 +26,13 @@ export type AdminRegistrationRow = {
   competitions: { name: string; code: string } | null;
   payment_methods?: Pick<
     PaymentMethod,
-    "label" | "type" | "bank_name" | "account_number" | "account_holder" | "qris_image_url" | "notes"
+    | "label"
+    | "type"
+    | "bank_name"
+    | "account_number"
+    | "account_holder"
+    | "qris_image_url"
+    | "notes"
   > | null;
   registration_members?: { id: string; name: string; role: string | null }[];
 };
@@ -51,7 +62,17 @@ export async function getAdminRegistrationById(id: string) {
 
 export async function updateAdminRegistrationStatus(
   id: string,
-  payload: Pick<AdminRegistrationRow, "registration_status" | "payment_status" | "submission_status" | "admin_note">,
+  payload: Pick<
+    AdminRegistrationRow,
+    | "registration_status"
+    | "payment_status"
+    | "submission_status"
+    | "admin_note"
+  >,
 ) {
   return supabase.from("registrations").update(payload).eq("id", id);
+}
+
+export async function deleteAdminRegistration(id: string) {
+  return supabase.from("registrations").delete().eq("id", id);
 }

@@ -9,11 +9,20 @@ import {
   getAdminCompetitions,
   saveAdminCompetition,
 } from "../../services/adminCompetitions";
-import type { Competition } from "../../types/models";
+import { replaceAdminTimelines } from "../../services/adminTimelines";
+import type { Competition, Timeline } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
 import { AdminPageState, BooleanBadge } from "./adminPageUtils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
+
+type TimelineForm = {
+  id?: string;
+  title: string;
+  description: string;
+  start_date: string;
+  end_date: string;
+};
 
 type CompetitionForm = {
   id?: string;
@@ -26,6 +35,14 @@ type CompetitionForm = {
   competition_type: "individual" | "team";
   short_description: string;
   description: string;
+  timelines: TimelineForm[];
+};
+
+const emptyTimelineItem: TimelineForm = {
+  title: "",
+  description: "",
+  start_date: "",
+  end_date: "",
 };
 
 const emptyForm: CompetitionForm = {
@@ -38,7 +55,248 @@ const emptyForm: CompetitionForm = {
   competition_type: "individual",
   short_description: "",
   description: "",
+  timelines: [],
 };
+
+// ─── Timeline Editor ──────────────────────────────────────────────────────────
+
+type TimelineEditorProps = {
+  timelines: TimelineForm[];
+  onChange: (timelines: TimelineForm[]) => void;
+};
+
+function TimelineEditor({ timelines, onChange }: TimelineEditorProps) {
+  function addItem() {
+    onChange([...timelines, { ...emptyTimelineItem }]);
+  }
+
+  function removeItem(index: number) {
+    onChange(timelines.filter((_, i) => i !== index));
+  }
+
+  function updateItem(index: number, patch: Partial<TimelineForm>) {
+    onChange(
+      timelines.map((item, i) => (i === index ? { ...item, ...patch } : item)),
+    );
+  }
+
+  function moveItem(index: number, direction: -1 | 1) {
+    const next = [...timelines];
+    const target = index + direction;
+    if (target < 0 || target >= next.length) return;
+    [next[index], next[target]] = [next[target], next[index]];
+    onChange(next);
+  }
+
+  return (
+    <div className="md:col-span-2 space-y-3">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-black text-slate-800">
+            Timeline Kompetisi
+          </p>
+          <p className="text-xs text-slate-400 mt-0.5">
+            Jadwal tahapan yang tampil di halaman detail lomba.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={addItem}
+          className="flex items-center gap-1.5 rounded-lg bg-cyan-50 border border-cyan-200 px-3 py-1.5 text-xs font-bold text-cyan-700 transition hover:bg-cyan-100 active:bg-cyan-200"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2.5}
+            stroke="currentColor"
+            className="h-3.5 w-3.5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
+          </svg>
+          Tambah Item
+        </button>
+      </div>
+
+      {timelines.length === 0 ? (
+        <div className="rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/60 px-4 py-6 text-center">
+          <p className="text-xs font-semibold text-slate-400">
+            Belum ada timeline —{" "}
+            <span className="font-bold text-slate-500">Tambah Item</span> untuk
+            mulai mengisi.
+          </p>
+          <p className="mt-1 text-xs text-slate-400">
+            Jika kosong, halaman detail akan menggunakan timeline default.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {timelines.map((item, index) => (
+            <div
+              key={index}
+              className="rounded-xl border border-slate-200 bg-slate-50/70 p-4"
+            >
+              {/* Row header */}
+              <div className="mb-3 flex items-center gap-2">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cyan-100 text-[11px] font-black text-cyan-700">
+                  {index + 1}
+                </span>
+                <span className="flex-1 truncate text-xs font-bold text-slate-500">
+                  {item.title || (
+                    <span className="italic text-slate-400">
+                      Belum ada judul
+                    </span>
+                  )}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => moveItem(index, -1)}
+                  disabled={index === 0}
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:cursor-not-allowed disabled:opacity-30"
+                  aria-label="Pindah ke atas"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    stroke="currentColor"
+                    className="h-3.5 w-3.5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moveItem(index, 1)}
+                  disabled={index === timelines.length - 1}
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:cursor-not-allowed disabled:opacity-30"
+                  aria-label="Pindah ke bawah"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    stroke="currentColor"
+                    className="h-3.5 w-3.5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeItem(index)}
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-rose-200 text-rose-400 transition hover:bg-rose-50 hover:text-rose-600"
+                  aria-label="Hapus item"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    stroke="currentColor"
+                    className="h-3.5 w-3.5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Fields */}
+              <div className="grid gap-3 sm:grid-cols-2">
+                {/* Judul — full width */}
+                <div className="sm:col-span-2">
+                  <label className="mb-1 block text-xs font-bold text-slate-600">
+                    Judul <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="cth. Pembukaan Pendaftaran"
+                    value={item.title}
+                    onChange={(e) =>
+                      updateItem(index, { title: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+                  />
+                </div>
+
+                {/* Tanggal mulai */}
+                <div>
+                  <label className="mb-1 block text-xs font-bold text-slate-600">
+                    Tanggal Mulai <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    value={item.start_date}
+                    onChange={(e) =>
+                      updateItem(index, { start_date: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+                  />
+                </div>
+
+                {/* Tanggal selesai */}
+                <div>
+                  <label className="mb-1 block text-xs font-bold text-slate-600">
+                    Tanggal Selesai{" "}
+                    <span className="font-normal text-slate-400">
+                      (opsional)
+                    </span>
+                  </label>
+                  <input
+                    type="date"
+                    value={item.end_date}
+                    min={item.start_date || undefined}
+                    onChange={(e) =>
+                      updateItem(index, { end_date: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+                  />
+                </div>
+
+                {/* Deskripsi — full width */}
+                <div className="sm:col-span-2">
+                  <label className="mb-1 block text-xs font-bold text-slate-600">
+                    Deskripsi{" "}
+                    <span className="font-normal text-slate-400">
+                      (opsional)
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="cth. Peserta dapat mengisi formulir pendaftaran secara online."
+                    value={item.description}
+                    onChange={(e) =>
+                      updateItem(index, { description: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 // ─── Modal Form Component ─────────────────────────────────────────────────────
 
@@ -70,13 +328,11 @@ function FormModal({
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ animation: "fadeIn 0.15s ease-out" }}
     >
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
         onClick={onClose}
       />
 
-      {/* Modal Panel */}
       <div
         className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl ring-1 ring-slate-200"
         style={{ animation: "scaleUp 0.2s ease-out" }}
@@ -191,13 +447,22 @@ function FormModal({
             Aktif
           </label>
 
+          {/* Divider */}
+          <div className="md:col-span-2 border-t border-slate-100 -mx-6 px-6 pt-2" />
+
+          {/* Timeline Editor */}
+          <TimelineEditor
+            timelines={form.timelines}
+            onChange={(timelines) => onChange({ timelines })}
+          />
+
           {formError ? (
             <div className="md:col-span-2">
               <ErrorState message={formError} />
             </div>
           ) : null}
 
-          {/* Footer Actions */}
+          {/* Footer */}
           <div className="md:col-span-2 flex items-center justify-end gap-3 border-t border-slate-100 pt-4 mt-2">
             <button
               type="button"
@@ -209,20 +474,20 @@ function FormModal({
             <button
               type="submit"
               disabled={saving}
-              className="rounded-lg bg-cyan-600 px-5 py-2 text-sm font-bold text-white transition hover:bg-cyan-700 active:bg-cyan-800 disabled:bg-slate-300 disabled:cursor-not-allowed"
+              className="rounded-lg bg-cyan-600 px-5 py-2 text-sm font-bold text-white transition hover:bg-cyan-700 active:bg-cyan-800 disabled:cursor-not-allowed disabled:bg-slate-300"
             >
-              {saving ? "Menyimpan..." : isEditing ? "Update Lomba" : "Tambah Lomba"}
+              {saving
+                ? "Menyimpan..."
+                : isEditing
+                  ? "Update Lomba"
+                  : "Tambah Lomba"}
             </button>
           </div>
         </form>
       </div>
 
-      {/* Keyframe styles */}
       <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to   { opacity: 1; }
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes scaleUp {
           from { opacity: 0; transform: scale(0.95) translateY(8px); }
           to   { opacity: 1; transform: scale(1)    translateY(0); }
@@ -248,18 +513,14 @@ function DeleteModal({ isOpen, onConfirm, onCancel }: DeleteModalProps) {
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ animation: "fadeIn 0.15s ease-out" }}
     >
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
         onClick={onCancel}
       />
-
-      {/* Modal Panel */}
       <div
         className="relative z-10 w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl ring-1 ring-slate-200 text-center"
         style={{ animation: "scaleUp 0.2s ease-out" }}
       >
-        {/* Warning Icon */}
         <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-rose-100">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -276,12 +537,11 @@ function DeleteModal({ isOpen, onConfirm, onCancel }: DeleteModalProps) {
             />
           </svg>
         </div>
-
         <h2 className="text-base font-black text-slate-950">Hapus Lomba?</h2>
         <p className="mt-2 text-sm text-slate-500">
-          Data lomba ini akan dihapus secara permanen dan tidak dapat dikembalikan.
+          Data lomba ini akan dihapus secara permanen dan tidak dapat
+          dikembalikan.
         </p>
-
         <div className="mt-6 flex gap-3">
           <button
             type="button"
@@ -299,12 +559,8 @@ function DeleteModal({ isOpen, onConfirm, onCancel }: DeleteModalProps) {
           </button>
         </div>
       </div>
-
       <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to   { opacity: 1; }
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes scaleUp {
           from { opacity: 0; transform: scale(0.95) translateY(8px); }
           to   { opacity: 1; transform: scale(1)    translateY(0); }
@@ -314,16 +570,36 @@ function DeleteModal({ isOpen, onConfirm, onCancel }: DeleteModalProps) {
   );
 }
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function timelinesFromCompetition(competition: Competition): TimelineForm[] {
+  if (
+    !Array.isArray(competition.timelines) ||
+    competition.timelines.length === 0
+  ) {
+    return [];
+  }
+  return competition.timelines.map((t) => ({
+    id: t.id,
+    title: t.title,
+    description: t.description ?? "",
+    start_date: t.start_date,
+    end_date: t.end_date ?? "",
+  }));
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export function AdminCompetitionsPage() {
-  const { data, error, loading, reload } = useAsyncData(getAdminCompetitions, []);
+  const { data, error, loading, reload } = useAsyncData(
+    getAdminCompetitions,
+    [],
+  );
 
   const [form, setForm] = useState<CompetitionForm>(emptyForm);
   const [formError, setFormError] = useState("");
   const [saving, setSaving] = useState(false);
 
-  // Modal visibility state
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
 
@@ -347,6 +623,7 @@ export function AdminCompetitionsPage() {
       competition_type: competition.competition_type,
       short_description: competition.short_description ?? "",
       description: competition.description ?? "",
+      timelines: timelinesFromCompetition(competition),
     });
     setFormError("");
     setIsFormOpen(true);
@@ -367,18 +644,32 @@ export function AdminCompetitionsPage() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFormError("");
+
     if (!form.name.trim() || !form.code.trim()) {
       setFormError("Nama dan kode lomba wajib diisi.");
       return;
     }
+
+    const invalidTimeline = form.timelines.find(
+      (t) => !t.title.trim() || !t.start_date,
+    );
+    if (invalidTimeline) {
+      setFormError(
+        "Setiap item timeline wajib memiliki judul dan tanggal mulai.",
+      );
+      return;
+    }
+
     setSaving(true);
-    const { error: saveError } = await saveAdminCompetition(
+
+    // 1. Simpan competition
+    const { data: savedId, error: saveError } = await saveAdminCompetition(
       {
         name: form.name.trim(),
         code: form.code.trim().toUpperCase(),
         participant_levels: form.participant_levels
           .split(",")
-          .map((item) => item.trim())
+          .map((s) => s.trim())
           .filter(Boolean),
         registration_status: form.registration_status,
         is_active: form.is_active,
@@ -389,11 +680,38 @@ export function AdminCompetitionsPage() {
       },
       form.id,
     );
-    setSaving(false);
+
     if (saveError) {
+      setSaving(false);
       setFormError(saveError.message);
       return;
     }
+
+    // 2. Simpan timelines (bulk replace)
+    const competitionId = form.id ?? savedId;
+    if (competitionId) {
+      const { error: timelineError } = await replaceAdminTimelines(
+        competitionId,
+        form.timelines.map((t, index) => ({
+          title: t.title.trim(),
+          description: t.description.trim() || null,
+          start_date: t.start_date,
+          end_date: t.end_date || null,
+          sort_order: index,
+          is_active: true,
+        })),
+      );
+      if (timelineError) {
+        setSaving(false);
+        setFormError(
+          `Lomba tersimpan, tapi gagal menyimpan timeline: ${timelineError.message}`,
+        );
+        reload();
+        return;
+      }
+    }
+
+    setSaving(false);
     closeFormModal();
     reload();
   }
@@ -412,12 +730,12 @@ export function AdminCompetitionsPage() {
 
   return (
     <section>
-      {/* Page Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-950">Lomba</h1>
           <p className="mt-1 text-sm text-slate-600">
-            Semua cabang lomba, termasuk yang nonaktif atau pendaftaran tertutup.
+            Semua cabang lomba, termasuk yang nonaktif atau pendaftaran
+            tertutup.
           </p>
         </div>
         <button
@@ -433,7 +751,11 @@ export function AdminCompetitionsPage() {
             stroke="currentColor"
             className="h-4 w-4"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
           </svg>
           Tambah Lomba
         </button>
@@ -446,10 +768,9 @@ export function AdminCompetitionsPage() {
         emptyDescription="Belum ada lomba."
       />
 
-      {/* Data Table */}
       <div className="mt-6">
         <DataTable>
-          <table className="w-full min-w-[860px] text-left text-sm">
+          <table className="w-full min-w-[900px] text-left text-sm">
             <thead className="bg-slate-50 text-slate-600">
               <tr>
                 <th className="p-3">Nama</th>
@@ -458,15 +779,22 @@ export function AdminCompetitionsPage() {
                 <th className="p-3">Status Pendaftaran</th>
                 <th className="p-3">Aktif</th>
                 <th className="p-3">Biaya</th>
+                <th className="p-3">Timeline</th>
                 <th className="p-3">Aksi</th>
               </tr>
             </thead>
             <tbody>
               {data?.map((competition) => (
                 <tr key={competition.id} className="border-t border-slate-100">
-                  <td className="p-3 font-semibold text-slate-950">{competition.name}</td>
-                  <td className="p-3 font-bold text-cyan-700">{competition.code}</td>
-                  <td className="p-3">{competition.participant_levels?.join(", ") || "-"}</td>
+                  <td className="p-3 font-semibold text-slate-950">
+                    {competition.name}
+                  </td>
+                  <td className="p-3 font-bold text-cyan-700">
+                    {competition.code}
+                  </td>
+                  <td className="p-3">
+                    {competition.participant_levels?.join(", ") || "-"}
+                  </td>
                   <td className="p-3">
                     <span
                       className={
@@ -475,13 +803,27 @@ export function AdminCompetitionsPage() {
                           : "rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-700"
                       }
                     >
-                      {competition.registration_status === "open" ? "Buka" : "Tutup"}
+                      {competition.registration_status === "open"
+                        ? "Buka"
+                        : "Tutup"}
                     </span>
                   </td>
                   <td className="p-3">
                     <BooleanBadge value={competition.is_active} />
                   </td>
-                  <td className="p-3">Rp{competition.registration_fee.toLocaleString("id-ID")}</td>
+                  <td className="p-3">
+                    Rp{competition.registration_fee.toLocaleString("id-ID")}
+                  </td>
+                  <td className="p-3">
+                    {Array.isArray(competition.timelines) &&
+                    competition.timelines.length > 0 ? (
+                      <span className="rounded-full bg-cyan-50 px-2.5 py-1 text-xs font-bold text-cyan-700">
+                        {competition.timelines.length} item
+                      </span>
+                    ) : (
+                      <span className="text-xs text-slate-400">Default</span>
+                    )}
+                  </td>
                   <td className="p-3">
                     <div className="flex gap-2">
                       <button
@@ -505,7 +847,6 @@ export function AdminCompetitionsPage() {
         </DataTable>
       </div>
 
-      {/* Modals */}
       <FormModal
         isOpen={isFormOpen}
         form={form}

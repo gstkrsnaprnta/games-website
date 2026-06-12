@@ -2,7 +2,11 @@ import { supabase } from "../lib/supabase";
 import type { Competition } from "../types/models";
 
 export async function getCompetitions() {
-  const { data, error } = await supabase.from("competitions").select("*").eq("is_active", true).order("name");
+  const { data, error } = await supabase
+    .from("competitions")
+    .select("*")
+    .eq("is_active", true)
+    .order("name");
   return { data: (data ?? []) as Competition[], error };
 }
 
@@ -16,12 +20,21 @@ export async function getOpenCompetitions() {
   return { data: (data ?? []) as Competition[], error };
 }
 
+// Join timelines (aktif saja, diurutkan by sort_order) untuk halaman detail.
 export async function getCompetitionBySlug(slug: string) {
   const { data, error } = await supabase
     .from("competitions")
-    .select("*")
+    .select(
+      `*, timelines (
+        id, competition_id, title, description,
+        start_date, end_date, is_active, sort_order
+      )`,
+    )
     .eq("slug", slug)
     .eq("is_active", true)
+    .eq("timelines.is_active", true)
+    .order("sort_order", { referencedTable: "timelines", ascending: true })
     .maybeSingle();
+
   return { data: data as Competition | null, error };
 }

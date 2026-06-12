@@ -1,5 +1,14 @@
-export type RegistrationStatus = "pending" | "verified" | "rejected" | "revision_required";
-export type PaymentStatus = "unpaid" | "pending" | "valid" | "rejected" | "revision_required";
+export type RegistrationStatus =
+  | "pending"
+  | "verified"
+  | "rejected"
+  | "revision_required";
+export type PaymentStatus =
+  | "unpaid"
+  | "pending"
+  | "valid"
+  | "rejected"
+  | "revision_required";
 export type PaymentMethodType = "qris" | "bank_transfer" | "ewallet";
 export type SubmissionStatus =
   | "not_required"
@@ -18,6 +27,17 @@ export type Event = {
   start_date: string | null;
   end_date: string | null;
   is_active: boolean;
+};
+
+export type Timeline = {
+  id: string;
+  competition_id: string | null; // ← tambah
+  title: string;
+  description: string | null;
+  start_date: string;
+  end_date: string | null;
+  is_active: boolean; // ← tambah (sesuai adminTimelines.ts)
+  sort_order: number;
 };
 
 export type Competition = {
@@ -40,6 +60,7 @@ export type Competition = {
   poster_url: string | null;
   contact_person: string | null;
   is_active: boolean;
+  timelines?: Timeline[]; // ← tambah (joined saat fetch)
 };
 
 export type PaymentMethod = {
@@ -56,15 +77,6 @@ export type PaymentMethod = {
   sort_order: number;
   created_at: string;
   updated_at: string;
-};
-
-export type Timeline = {
-  id: string;
-  title: string;
-  description: string | null;
-  start_date: string;
-  end_date: string | null;
-  sort_order: number;
 };
 
 export type FAQ = {
