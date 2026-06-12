@@ -10,7 +10,7 @@ import {
   saveAdminCompetition,
 } from "../../services/adminCompetitions";
 import { replaceAdminTimelines } from "../../services/adminTimelines";
-import type { Competition, Timeline } from "../../types/models";
+import type { Competition } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
 import { AdminPageState, BooleanBadge } from "./adminPageUtils";
 

@@ -67,9 +67,9 @@ export const sampleCompetitions: Competition[] = [
 ];
 
 export const sampleTimelines: Timeline[] = [
-  { id: "1", title: "Pembukaan pendaftaran", description: "Pendaftaran peserta GAMES dibuka.", start_date: "2026-06-01", end_date: null, sort_order: 1 },
-  { id: "2", title: "Penutupan pendaftaran", description: "Batas akhir pengisian formulir dan pembayaran.", start_date: "2026-07-15", end_date: null, sort_order: 2 },
-  { id: "3", title: "Pelaksanaan lomba", description: "Pelaksanaan cabang lomba sesuai jadwal panitia.", start_date: "2026-08-03", end_date: "2026-08-10", sort_order: 3 },
+  { id: "1", title: "Pembukaan pendaftaran", description: "Pendaftaran peserta GAMES dibuka.", start_date: "2026-06-01", end_date: null, sort_order: 1, competition_id: null, is_active: true  },
+  { id: "2", title: "Penutupan pendaftaran", description: "Batas akhir pengisian formulir dan pembayaran.", start_date: "2026-07-15", end_date: null, sort_order: 2, competition_id: null, is_active: true  },
+  { id: "3", title: "Pelaksanaan lomba", description: "Pelaksanaan cabang lomba sesuai jadwal panitia.", start_date: "2026-08-03", end_date: "2026-08-10", sort_order: 3, competition_id: null, is_active: true  },
 ];
 
 export const sampleFaqs: FAQ[] = [
