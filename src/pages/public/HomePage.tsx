@@ -23,7 +23,7 @@ import { ErrorState } from "../../components/shared/ErrorState";
 import { LoadingState } from "../../components/shared/LoadingState";
 import { getAnnouncements } from "../../services/announcements";
 import { getCompetitions } from "../../services/competitions";
-import type { Competition } from "../../types/models";
+import type { Competition, Timeline } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
 
 const stats = [
@@ -62,54 +62,61 @@ const stats = [
 // Panduan Lomba Tingkat Nasional (PTN/PTS) dan Panduan Lomba Tingkat
 // Regional (SD/SMP/SMA) agar mewakili gambaran umum seluruh rangkaian
 // kegiatan, bukan hanya satu jenis lomba saja.
-type TimelineItem = {
-  id: string;
-  title: string;
-  start_date: string;
-  end_date?: string;
-  description?: string;
-};
-
-const STATIC_TIMELINE: TimelineItem[] = [
+const STATIC_TIMELINE: Timeline[] = [
   {
     id: "1",
+    competition_id: null,
     title: "Pendaftaran Peserta",
     start_date: "2026-06-15",
     end_date: "2026-10-09",
     description:
       "Pendaftaran seluruh cabang lomba GAMES 2026, baik tingkat Nasional (Calculus Competition, Mathematical Statistics Competition, LKTI) maupun tingkat Regional (Olimpiade Matematika, LCTM, dan Esai).",
+    is_active: true,
+    sort_order: 1,
   },
   {
     id: "2",
+    competition_id: null,
     title: "Penyisihan & Pengumpulan Karya",
     start_date: "2026-09-14",
     end_date: "2026-09-25",
     description:
       "Tahap penyisihan Calculus Competition & Mathematical Statistics Competition, serta pengumpulan full paper LKTI dari peserta yang dinyatakan lolos abstrak.",
+    is_active: true,
+    sort_order: 2,
   },
   {
     id: "3",
+    competition_id: null,
     title: "Pengumuman Finalis",
     start_date: "2026-10-02",
     end_date: "2026-10-02",
     description:
       "Pengumuman finalis LKTI (5 karya terbaik) dan 5 besar Esai yang berhak melaju ke tahap presentasi di hadapan dewan juri.",
+    is_active: true,
+    sort_order: 3,
   },
   {
     id: "4",
+    competition_id: null,
     title: "Pembukaan & Final Lomba",
     start_date: "2026-10-12",
     end_date: "2026-10-16",
     description:
       "Pembukaan acara, seminar nasional, serta pelaksanaan final seluruh cabang lomba: Calculus Competition, Mathematical Statistics Competition, LKTI, LCTM, Olimpiade Matematika, dan Esai.",
+    is_active: true,
+    sort_order: 4,
   },
   {
     id: "5",
+    competition_id: null,
     title: "Pengumuman Juara & Penutupan",
     start_date: "2026-10-17",
     end_date: "2026-10-17",
     description:
       "Pengumuman juara seluruh cabang lomba GAMES 2026 serta acara penutupan resmi.",
+    is_active: true,
+    sort_order: 5,
   },
 ];
 

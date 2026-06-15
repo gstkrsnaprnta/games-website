@@ -12,7 +12,6 @@ import {
   FileText,
   FlaskConical,
   Mail,
-  MapPin,
   MessageCircle,
   Microscope,
   Phone,
@@ -540,24 +539,6 @@ function formatCurrency(value: number, type: Competition["competition_type"]) {
   }).format(value)} / ${type === "team" ? "tim" : "peserta"}`;
 }
 
-function formatPeriod(competition: Competition) {
-  const open = competition.registration_open_at
-    ? new Date(competition.registration_open_at).toLocaleDateString("id-ID", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      })
-    : "Dibuka";
-  const close = competition.registration_close_at
-    ? new Date(competition.registration_close_at).toLocaleDateString("id-ID", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      })
-    : "Ditentukan panitia";
-  return `${open} - ${close}`;
-}
-  
 // ─── Default timelines (fallback) ─────────────────────────────────────────────
 
 const DEFAULT_TIMELINES: DetailTimeline[] = [
