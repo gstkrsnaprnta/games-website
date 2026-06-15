@@ -23,7 +23,6 @@ import { ErrorState } from "../../components/shared/ErrorState";
 import { LoadingState } from "../../components/shared/LoadingState";
 import { getAnnouncements } from "../../services/announcements";
 import { getCompetitions } from "../../services/competitions";
-import { getTimelines } from "../../services/timelines";
 import type { Competition } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
 
@@ -58,9 +57,64 @@ const stats = [
   },
 ];
 
+// ===== Timeline statis (umum) GAMES 2026 =====
+// Sama dengan timeline pada halaman /timeline — diambil & dirangkum dari
+// Panduan Lomba Tingkat Nasional (PTN/PTS) dan Panduan Lomba Tingkat
+// Regional (SD/SMP/SMA) agar mewakili gambaran umum seluruh rangkaian
+// kegiatan, bukan hanya satu jenis lomba saja.
+type TimelineItem = {
+  id: string;
+  title: string;
+  start_date: string;
+  end_date?: string;
+  description?: string;
+};
+
+const STATIC_TIMELINE: TimelineItem[] = [
+  {
+    id: "1",
+    title: "Pendaftaran Peserta",
+    start_date: "2026-06-15",
+    end_date: "2026-10-09",
+    description:
+      "Pendaftaran seluruh cabang lomba GAMES 2026, baik tingkat Nasional (Calculus Competition, Mathematical Statistics Competition, LKTI) maupun tingkat Regional (Olimpiade Matematika, LCTM, dan Esai).",
+  },
+  {
+    id: "2",
+    title: "Penyisihan & Pengumpulan Karya",
+    start_date: "2026-09-14",
+    end_date: "2026-09-25",
+    description:
+      "Tahap penyisihan Calculus Competition & Mathematical Statistics Competition, serta pengumpulan full paper LKTI dari peserta yang dinyatakan lolos abstrak.",
+  },
+  {
+    id: "3",
+    title: "Pengumuman Finalis",
+    start_date: "2026-10-02",
+    end_date: "2026-10-02",
+    description:
+      "Pengumuman finalis LKTI (5 karya terbaik) dan 5 besar Esai yang berhak melaju ke tahap presentasi di hadapan dewan juri.",
+  },
+  {
+    id: "4",
+    title: "Pembukaan & Final Lomba",
+    start_date: "2026-10-12",
+    end_date: "2026-10-16",
+    description:
+      "Pembukaan acara, seminar nasional, serta pelaksanaan final seluruh cabang lomba: Calculus Competition, Mathematical Statistics Competition, LKTI, LCTM, Olimpiade Matematika, dan Esai.",
+  },
+  {
+    id: "5",
+    title: "Pengumuman Juara & Penutupan",
+    start_date: "2026-10-17",
+    end_date: "2026-10-17",
+    description:
+      "Pengumuman juara seluruh cabang lomba GAMES 2026 serta acara penutupan resmi.",
+  },
+];
+
 export function HomePage() {
   const competitions = useAsyncData(getCompetitions, []);
-  const timelines = useAsyncData(getTimelines, []);
   const announcements = useAsyncData(getAnnouncements, []);
 
   return (
@@ -177,14 +231,7 @@ export function HomePage() {
           </h2>
         </div>
 
-        {timelines.loading ? <LoadingState /> : null}
-        {timelines.error ? <ErrorState message={timelines.error} /> : null}
-        {!timelines.loading && !timelines.error && timelines.data?.length === 0 ? (
-          <EmptyState />
-        ) : null}
-        {timelines.data && timelines.data.length > 0 ? (
-          <TimelineHorizontal items={timelines.data.slice(0, 5)} />
-        ) : null}
+        <TimelineHorizontal items={STATIC_TIMELINE.slice(0, 5)} />
       </section>
 
       {/* ===== Pengumuman ===== */}

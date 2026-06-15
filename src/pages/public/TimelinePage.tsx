@@ -10,19 +10,67 @@ import {
   Trophy,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { EmptyState } from "../../components/shared/EmptyState";
-import { ErrorState } from "../../components/shared/ErrorState";
-import { LoadingState } from "../../components/shared/LoadingState";
-import { getTimelines } from "../../services/timelines";
-import type { Timeline } from "../../types/models";
 import { formatDate } from "../../utils/date";
-import { useAsyncData } from "../../utils/useAsyncData";
 
 const stepIcons = [CalendarDays, FileText, CheckCircle2, Trophy, Hourglass];
 
+// ===== Timeline statis (umum) GAMES 2026 =====
+// Diambil & dirangkum dari Panduan Lomba Tingkat Nasional (PTN/PTS) dan
+// Panduan Lomba Tingkat Regional (SD/SMP/SMA) agar mewakili gambaran
+// umum seluruh rangkaian kegiatan, bukan hanya satu jenis lomba saja.
+type TimelineItem = {
+  id: string;
+  title: string;
+  start_date: string;
+  end_date?: string;
+  description?: string;
+};
+
+const STATIC_TIMELINE: TimelineItem[] = [
+  {
+    id: "1",
+    title: "Pendaftaran Peserta",
+    start_date: "2026-06-15",
+    end_date: "2026-10-09",
+    description:
+      "Pendaftaran seluruh cabang lomba GAMES 2026, baik tingkat Nasional (Calculus Competition, Mathematical Statistics Competition, LKTI) maupun tingkat Regional (Olimpiade Matematika, LCTM, dan Esai).",
+  },
+  {
+    id: "2",
+    title: "Penyisihan & Pengumpulan Karya",
+    start_date: "2026-09-14",
+    end_date: "2026-09-25",
+    description:
+      "Tahap penyisihan Calculus Competition & Mathematical Statistics Competition, serta pengumpulan full paper LKTI dari peserta yang dinyatakan lolos abstrak.",
+  },
+  {
+    id: "3",
+    title: "Pengumuman Finalis",
+    start_date: "2026-10-02",
+    end_date: "2026-10-02",
+    description:
+      "Pengumuman finalis LKTI (5 karya terbaik) dan 5 besar Esai yang berhak melaju ke tahap presentasi di hadapan dewan juri.",
+  },
+  {
+    id: "4",
+    title: "Pembukaan & Final Lomba",
+    start_date: "2026-10-12",
+    end_date: "2026-10-16",
+    description:
+      "Pembukaan acara, seminar nasional, serta pelaksanaan final seluruh cabang lomba: Calculus Competition, Mathematical Statistics Competition, LKTI, LCTM, Olimpiade Matematika, dan Esai.",
+  },
+  {
+    id: "5",
+    title: "Pengumuman Juara & Penutupan",
+    start_date: "2026-10-17",
+    end_date: "2026-10-17",
+    description:
+      "Pengumuman juara seluruh cabang lomba GAMES 2026 serta acara penutupan resmi.",
+  },
+];
+
 export function TimelinePage() {
-  const { data, error, loading } = useAsyncData(getTimelines, []);
-  const items = data ?? [];
+  const items = STATIC_TIMELINE;
 
   return (
     <>
@@ -70,23 +118,13 @@ export function TimelinePage() {
 
       {/* ===== Timeline ===== */}
       <section className="container-hero py-7 md:py-12">
-        {loading ? <LoadingState /> : null}
-        {error ? <ErrorState message={error} /> : null}
-        {!loading && !error && items.length === 0 ? (
-          <EmptyState description="Timeline belum tersedia." />
-        ) : null}
+        <div className="hidden md:block">
+          <DesktopTimeline items={items.slice(0, 5)} />
+        </div>
 
-        {items.length > 0 ? (
-          <>
-            <div className="hidden md:block">
-              <DesktopTimeline items={items.slice(0, 5)} />
-            </div>
-
-            <div className="md:hidden">
-              <MobileTimeline items={items.slice(0, 5)} />
-            </div>
-          </>
-        ) : null}
+        <div className="md:hidden">
+          <MobileTimeline items={items.slice(0, 5)} />
+        </div>
       </section>
 
       {/* ===== Note ===== */}
@@ -121,7 +159,7 @@ export function TimelinePage() {
   );
 }
 
-function DesktopTimeline({ items }: { items: Timeline[] }) {
+function DesktopTimeline({ items }: { items: TimelineItem[] }) {
   const columnCount = Math.min(Math.max(items.length, 1), 5);
   const activeIndex = Math.min(3, Math.max(0, items.length - 1));
 
@@ -215,7 +253,7 @@ function DesktopTimeline({ items }: { items: Timeline[] }) {
   );
 }
 
-function MobileTimeline({ items }: { items: Timeline[] }) {
+function MobileTimeline({ items }: { items: TimelineItem[] }) {
   const activeIndex = Math.min(3, Math.max(0, items.length - 1));
 
   return (
@@ -369,7 +407,7 @@ function getTimelineSegmentClass(index: number) {
   return "bg-[#5fd0cc]";
 }
 
-function formatTimelineDate(item: Timeline) {
+function formatTimelineDate(item: TimelineItem) {
   if (!item.end_date) return formatDate(item.start_date);
   return `${formatDate(item.start_date)} - ${formatDate(item.end_date)}`;
 }

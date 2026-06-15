@@ -274,7 +274,7 @@ export function CompetitionDetailPage() {
           label="Tipe Peserta"
           value={
             competition.competition_type === "team"
-              ? `Tim (${competition.min_members}-${competition.max_members} orang)`
+              ? `Tim (1-3 orang)`
               : "Individu"
           }
         />
@@ -282,21 +282,6 @@ export function CompetitionDetailPage() {
           icon={<WalletCards size={20} />}
           label="Biaya Pendaftaran"
           value={priceLabel}
-        />
-        <InfoCard
-          icon={<Trophy size={20} />}
-          label="Kuota Peserta"
-          value={extra.quotaLabel}
-        />
-        <InfoCard
-          icon={<CalendarDays size={20} />}
-          label="Periode Pendaftaran"
-          value={formatPeriod(competition)}
-        />
-        <InfoCard
-          icon={<MapPin size={20} />}
-          label="Pelaksanaan"
-          value={extra.eventPeriod}
         />
       </section>
 
@@ -451,49 +436,6 @@ export function CompetitionDetailPage() {
           </div>
         </DetailSection>
 
-        {/* Dokumen */}
-        <DetailSection
-          id="dokumen-panduan"
-          icon={<Download size={21} />}
-          title="Dokumen & Panduan"
-        >
-          <div className="mt-5 grid gap-3">
-            {extra.downloads.map((download) => (
-              <div
-                key={download.title}
-                className="flex items-center justify-between gap-4 rounded-2xl border border-white/75 bg-white/55 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
-              >
-                <div className="flex min-w-0 items-center gap-4">
-                  <div className="grid size-11 shrink-0 place-items-center rounded-xl bg-[#faadb6]/28 text-[#7E032F]">
-                    <FileText size={20} />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="truncate font-black text-[#064452]">
-                      {download.title}
-                    </p>
-                    <p className="mt-1 text-xs font-semibold text-[#064452]/55">
-                      {download.meta}
-                    </p>
-                  </div>
-                </div>
-                {download.url ? (
-                  <a
-                    href={download.url}
-                    className="grid size-10 shrink-0 place-items-center rounded-full border border-[#064452]/10 bg-white/70 text-[#064452]"
-                    aria-label={`Unduh ${download.title}`}
-                  >
-                    <Download size={18} />
-                  </a>
-                ) : (
-                  <span className="shrink-0 rounded-full bg-stone-100 px-3 py-1 text-xs font-bold text-stone-500">
-                    Segera
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-        </DetailSection>
-
         {/* CTA */}
         <section className="relative overflow-hidden rounded-[1.8rem] border border-white/90 bg-[linear-gradient(90deg,rgba(194,225,223,0.5)_0%,rgba(248,240,231,0.78)_42%,rgba(255,255,255,0.9)_100%)] p-6 shadow-[0_18px_44px_rgba(6,68,82,0.12),inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-[24px] md:p-8">
           <div className="relative z-10 grid gap-5 md:grid-cols-[1fr_auto] md:items-center">
@@ -599,9 +541,6 @@ function formatCurrency(value: number, type: Competition["competition_type"]) {
 }
 
 function formatPeriod(competition: Competition) {
-  if (!competition.registration_open_at && !competition.registration_close_at) {
-    return "1 Juni - 31 Juli 2026";
-  }
   const open = competition.registration_open_at
     ? new Date(competition.registration_open_at).toLocaleDateString("id-ID", {
         day: "2-digit",
