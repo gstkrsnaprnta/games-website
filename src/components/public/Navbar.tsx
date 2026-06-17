@@ -17,7 +17,13 @@ export function Navbar() {
 
   return (
     <div className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-3 md:top-6 md:px-6">
-      <header className="glass-pill-nav nav-glass-frame pointer-events-auto relative w-full max-w-[1180px] overflow-hidden rounded-[1.55rem] px-3 py-3 transition-all duration-300 md:rounded-[1.7rem] md:px-7">
+      <header
+        className="glass-pill-nav nav-glass-frame pointer-events-auto relative w-full max-w-[1180px] rounded-[1.55rem] px-3 py-3 transition-all duration-300 md:rounded-[1.7rem] md:px-7"
+        style={{
+          backdropFilter: "blur(20px) saturate(1.5)",
+          WebkitBackdropFilter: "blur(20px) saturate(1.5)",
+        }}
+      >
         <span className="nav-edge-line nav-edge-line-top" aria-hidden="true" />
         <span
           className="nav-edge-line nav-edge-line-bottom"
