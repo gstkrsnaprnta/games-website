@@ -14,21 +14,21 @@ export function ContactPage() {
           icon={<Mail size={24} />}
           iconBg="bg-gradient-to-br from-[#770525] to-[#9b0b34]"
           title="Email"
-          value="panitia@games.example"
+          value="hmpsmath.fmipauho@gmail.com"
           description="Kirim pertanyaan kapan saja, kami balas dalam 1×24 jam kerja."
         />
         <ContactCard
           icon={<MessageCircle size={24} />}
           iconBg="bg-gradient-to-br from-[#004551] to-[#0a5a68]"
           title="WhatsApp"
-          value="08xx-xxxx-xxxx"
+          value="0852-5992-5171/0822-1423-7136"
           description="Chat langsung dengan tim panitia GAMES untuk respon cepat."
         />
         <ContactCard
           icon={<Send size={24} />}
           iconBg="bg-gradient-to-br from-[#faadb6] to-[#d68b94]"
           title="Sosial Media"
-          value="@games.official"
+          value="@games.uho"
           description="Ikuti update terbaru di Instagram dan platform sosial media kami."
         />
       </section>
@@ -42,7 +42,9 @@ export function ContactPage() {
               <div className="grid size-12 place-items-center rounded-2xl bg-white shadow-inner text-[#004551]">
                 <MapPin size={22} />
               </div>
-              <h2 className="text-2xl font-black text-[#004551]">Sekretariat GAMES</h2>
+              <h2 className="text-2xl font-black text-[#004551]">
+                Sekretariat GAMES
+              </h2>
             </div>
             <p className="text-base leading-relaxed text-[#004551]/75 max-w-2xl">
               Ruang 3 - Sekretariat Himpunan Mahasiswa FMIPA UHO
@@ -54,7 +56,13 @@ export function ContactPage() {
   );
 }
 
-function ContactCard({ icon, iconBg, title, value, description }: {
+function ContactCard({
+  icon,
+  iconBg,
+  title,
+  value,
+  description,
+}: {
   icon: React.ReactNode;
   iconBg: string;
   title: string;
@@ -63,12 +71,16 @@ function ContactCard({ icon, iconBg, title, value, description }: {
 }) {
   return (
     <div className="glass-card-premium rounded-[2rem] p-8">
-      <div className={`grid size-14 place-items-center rounded-2xl ${iconBg} text-white shadow-lg`}>
+      <div
+        className={`grid size-14 place-items-center rounded-2xl ${iconBg} text-white shadow-lg`}
+      >
         {icon}
       </div>
       <h2 className="mt-6 text-xl font-black text-[#004551]">{title}</h2>
       <p className="mt-2 text-lg font-black text-[#770525]">{value}</p>
-      <p className="mt-4 text-sm leading-relaxed text-[#004551]/60">{description}</p>
+      <p className="mt-4 text-sm leading-relaxed text-[#004551]/60">
+        {description}
+      </p>
     </div>
   );
 }
