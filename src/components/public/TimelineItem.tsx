@@ -78,7 +78,6 @@ export function TimelineList({ items }: { items: Timeline[] }) {
 
 export function TimelineHorizontal({ items }: { items: Timeline[] }) {
   const visibleItems = items.slice(0, 5);
-  const activeIndex = Math.min(3, Math.max(0, visibleItems.length - 1));
 
   if (visibleItems.length === 0) return null;
 
@@ -97,7 +96,6 @@ export function TimelineHorizontal({ items }: { items: Timeline[] }) {
 
             {visibleItems.map((item, index) => {
               const Icon = horizontalIcons[index % horizontalIcons.length];
-              const isActive = index === activeIndex;
 
               return (
                 <div key={item.id} className="relative flex gap-4">
@@ -105,7 +103,7 @@ export function TimelineHorizontal({ items }: { items: Timeline[] }) {
                     <div
                       className={[
                         "grid size-9 place-items-center rounded-full shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]",
-                        isActive
+                        index % 2 === 0
                           ? "bg-gradient-to-br from-[#7E032F] to-[#a60b3a] text-white shadow-[0_0_22px_rgba(126,3,47,0.35)]"
                           : "bg-gradient-to-br from-[#064252] to-[#0b5a63] text-[#c2e1df]",
                       ].join(" ")}
@@ -159,10 +157,7 @@ export function TimelineHorizontal({ items }: { items: Timeline[] }) {
               <div
                 className="h-full rounded-full bg-gradient-to-r from-[#c2e1df] via-[#9fd8d4] to-[#7E032F] shadow-[0_0_18px_rgba(159,216,212,0.75)]"
                 style={{
-                  width:
-                    visibleItems.length > 1
-                      ? `${(activeIndex / (visibleItems.length - 1)) * 100}%`
-                      : "0%",
+                  width: "100%",
                 }}
               />
             </div>
@@ -175,7 +170,6 @@ export function TimelineHorizontal({ items }: { items: Timeline[] }) {
             >
               {visibleItems.map((item, index) => {
                 const Icon = horizontalIcons[index % horizontalIcons.length];
-                const isActive = index === activeIndex;
 
                 return (
                   <div key={item.id} className="flex justify-center">
@@ -183,7 +177,7 @@ export function TimelineHorizontal({ items }: { items: Timeline[] }) {
                       <div
                         className={[
                           "grid size-11 place-items-center rounded-full shadow-[inset_0_1px_0_rgba(255,255,255,0.28)]",
-                          isActive
+                          index % 2 === 0
                             ? "bg-gradient-to-br from-[#7E032F] to-[#a60b3a] text-white shadow-[0_0_24px_rgba(126,3,47,0.38)]"
                             : "bg-gradient-to-br from-[#064252] to-[#0b5a63] text-[#c2e1df]",
                         ].join(" ")}
