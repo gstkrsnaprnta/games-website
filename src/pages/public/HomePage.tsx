@@ -12,6 +12,7 @@ import {
   Trophy,
   Users,
 } from "lucide-react";
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { AnnouncementCard } from "../../components/public/AnnouncementCard";
 import { CTASection } from "../../components/public/CTASection";
@@ -123,6 +124,18 @@ const STATIC_TIMELINE: Timeline[] = [
 export function HomePage() {
   const competitions = useAsyncData(getCompetitions, []);
   const announcements = useAsyncData(getAnnouncements, []);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: "left" | "right") => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, clientWidth } = scrollContainerRef.current;
+      const scrollAmount = clientWidth * 0.75;
+      scrollContainerRef.current.scrollTo({
+        left: direction === "left" ? scrollLeft - scrollAmount : scrollLeft + scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
 
   return (
     <>
@@ -191,13 +204,23 @@ export function HomePage() {
         </div>
 
         <div className="relative">
-          <div className="pointer-events-none absolute -left-5 top-1/2 z-20 hidden size-11 -translate-y-1/2 place-items-center rounded-full bg-[#faadb6] text-white shadow-[0_14px_34px_rgba(250,173,182,0.45)] lg:grid">
+          <button
+            onClick={() => scroll("left")}
+            className="absolute -left-5 top-1/2 z-20 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full bg-[#faadb6] text-white shadow-[0_14px_34px_rgba(250,173,182,0.45)] transition hover:bg-[#e0919b] hover:scale-105 active:scale-95 sm:flex"
+            type="button"
+            aria-label="Scroll Left"
+          >
             <ArrowLeft size={20} />
-          </div>
+          </button>
 
-          <div className="pointer-events-none absolute -right-5 top-1/2 z-20 hidden size-11 -translate-y-1/2 place-items-center rounded-full bg-[#faadb6] text-white shadow-[0_14px_34px_rgba(250,173,182,0.45)] lg:grid">
+          <button
+            onClick={() => scroll("right")}
+            className="absolute -right-5 top-1/2 z-20 hidden size-11 -translate-y-1/2 items-center justify-center rounded-full bg-[#faadb6] text-white shadow-[0_14px_34px_rgba(250,173,182,0.45)] transition hover:bg-[#e0919b] hover:scale-105 active:scale-95 sm:flex"
+            type="button"
+            aria-label="Scroll Right"
+          >
             <ArrowRight size={20} />
-          </div>
+          </button>
 
           {competitions.loading ? <LoadingState /> : null}
           {competitions.error ? <ErrorState message={competitions.error} /> : null}
@@ -207,8 +230,11 @@ export function HomePage() {
 
           {competitions.data && competitions.data.length > 0 ? (
             <>
-              <div className="hide-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3 pl-1 pr-6 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 lg:grid-cols-5">
-                {competitions.data.slice(0, 5).map((competition) => (
+              <div
+                ref={scrollContainerRef}
+                className="scroll-smooth hide-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto pb-4 pl-1 pr-6"
+              >
+                {competitions.data.map((competition) => (
                   <FeaturedCompetitionCard key={competition.id} competition={competition} />
                 ))}
               </div>
@@ -320,7 +346,7 @@ function FeaturedCompetitionCard({ competition }: { competition: Competition }) 
   return (
     <Link
       to={`/lomba/${competition.slug}`}
-      className="group glass-card-premium flex min-h-[218px] w-[218px] shrink-0 snap-start flex-col justify-between rounded-[1.35rem] p-4 text-left transition sm:w-auto md:min-h-[250px] md:p-5 lg:min-h-[270px]"
+      className="group glass-card-premium flex min-h-[218px] w-[230px] shrink-0 snap-start flex-col justify-between rounded-[1.35rem] p-4 text-left transition sm:w-[260px] md:w-[280px] md:min-h-[250px] md:p-5 lg:min-h-[270px]"
     >
       <div>
         <div className="mb-5 flex items-start justify-between gap-3 md:mb-6">
