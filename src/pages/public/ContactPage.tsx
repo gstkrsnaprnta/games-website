@@ -45,7 +45,7 @@ export function ContactPage() {
               <h2 className="text-2xl font-black text-[#004551]">Sekretariat GAMES</h2>
             </div>
             <p className="text-base leading-relaxed text-[#004551]/75 max-w-2xl">
-              Informasi detail lokasi sekretariat pendaftaran offline dan tempat pelaksanaan lomba tatap muka akan diumumkan melalui guidebook dan pengumuman resmi.
+              Ruang 3 - Sekretariat Himpunan Mahasiswa FMIPA UHO
             </p>
           </div>
         </div>
