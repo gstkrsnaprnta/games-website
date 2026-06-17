@@ -209,12 +209,13 @@ export function AboutPage() {
             </h1>
 
             <p className="mt-5 max-w-[15rem] text-[0.84rem] font-semibold leading-6 text-[#064452]/78 min-[390px]:max-w-[16.5rem] min-[390px]:text-[0.9rem] md:max-w-md md:text-base md:leading-7">
-              Ajang kompetisi, seminar nasional, dan pengembangan akademik
-              tingkat regional dan nasional.
+              Wadah bagi generasi muda untuk berkompetisi, berinovasi, dan
+              mengembangkan potensi akademik melalui rangkaian kompetisi dan
+              seminar nasional yang inspiratif.
               <span className="hidden md:inline">
                 {" "}
-                Diselenggarakan oleh HMPS Matematika FMIPA Universitas Halu
-                Oleo.
+                Diselenggarakan oleh HMPS Matematika Fakultas Matematika dan
+                Ilmu Pengetahuan Alam Universitas Halu Oleo.
               </span>
             </p>
 
