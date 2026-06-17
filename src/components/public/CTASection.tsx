@@ -93,7 +93,7 @@ export function CTASection() {
           </h2>
 
           <p className="mx-auto mt-4 max-w-md text-[0.9rem] font-semibold leading-7 text-[#064252]/74 md:text-base">
-            Tunjukkan kemampuan terbaikmu dan raih prestasi tingkat nasional!
+            Kreatif dengan Angka, Sukses dengan Logika
           </p>
 
           <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row md:mt-8 md:gap-4">
