@@ -376,24 +376,26 @@ export function AboutPage() {
 
         <div className="mt-7 grid gap-4 md:mt-9 md:grid-cols-2 md:gap-6">
           {/* Visi */}
-          <div className="relative overflow-hidden rounded-[1.6rem] border border-white/80 bg-gradient-to-br from-[#7E032F]/90 to-[#9f0a3a]/80 p-6 shadow-[0_20px_48px_rgba(126,3,47,0.22),inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur-[18px] md:p-7">
-            <div className="pointer-events-none absolute -right-10 -bottom-10 size-44 rounded-full bg-white/5 blur-2xl" />
-            <div className="pointer-events-none absolute right-4 top-4 size-24 rounded-full border border-white/12" />
+          <div className="relative overflow-hidden rounded-[1.6rem] border border-white/75 bg-[linear-gradient(135deg,rgba(255,255,255,0.62)_0%,rgba(255,255,255,0.34)_60%,rgba(194,225,223,0.28)_100%)] p-6 shadow-[0_18px_44px_rgba(6,66,82,0.12),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-[22px] md:p-7">
+            <div className="pointer-events-none absolute -right-10 -bottom-10 size-44 rounded-full bg-[#064252]/5 blur-2xl" />
+            <div className="pointer-events-none absolute right-4 top-4 size-24 rounded-full border border-[#064252]/30" />
+            <div className="pointer-events-none absolute right-8 top-8 size-16 rounded-full border border-[#064252]/25" />
 
             <div className="mb-5 flex items-center gap-3">
-              <div className="grid size-10 place-items-center rounded-full bg-white/18 backdrop-blur-md">
+              <div className="grid size-10 place-items-center rounded-full bg-[#064252]/12">
                 <Sparkles
                   size={18}
-                  className="text-[#faadb6]"
+                  className="text-[#064252]"
                   strokeWidth={2.2}
                 />
               </div>
-              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/60">
+
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#064252]/55">
                 Visi
               </p>
             </div>
 
-            <p className="text-[0.95rem] font-bold leading-7 text-white/90 md:text-base md:leading-8">
+            <p className="text-[0.95rem] font-bold leading-7 text-[#064252]/80 md:text-base md:leading-8">
               Menjadi ajang pengembangan akademik dan inovasi yang inspiratif,
               kompetitif, dan berkontribusi terhadap kemajuan pendidikan
               matematika dan sains di Indonesia.
@@ -410,6 +412,7 @@ export function AboutPage() {
                   strokeWidth={2.2}
                 />
               </div>
+
               <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#064252]/55">
                 Misi
               </p>
@@ -421,6 +424,7 @@ export function AboutPage() {
                   <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-[#7E032F]/12 text-[9px] font-black text-[#7E032F]">
                     {i + 1}
                   </span>
+
                   <p className="text-[0.82rem] font-semibold leading-6 text-[#064252]/78 md:text-[0.88rem]">
                     {m}
                   </p>
