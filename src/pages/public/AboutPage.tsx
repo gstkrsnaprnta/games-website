@@ -267,7 +267,8 @@ export function AboutPage() {
                 </strong>{" "}
                 merupakan ajang kompetisi, seminar nasional, dan pengembangan
                 akademik yang diselenggarakan oleh Himpunan Mahasiswa Program
-                Studi Matematika FMIPA Universitas Halu Oleo.
+                Studi Matematika Fakultas Matematika dan Ilmu Pengetahuan Alam
+                Universitas Halu Oleo.
               </p>
               <p className="text-[0.93rem] font-semibold leading-7 text-[#064252]/70 md:text-base md:leading-8">
                 Kegiatan ini menjadi wadah bagi siswa dan mahasiswa untuk
