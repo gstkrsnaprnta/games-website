@@ -1,4 +1,4 @@
-import { Mail, MessageCircle, Trophy } from "lucide-react";
+import { Mail, MessageCircle } from "lucide-react";
 import { FaInstagram, FaTiktok } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { getSponsors, type Sponsor } from "../../services/sponsors";
