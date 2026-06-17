@@ -2,6 +2,7 @@ import { Mail, MessageCircle } from "lucide-react";
 import { FaInstagram, FaTiktok } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { getSponsors, type Sponsor } from "../../services/sponsors";
+import { getPartners, type Partner } from "../../services/partners";
 import { useAsyncData } from "../../utils/useAsyncData";
 
 const navLinks = [
@@ -13,15 +14,102 @@ const navLinks = [
 ];
 
 /* ─────────────────────────────────────────────
-   Tier config
+   Logo card — shared by Partners & Sponsors
 ───────────────────────────────────────────── */
-const tierConfig: Record<string, { height: string; opacity: string }> = {
-  platinum: { height: "h-10 md:h-12", opacity: "opacity-90 hover:opacity-100" },
-  gold: { height: "h-8 md:h-10", opacity: "opacity-70 hover:opacity-90" },
-  silver: { height: "h-6 md:h-8", opacity: "opacity-50 hover:opacity-75" },
-  sponsor: { height: "h-6 md:h-7", opacity: "opacity-45 hover:opacity-70" },
-};
+function LogoCard({
+  name,
+  logo_url,
+  website_url,
+}: {
+  name: string;
+  logo_url: string | null;
+  website_url: string | null;
+}) {
+  const inner = (
+    <>
+      <div className="flex h-20 w-full items-center justify-center rounded-lg bg-white/10 p-3">
+        {logo_url ? (
+          <img
+            src={logo_url}
+            alt={name}
+            className="h-full w-full object-contain"
+          />
+        ) : (
+          <span className="text-center text-[10px] font-black uppercase tracking-widest text-white/50">
+            {name}
+          </span>
+        )}
+      </div>
+      <p className="mt-2.5 text-center text-[11px] font-semibold text-white/60">
+        {name}
+      </p>
+    </>
+  );
 
+  const sharedCls =
+    "flex flex-col items-center rounded-xl border border-white/10 bg-white/[0.06] p-3 backdrop-blur-sm transition hover:bg-white/12 hover:border-white/20 w-32";
+
+  if (website_url) {
+    return (
+      <a
+        href={website_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={sharedCls}
+      >
+        {inner}
+      </a>
+    );
+  }
+
+  return <div className={sharedCls}>{inner}</div>;
+}
+
+/* ─────────────────────────────────────────────
+   Section wrapper with heading underline
+───────────────────────────────────────────── */
+function SectionHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mb-5">
+      <h3 className="inline-block text-sm font-black text-white md:text-base">
+        {children}
+      </h3>
+      <div className="mt-1.5 h-[2px] w-10 rounded-full bg-[#faadb6]" />
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   Partner & Organizer Section
+───────────────────────────────────────────── */
+function PartnersSection() {
+  const { data, loading } = useAsyncData<Partner[]>(
+    async () => ({ data: await getPartners(), error: null }),
+    [],
+  );
+
+  if (loading || !data || data.length === 0) return null;
+
+  return (
+    <div className="mt-8 border-t border-white/10 pt-8">
+      <SectionHeading>Partner & Organizer</SectionHeading>
+      <div className="flex flex-wrap gap-3">
+        {data.map((p) => (
+          <LogoCard
+            key={p.id}
+            name={p.name}
+            logo_url={p.logo_url}
+            website_url={p.website_url}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   Sponsors Section
+───────────────────────────────────────────── */
 function tierOrder(type: string | null) {
   const order: Record<string, number> = {
     platinum: 0,
@@ -32,105 +120,30 @@ function tierOrder(type: string | null) {
   return order[type ?? "sponsor"] ?? 99;
 }
 
-/* ─────────────────────────────────────────────
-   Sponsor logo item
-───────────────────────────────────────────── */
-function SponsorLogo({ sponsor }: { sponsor: Sponsor }) {
-  const cfg =
-    tierConfig[sponsor.sponsor_type ?? "sponsor"] ?? tierConfig.sponsor;
-
-  const inner = sponsor.logo_url ? (
-    <img
-      src={sponsor.logo_url}
-      alt={sponsor.name}
-      className={`${cfg.height} w-auto object-contain transition-all duration-200 ${cfg.opacity} brightness-0 invert`}
-    />
-  ) : (
-    <span className="px-3 text-[10px] font-black uppercase tracking-widest text-white/35">
-      {sponsor.name}
-    </span>
-  );
-
-  if (sponsor.website_url) {
-    return (
-      <a
-        href={sponsor.website_url}
-        target="_blank"
-        rel="noopener noreferrer"
-        title={sponsor.name}
-        className="flex items-center justify-center rounded-lg border border-white/8 bg-white/4 px-4 py-2 backdrop-blur-sm transition hover:bg-white/10"
-      >
-        {inner}
-      </a>
-    );
-  }
-
-  return (
-    <div
-      title={sponsor.name}
-      className="flex items-center justify-center rounded-lg border border-white/8 bg-white/4 px-4 py-2 backdrop-blur-sm"
-    >
-      {inner}
-    </div>
-  );
-}
-
-/* ─────────────────────────────────────────────
-   Sponsor section
-───────────────────────────────────────────── */
 function SponsorsSection() {
   const { data, loading } = useAsyncData<Sponsor[]>(
     async () => ({ data: await getSponsors(), error: null }),
     [],
   );
 
-  // Don't render the section at all if loading failed or no sponsors
   if (loading || !data || data.length === 0) return null;
 
-  // Group by tier
   const sorted = [...data].sort(
     (a, b) => tierOrder(a.sponsor_type) - tierOrder(b.sponsor_type),
   );
 
-  const platinum = sorted.filter((s) => s.sponsor_type === "platinum");
-  const gold = sorted.filter((s) => s.sponsor_type === "gold");
-  const rest = sorted.filter(
-    (s) => s.sponsor_type !== "platinum" && s.sponsor_type !== "gold",
-  );
-
   return (
-    <div className="mt-8 border-t border-white/10 pt-6 md:mt-10 md:pt-8">
-      <p className="mb-5 text-center text-[10px] font-black uppercase tracking-[0.22em] text-white/35">
-        SPONSOR
-      </p>
-
-      <div className="flex flex-col items-center gap-4">
-        {/* Platinum — largest, centered row */}
-        {platinum.length > 0 && (
-          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
-            {platinum.map((s) => (
-              <SponsorLogo key={s.id} sponsor={s} />
-            ))}
-          </div>
-        )}
-
-        {/* Gold */}
-        {gold.length > 0 && (
-          <div className="flex flex-wrap items-center justify-center gap-3 md:gap-5">
-            {gold.map((s) => (
-              <SponsorLogo key={s.id} sponsor={s} />
-            ))}
-          </div>
-        )}
-
-        {/* Silver & general */}
-        {rest.length > 0 && (
-          <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4">
-            {rest.map((s) => (
-              <SponsorLogo key={s.id} sponsor={s} />
-            ))}
-          </div>
-        )}
+    <div className="mt-8 border-t border-white/10 pt-8">
+      <SectionHeading>Sponsor</SectionHeading>
+      <div className="flex flex-wrap gap-3">
+        {sorted.map((s) => (
+          <LogoCard
+            key={s.id}
+            name={s.name}
+            logo_url={s.logo_url}
+            website_url={s.website_url}
+          />
+        ))}
       </div>
     </div>
   );
@@ -161,6 +174,7 @@ export function Footer() {
       </span>
 
       <div className="container-page relative py-8 md:py-12 lg:py-14">
+        {/* Top grid */}
         <div className="grid gap-7 md:grid-cols-[1.4fr_1fr_1fr_1fr] md:gap-8 lg:gap-12">
           {/* Brand */}
           <div>
@@ -175,12 +189,10 @@ export function Footer() {
                   className="h-full w-full object-contain"
                 />
               </span>
-
               <div>
                 <h2 className="games-display text-xl font-extrabold tracking-wide !text-black md:text-2xl">
                   GAMES 2026
                 </h2>
-
                 <p className="mt-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#c2e1df] md:text-[10px]">
                   Gebyar Matematika Sains
                 </p>
@@ -198,10 +210,8 @@ export function Footer() {
           <div className="grid grid-cols-2 gap-6 md:contents">
             {/* Navigation */}
             <div className="text-sm">
-              <h3 className="text-sm font-black text-white md:text-base">
-                Navigasi
-              </h3>
-              <div className="mt-3 grid gap-2.5 text-xs font-medium text-white/62 md:mt-5 md:gap-3 md:text-sm">
+              <SectionHeading>Navigasi</SectionHeading>
+              <div className="grid gap-2.5 text-xs font-medium text-white/62 md:gap-3 md:text-sm">
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
@@ -214,12 +224,11 @@ export function Footer() {
                 ))}
               </div>
             </div>
+
             {/* Contact */}
             <div className="text-sm">
-              <h3 className="text-sm font-black text-white md:text-base">
-                Kontak
-              </h3>
-              <div className="mt-3 grid gap-3 text-xs font-medium text-white/62 md:mt-5 md:gap-4 md:text-sm">
+              <SectionHeading>Kontak</SectionHeading>
+              <div className="grid gap-3 text-xs font-medium text-white/62 md:gap-4 md:text-sm">
                 <a
                   href="mailto:hmpsmath.fmipauho@gmail.com"
                   className="flex items-start gap-2.5 transition hover:text-white"
@@ -232,7 +241,6 @@ export function Footer() {
                     size={15}
                     className="mt-0.5 shrink-0 text-[#faadb6]"
                   />
-
                   <div className="flex flex-col gap-1">
                     <a
                       href="https://wa.me/6285259925171"
@@ -241,7 +249,6 @@ export function Footer() {
                     >
                       Alwin: 0852 5992 5171
                     </a>
-
                     <a
                       href="https://wa.me/6282214237136"
                       target="_blank"
@@ -249,7 +256,6 @@ export function Footer() {
                     >
                       Rusmiati: 0822 1423 7136
                     </a>
-
                     <a
                       href="https://wa.me/6282299928836"
                       target="_blank"
@@ -261,13 +267,11 @@ export function Footer() {
                 </div>
               </div>
             </div>
+
             {/* Social */}
             <div className="col-span-2 text-sm md:col-span-1">
-              <h3 className="text-sm font-black text-white md:text-base">
-                Sosial Media
-              </h3>
-
-              <div className="mt-3 flex flex-wrap gap-3 text-xs font-medium text-white/68 md:mt-5 md:grid md:gap-4 md:text-sm">
+              <SectionHeading>Sosial Media</SectionHeading>
+              <div className="flex flex-wrap gap-3 text-xs font-medium text-white/68 md:grid md:gap-4 md:text-sm">
                 <a
                   href="https://instagram.com/games.uho"
                   target="_blank"
@@ -279,7 +283,6 @@ export function Footer() {
                   </span>
                   <span>@games.uho</span>
                 </a>
-
                 <a
                   href="https://www.tiktok.com/@hmpsmath.uho"
                   target="_blank"
@@ -292,11 +295,14 @@ export function Footer() {
                   <span>@hmpsmath.uho</span>
                 </a>
               </div>
-            </div>{" "}
+            </div>
           </div>
         </div>
 
-        {/* ===== Sponsors ===== */}
+        {/* Partner & Organizer */}
+        <PartnersSection />
+
+        {/* Sponsors */}
         <SponsorsSection />
 
         {/* Copyright */}
