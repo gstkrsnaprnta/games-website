@@ -38,7 +38,9 @@ export function HeroSection() {
                 to="/daftar"
                 className="primary-glossy inline-flex h-12 items-center justify-center gap-2 rounded-full px-5 text-sm font-black text-white"
               >
-                <span className="relative z-10 whitespace-nowrap">Daftar Sekarang</span>
+                <span className="relative z-10 whitespace-nowrap">
+                  Daftar Sekarang
+                </span>
                 <Rocket size={15} className="relative z-10 text-[#ffd5df]" />
               </Link>
 
@@ -81,9 +83,6 @@ export function HeroSection() {
 
           {/* left content */}
           <div className="relative z-30 flex flex-col justify-center md:p-10 lg:p-14">
-            <div className="mb-6 inline-flex self-start items-center rounded-full border border-[#faadb6]/45 bg-[#faadb6]/25 px-4 py-2 text-[11px] font-black uppercase tracking-[0.12em] text-[#7E032F] shadow-sm">
-              Event Kompetisi Nasional
-            </div>
 
             <h1 className="games-display font-black leading-[0.9] text-[#064252] drop-shadow-md md:text-[4.25rem] lg:whitespace-nowrap lg:text-[4.8rem] xl:text-[5.15rem]">
               GAMES{" "}
@@ -97,8 +96,13 @@ export function HeroSection() {
             </p>
 
             <p className="mt-6 max-w-md text-base font-medium leading-relaxed text-[#064252]/80">
-              Kompetisi Matematika dan Sains tingkat Nasional untuk mengasah
-              nalar, kreativitas, dan inovasi generasi muda Indonesia.
+              Kompetisi Matematika dan Sains tingkat Regional dan Nasional yang
+              menjadi wadah pengembangan nalar, kreativitas, inovasi, serta
+              prestasi generasi muda Indonesia melalui berbagai cabang kompetisi
+              yang menantang dan inspiratif.
+              <span className="mt-2 block font-bold text-[#7E032F]">
+                Kreatif dengan Angka, Sukses dengan Logika
+              </span>
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-4">
@@ -134,11 +138,35 @@ export function HeroSection() {
                   className="absolute inset-0 h-full w-full opacity-80"
                   viewBox="0 0 100 100"
                 >
-                  <ellipse className="orb-ring-line" cx="50" cy="50" rx="45" ry="15" />
-                  <ellipse className="orb-ring-line" cx="50" cy="50" rx="15" ry="45" />
+                  <ellipse
+                    className="orb-ring-line"
+                    cx="50"
+                    cy="50"
+                    rx="45"
+                    ry="15"
+                  />
+                  <ellipse
+                    className="orb-ring-line"
+                    cx="50"
+                    cy="50"
+                    rx="15"
+                    ry="45"
+                  />
                   <circle className="orb-dashed-line" cx="50" cy="50" r="45" />
-                  <line className="orb-axis-line" x1="50" y1="5" x2="50" y2="95" />
-                  <line className="orb-axis-line" x1="5" y1="50" x2="95" y2="50" />
+                  <line
+                    className="orb-axis-line"
+                    x1="50"
+                    y1="5"
+                    x2="50"
+                    y2="95"
+                  />
+                  <line
+                    className="orb-axis-line"
+                    x1="5"
+                    y1="50"
+                    x2="95"
+                    y2="50"
+                  />
                 </svg>
 
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-white">

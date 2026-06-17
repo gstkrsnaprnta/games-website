@@ -1,4 +1,5 @@
-import { Globe, Mail, MessageCircle, Trophy } from "lucide-react";
+import { Mail, MessageCircle, Trophy } from "lucide-react";
+import { FaInstagram, FaTiktok } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { getSponsors, type Sponsor } from "../../services/sponsors";
 import { useAsyncData } from "../../utils/useAsyncData";
@@ -78,7 +79,10 @@ function SponsorLogo({ sponsor }: { sponsor: Sponsor }) {
    Sponsor section
 ───────────────────────────────────────────── */
 function SponsorsSection() {
-  const { data, loading } = useAsyncData<Sponsor[]>(async () => ({ data: await getSponsors(), error: null }), []);
+  const { data, loading } = useAsyncData<Sponsor[]>(
+    async () => ({ data: await getSponsors(), error: null }),
+    [],
+  );
 
   // Don't render the section at all if loading failed or no sponsors
   if (loading || !data || data.length === 0) return null;
@@ -164,14 +168,20 @@ export function Footer() {
               to="/"
               className="inline-flex items-center gap-3 transition-opacity hover:opacity-85"
             >
-              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[#7E032F] to-[#9b0b34] text-white shadow-lg">
-                <Trophy size={18} className="text-[#faadb6]" />
+              <span className="flex size-11 shrink-0 items-center justify-center">
+                <img
+                  src="/logo-games.png"
+                  alt="Logo GAMES 2026"
+                  className="h-full w-full object-contain"
+                />
               </span>
+
               <div>
-                <h2 className="games-display text-lg font-black leading-none text-white md:text-xl">
+                <h2 className="games-display text-xl font-extrabold tracking-wide !text-black md:text-2xl">
                   GAMES 2026
                 </h2>
-                <p className="mt-1 text-[8px] font-bold uppercase tracking-[0.18em] text-[#c2e1df] md:text-[9px]">
+
+                <p className="mt-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#c2e1df] md:text-[10px]">
                   Gebyar Matematika Sains
                 </p>
               </div>
@@ -179,7 +189,8 @@ export function Footer() {
 
             <p className="mt-4 max-w-md text-xs font-medium leading-6 text-white/62 md:text-sm md:leading-7">
               Kompetisi matematika dan sains tingkat nasional untuk mengasah
-              nalar, kreativitas, dan inovasi generasi muda Indonesia.
+              nalar, kreativitas, serta inovasi generasi muda Indonesia melalui
+              semangat kompetisi, kolaborasi, dan prestasi.
             </p>
           </div>
 
@@ -203,7 +214,6 @@ export function Footer() {
                 ))}
               </div>
             </div>
-
             {/* Contact */}
             <div className="text-sm">
               <h3 className="text-sm font-black text-white md:text-base">
@@ -211,53 +221,78 @@ export function Footer() {
               </h3>
               <div className="mt-3 grid gap-3 text-xs font-medium text-white/62 md:mt-5 md:gap-4 md:text-sm">
                 <a
-                  href="mailto:panitia@games.example"
+                  href="mailto:hmpsmath.fmipauho@gmail.com"
                   className="flex items-start gap-2.5 transition hover:text-white"
                 >
                   <Mail size={15} className="mt-0.5 shrink-0 text-[#faadb6]" />
-                  <span className="break-all">panitia@games.example</span>
+                  <span className="break-all">hmpsmath.fmipauho@gmail.com</span>
                 </a>
-                <a
-                  href="#"
-                  className="flex items-start gap-2.5 transition hover:text-white"
-                >
+                <div className="flex items-start gap-2.5">
                   <MessageCircle
                     size={15}
                     className="mt-0.5 shrink-0 text-[#faadb6]"
                   />
-                  <span>08xx-xxxx-xxxx</span>
-                </a>
+
+                  <div className="flex flex-col gap-1">
+                    <a
+                      href="https://wa.me/6285259925171"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Alwin: 0852 5992 5171
+                    </a>
+
+                    <a
+                      href="https://wa.me/6282214237136"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Rusmiati: 0822 1423 7136
+                    </a>
+
+                    <a
+                      href="https://wa.me/6282299928836"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Mursyid: 0822 9992 8836
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
-
             {/* Social */}
             <div className="col-span-2 text-sm md:col-span-1">
               <h3 className="text-sm font-black text-white md:text-base">
                 Sosial Media
               </h3>
+
               <div className="mt-3 flex flex-wrap gap-3 text-xs font-medium text-white/68 md:mt-5 md:grid md:gap-4 md:text-sm">
                 <a
-                  href="#"
+                  href="https://instagram.com/games.uho"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 transition hover:bg-white/10 hover:text-white md:border-0 md:bg-transparent md:px-0 md:py-0"
                 >
                   <span className="grid size-7 place-items-center rounded-full bg-white/8 text-[#faadb6]">
-                    <Globe size={13} />
+                    <FaInstagram size={13} />
                   </span>
-                  <span>@games.official</span>
+                  <span>@games.uho</span>
                 </a>
+
                 <a
-                  href="#"
+                  href="https://www.tiktok.com/@hmpsmath.uho"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 transition hover:bg-white/10 hover:text-white md:border-0 md:bg-transparent md:px-0 md:py-0"
                 >
                   <span className="grid size-7 place-items-center rounded-full bg-white/8 text-[#faadb6]">
-                    <svg viewBox="0 0 24 24" className="size-3.5 fill-current">
-                      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1 0-5.78 2.92 2.92 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 3 15.57 6.34 6.34 0 0 0 9.37 22a6.33 6.33 0 0 0 6.33-6.33V9.17a8.16 8.16 0 0 0 3.89 1.02V6.69Z" />
-                    </svg>
+                    <FaTiktok size={13} />
                   </span>
-                  <span>@games.official</span>
+                  <span>@hmpsmath.uho</span>
                 </a>
               </div>
-            </div>
+            </div>{" "}
           </div>
         </div>
 

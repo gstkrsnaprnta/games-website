@@ -19,7 +19,10 @@ export function Navbar() {
     <div className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-3 md:top-6 md:px-6">
       <header className="glass-pill-nav nav-glass-frame pointer-events-auto relative w-full max-w-[1180px] overflow-hidden rounded-[1.55rem] px-3 py-3 transition-all duration-300 md:rounded-[1.7rem] md:px-7">
         <span className="nav-edge-line nav-edge-line-top" aria-hidden="true" />
-        <span className="nav-edge-line nav-edge-line-bottom" aria-hidden="true" />
+        <span
+          className="nav-edge-line nav-edge-line-bottom"
+          aria-hidden="true"
+        />
         <span className="nav-right-glow" aria-hidden="true" />
 
         <nav className="relative z-10 flex items-center justify-between gap-3 md:gap-8">
@@ -39,27 +42,20 @@ export function Navbar() {
             className="flex min-w-0 flex-1 items-center justify-center gap-2 text-[#064252] transition hover:opacity-85 lg:flex-none lg:justify-start lg:gap-3"
             aria-label="GAMES 2026"
           >
-            <span className="nav-logo-glass grid size-10 shrink-0 place-items-center sm:size-11">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="size-7 text-[#064252] drop-shadow-sm sm:size-8"
-              >
-                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                <polyline points="3.29 7 12 12 20.71 7" />
-                <line x1="12" y1="22" x2="12" y2="12" />
-              </svg>
+            <span className="flex size-10 shrink-0 items-center justify-center sm:size-9">
+              <img
+                src="/logo-games.png"
+                alt="Logo GAMES 2026"
+                className="h-full w-full object-contain"
+              />
             </span>
 
             <span className="block min-w-0 leading-tight">
-              <span className="block truncate text-[0.9rem] font-black tracking-tight sm:text-[1.08rem]">
+              <span className="block truncate text-[1rem] font-black tracking-tight text-[#064252] sm:text-[1.15rem]">
                 GAMES 2026
               </span>
-              <span className="block truncate text-[0.45rem] font-extrabold uppercase tracking-[0.1em] text-[#064252]/58 sm:text-[0.56rem]">
+
+              <span className="block truncate text-[0.5rem] font-extrabold uppercase tracking-[0.12em] text-[#064252]/65 sm:text-[0.62rem]">
                 Gebyar Matematika Sains
               </span>
             </span>

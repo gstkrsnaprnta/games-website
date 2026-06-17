@@ -17,7 +17,6 @@ import {
   Phone,
   Rocket,
   ShieldCheck,
-  Sparkles,
   Trophy,
   Users,
   WalletCards,
@@ -344,7 +343,7 @@ export function CompetitionDetailPage() {
         </DetailSection>
 
         {/* Materi */}
-        <DetailSection icon={<BookOpen size={21} />} title="Materi Kompetisi">
+        {/* <DetailSection icon={<BookOpen size={21} />} title="Materi Kompetisi">
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {extra.materials.map((material) => (
               <div
@@ -356,7 +355,7 @@ export function CompetitionDetailPage() {
               </div>
             ))}
           </div>
-        </DetailSection>
+        </DetailSection> */}
 
         {/* Mekanisme */}
         <DetailSection icon={<Trophy size={21} />} title="Mekanisme Lomba">
