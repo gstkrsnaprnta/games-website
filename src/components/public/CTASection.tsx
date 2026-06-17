@@ -64,15 +64,15 @@ export function CTASection() {
         {/* Right wireframe */}
         <div className="cta-geo-right pointer-events-none absolute right-6 top-1/2 hidden -translate-y-1/2 opacity-35 lg:block">
           <svg width="260" height="180" viewBox="0 0 260 180" fill="none">
-            <polygon points="116,36 176,66 116,96 56,66" stroke="#ffffff" strokeWidth="1.5" />
-            <polygon points="56,66 116,96 116,158 56,126" stroke="#ffffff" strokeWidth="1.5" />
-            <polygon points="176,66 116,96 116,158 176,126" stroke="#ffffff" strokeWidth="1.5" />
-            <line x1="116" y1="36" x2="116" y2="96" stroke="#ffffff" strokeWidth="1.2" opacity="0.8" />
+            <polygon points="116,36 176,66 116,96 56,66" stroke="#064252" strokeWidth="1.5" />
+            <polygon points="56,66 116,96 116,158 56,126" stroke="#064252" strokeWidth="1.5" />
+            <polygon points="176,66 116,96 116,158 176,126" stroke="#064252" strokeWidth="1.5" />
+            <line x1="116" y1="36" x2="116" y2="96" stroke="#064252" strokeWidth="1.2" opacity="0.8" />
 
-            <polygon points="178,150 234,104 246,166" stroke="#ffffff" strokeWidth="1.5" opacity="0.8" />
-            <line x1="210" y1="38" x2="178" y2="150" stroke="#ffffff" strokeWidth="1.5" opacity="0.8" />
-            <line x1="210" y1="38" x2="234" y2="104" stroke="#ffffff" strokeWidth="1.5" opacity="0.8" />
-            <line x1="210" y1="38" x2="246" y2="166" stroke="#ffffff" strokeWidth="1.5" opacity="0.8" />
+            <polygon points="178,150 234,104 246,166" stroke="#064252" strokeWidth="1.5" opacity="0.8" />
+            <line x1="210" y1="38" x2="178" y2="150" stroke="#064252" strokeWidth="1.5" opacity="0.8" />
+            <line x1="210" y1="38" x2="234" y2="104" stroke="#064252" strokeWidth="1.5" opacity="0.8" />
+            <line x1="210" y1="38" x2="246" y2="166" stroke="#064252" strokeWidth="1.5" opacity="0.8" />
 
             <circle cx="210" cy="38" r="3" fill="#faadb6" />
             <circle cx="116" cy="96" r="3" fill="#c2e1df" />
