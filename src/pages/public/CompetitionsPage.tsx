@@ -10,7 +10,7 @@ import type { Competition } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
 import { Calendar } from "lucide-react";
 
-const filters = ["Semua", "SD", "SMP", "SMA", "Mahasiswa", "Individu", "Tim", "Pendaftaran Dibuka"];
+const filters = ["Semua", "SD", "SMP", "SMA", "Mahasiswa", "Umum", "Individu", "Tim", "Pendaftaran Dibuka"];
 
 export function CompetitionsPage() {
   const { data, error, loading } = useAsyncData(getCompetitions, []);
