@@ -241,21 +241,14 @@ export function CompetitionDetailPage() {
                 Daftar Sekarang <Rocket size={16} />
               </Link>
             ) : null}
-            {competition.guidebook_url ? (
-              <a
-                href={competition.guidebook_url}
-                className="btn-glass-outline inline-flex h-12 items-center justify-center gap-2 rounded-full px-8 text-sm font-black text-[#064452]"
-              >
-                Unduh Panduan <Download size={16} />
-              </a>
-            ) : (
-              <a
-                href="#dokumen-panduan"
-                className="btn-glass-outline inline-flex h-12 items-center justify-center gap-2 rounded-full px-8 text-sm font-black text-[#064452]"
-              >
-                Lihat Panduan <FileText size={16} />
-              </a>
-            )}
+            <a
+              href="https://drive.google.com/drive/folders/1m79FvIwAUj5De740G9i0EMVVk2Iz7Cnc"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-glass-outline inline-flex h-12 items-center justify-center gap-2 rounded-full px-8 text-sm font-black text-[#064452]"
+            >
+              Unduh Panduan <Download size={16} />
+            </a>
           </div>
         </div>
       </section>

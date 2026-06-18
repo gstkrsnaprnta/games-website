@@ -44,13 +44,15 @@ export function HeroSection() {
                 <Rocket size={15} className="relative z-10 text-[#ffd5df]" />
               </Link>
 
-              <Link
-                to="/lomba"
+              <a
+                href="https://drive.google.com/drive/folders/1m79FvIwAUj5De740G9i0EMVVk2Iz7Cnc"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[#cde8e4] bg-white/78 px-5 text-sm font-black text-[#004551] shadow-[0_14px_28px_rgba(0,69,81,0.08)] backdrop-blur-md"
               >
                 <span className="whitespace-nowrap">Lihat Panduan</span>
                 <FileText size={16} />
-              </Link>
+              </a>
             </div>
           </div>
 
@@ -114,12 +116,14 @@ export function HeroSection() {
                 <Rocket size={16} className="relative z-10 text-[#faadb6]" />
               </Link>
 
-              <Link
-                to="/lomba"
+              <a
+                href="https://drive.google.com/drive/folders/1m79FvIwAUj5De740G9i0EMVVk2Iz7Cnc"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="btn-glass-outline inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-bold text-[#064252]"
               >
                 Lihat Panduan <FileText size={16} />
-              </Link>
+              </a>
             </div>
           </div>
 

@@ -175,13 +175,15 @@ export function CompetitionsPage() {
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row md:justify-end">
-              <Link
-                to="/lomba"
+              <a
+                href="https://drive.google.com/drive/folders/1m79FvIwAUj5De740G9i0EMVVk2Iz7Cnc"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="btn-glass-outline inline-flex h-11 items-center justify-center gap-2 rounded-full px-6 text-sm font-black text-[#064452]"
               >
                 Lihat Panduan
                 <ArrowRight size={15} />
-              </Link>
+              </a>
 
               <Link
                 to="/kontak"

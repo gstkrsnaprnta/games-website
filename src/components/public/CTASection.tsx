@@ -62,13 +62,15 @@ export function CTASection() {
         </div>
 
         {/* Right wireframe */}
-        <div className="cta-geo-right pointer-events-none absolute right-6 top-1/2 hidden -translate-y-1/2 opacity-35 lg:block">
+        <div className="cta-geo-right pointer-events-none absolute right-6 top-1/2 hidden -translate-y-1/2 opacity-80 lg:block">
           <svg width="260" height="180" viewBox="0 0 260 180" fill="none">
+            {/* Cube */}
             <polygon points="116,36 176,66 116,96 56,66" stroke="#064252" strokeWidth="1.5" />
             <polygon points="56,66 116,96 116,158 56,126" stroke="#064252" strokeWidth="1.5" />
             <polygon points="176,66 116,96 116,158 176,126" stroke="#064252" strokeWidth="1.5" />
             <line x1="116" y1="36" x2="116" y2="96" stroke="#064252" strokeWidth="1.2" opacity="0.8" />
 
+            {/* Pyramid */}
             <polygon points="178,150 234,104 246,166" stroke="#064252" strokeWidth="1.5" opacity="0.8" />
             <line x1="210" y1="38" x2="178" y2="150" stroke="#064252" strokeWidth="1.5" opacity="0.8" />
             <line x1="210" y1="38" x2="234" y2="104" stroke="#064252" strokeWidth="1.5" opacity="0.8" />
@@ -76,6 +78,17 @@ export function CTASection() {
 
             <circle cx="210" cy="38" r="3" fill="#faadb6" />
             <circle cx="116" cy="96" r="3" fill="#c2e1df" />
+
+            {/* Formulas for Cube & Pyramid */}
+            <text x="80" y="22" fill="#064252" fontSize="12" fontFamily="serif" fontStyle="italic" opacity="0.85">V - E + F = 2</text>
+            <text x="12" y="55" fill="#064252" fontSize="13" fontFamily="serif" fontStyle="italic" opacity="0.85">V = s³</text>
+            <text x="12" y="135" fill="#064252" fontSize="13" fontFamily="serif" fontStyle="italic" opacity="0.85">A = 6s²</text>
+            
+            <text x="175" y="24" fill="#064252" fontSize="13" fontFamily="serif" fontStyle="italic" opacity="0.85">V = </text>
+            <text x="198" y="17" fill="#064252" fontSize="11" fontFamily="serif" fontStyle="italic" opacity="0.85">1</text>
+            <line x1="195" y1="22" x2="208" y2="22" stroke="#064252" strokeWidth="1" opacity="0.85" />
+            <text x="198" y="32" fill="#064252" fontSize="11" fontFamily="serif" fontStyle="italic" opacity="0.85">3</text>
+            <text x="212" y="24" fill="#064252" fontSize="13" fontFamily="serif" fontStyle="italic" opacity="0.85">B · h</text>
           </svg>
         </div>
 
@@ -105,7 +118,9 @@ export function CTASection() {
             </Link>
 
             <a
-              href="#"
+              href="https://drive.google.com/drive/folders/1m79FvIwAUj5De740G9i0EMVVk2Iz7Cnc"
+              target="_blank"
+              rel="noopener noreferrer"
               className="btn-glass-outline inline-flex h-12 w-full items-center justify-center gap-2 rounded-full px-7 text-sm font-black text-[#064252] sm:w-auto md:h-13 md:px-8"
             >
               Unduh Brosur <Download size={17} />
