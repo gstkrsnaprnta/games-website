@@ -8,12 +8,11 @@ export interface Partner {
   sort_order: number;
 }
 
-export async function getPartners(): Promise<Partner[]> {
+export async function getPartners() {
   const { data, error } = await supabase
     .from("partners")
     .select("id, name, logo_url, website_url, sort_order")
     .eq("is_active", true)
     .order("sort_order");
-  if (error) throw error;
-  return data ?? [];
+  return { data: (data ?? []) as Partner[], error };
 }

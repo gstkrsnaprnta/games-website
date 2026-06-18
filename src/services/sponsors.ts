@@ -12,13 +12,11 @@ export interface Sponsor {
   created_at: string | null;
 }
 
-export async function getSponsors(): Promise<Sponsor[]> {
+export async function getSponsors() {
   const { data, error } = await supabase
     .from("sponsors")
     .select("*")
     .eq("is_active", true)
     .order("sort_order", { ascending: true });
-
-  if (error) throw new Error(error.message);
-  return data ?? [];
+  return { data: (data ?? []) as Sponsor[], error };
 }

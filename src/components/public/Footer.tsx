@@ -83,10 +83,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
    Partner & Organizer Section
 ───────────────────────────────────────────── */
 function PartnersSection() {
-  const { data, loading } = useAsyncData<Partner[]>(
-    async () => ({ data: await getPartners(), error: null }),
-    [],
-  );
+  const { data, loading } = useAsyncData<Partner[]>(getPartners, []);
 
   if (loading || !data || data.length === 0) return null;
 
@@ -121,10 +118,7 @@ function tierOrder(type: string | null) {
 }
 
 function SponsorsSection() {
-  const { data, loading } = useAsyncData<Sponsor[]>(
-    async () => ({ data: await getSponsors(), error: null }),
-    [],
-  );
+  const { data, loading } = useAsyncData<Sponsor[]>(getSponsors, []);
 
   if (loading || !data || data.length === 0) return null;
 
@@ -190,7 +184,7 @@ export function Footer() {
                 />
               </span>
               <div>
-                <h2 className="games-display text-xl font-extrabold tracking-wide !text-black md:text-2xl">
+                <h2 className="games-display text-xl font-extrabold tracking-wide !text-white md:text-2xl">
                   GAMES 2026
                 </h2>
                 <p className="mt-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#c2e1df] md:text-[10px]">
