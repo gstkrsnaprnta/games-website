@@ -18,14 +18,15 @@ import { AnnouncementCard } from "../../components/public/AnnouncementCard";
 import { CTASection } from "../../components/public/CTASection";
 import { HeroSection } from "../../components/public/HeroSection";
 // import { SectionHeading } from "../../components/public/SectionHeading";
-import { TimelineHorizontal } from "../../components/public/TimelineItem";
+import { VerticalTimeline } from "../../components/public/TimelineItem";
+import type { SharedTimelineItem } from "../../components/public/TimelineItem";
 import { EmptyState } from "../../components/shared/EmptyState";
 import { ErrorState } from "../../components/shared/ErrorState";
 import { LoadingState } from "../../components/shared/LoadingState";
 import { getAnnouncements } from "../../services/announcements";
 import { getCompetitions } from "../../services/competitions";
 import { getGeneralTimelines } from "../../services/timelines";
-import type { Competition, Timeline, GeneralTimelineItem, TimelineScope } from "../../types/models";
+import type { Competition, GeneralTimelineItem, TimelineScope } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
 
 const stats = [
@@ -266,7 +267,7 @@ export function HomePage() {
         ) : activeTimeline.length === 0 ? (
           <div className="py-12"><EmptyState description={`Timeline ${activeScope === "regional" ? "Regional" : "Nasional"} belum tersedia.`} /></div>
         ) : (
-          <TimelineHorizontal items={activeTimeline as unknown as Timeline[]} />
+          <VerticalTimeline items={activeTimeline as unknown as SharedTimelineItem[]} scope={activeScope} />
         )}
       </section>
 

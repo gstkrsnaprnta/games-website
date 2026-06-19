@@ -9,51 +9,9 @@ import {
 import { Link } from "react-router-dom";
 import { getGeneralTimelines } from "../../services/timelines";
 import type { GeneralTimelineItem, TimelineScope } from "../../types/models";
+import { VerticalTimeline } from "../../components/public/TimelineItem";
 
-function parseLocalDate(dateString: string): Date {
-  const [year, month, day] = dateString.split("-").map(Number);
-  return new Date(year, month - 1, day);
-}
 
-function formatDate(dateString: string): string {
-  return new Intl.DateTimeFormat("id-ID", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(parseLocalDate(dateString));
-}
-
-function formatTimelineDateRange(startDateStr: string, endDateStr: string | null): string {
-  if (!endDateStr || startDateStr === endDateStr) {
-    return formatDate(startDateStr);
-  }
-
-  const start = parseLocalDate(startDateStr);
-  const end = parseLocalDate(endDateStr);
-
-  const startDay = start.getDate();
-  const startMonth = start.getMonth();
-  const startYear = start.getFullYear();
-
-  const endDay = end.getDate();
-  const endMonth = end.getMonth();
-  const endYear = end.getFullYear();
-
-  const monthNames = [
-    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-  ];
-
-  if (startYear === endYear) {
-    if (startMonth === endMonth) {
-      return `${startDay}–${endDay} ${monthNames[startMonth]} ${startYear}`;
-    } else {
-      return `${startDay} ${monthNames[startMonth]}–${endDay} ${monthNames[endMonth]} ${startYear}`;
-    }
-  } else {
-    return `${startDay} ${monthNames[startMonth]} ${startYear}–${endDay} ${monthNames[endMonth]} ${endYear}`;
-  }
-}
 
 export function TimelinePage() {
   const [data, setData] = useState<GeneralTimelineItem[]>([]);
@@ -277,87 +235,7 @@ function TimelineSkeleton() {
   );
 }
 
-function VerticalTimeline({ items, scope }: { items: GeneralTimelineItem[]; scope: TimelineScope }) {
-  if (items.length === 0) {
-    return (
-      <div
-        role="tabpanel"
-        id={`panel-${scope}`}
-        aria-labelledby={`tab-${scope}`}
-        className="mx-auto max-w-md py-16 text-center"
-      >
-        <p className="text-base font-semibold text-[#064452]/72">
-          Timeline {scope === "regional" ? "Regional" : "Nasional"} belum tersedia.
-        </p>
-      </div>
-    );
-  }
 
-  return (
-    <div
-      role="tabpanel"
-      id={`panel-${scope}`}
-      aria-labelledby={`tab-${scope}`}
-      className="relative mx-auto max-w-[850px] px-4 py-12 lg:py-16"
-    >
-      {/* Central Line for Desktop >= 1024px, Left Line for Mobile/Tablet < 1024px */}
-      <div className="absolute left-6 top-4 bottom-4 w-[3px] rounded-full bg-gradient-to-b from-[#5fa6a5] via-[#7E032F] to-[#c2e1df] shadow-[0_0_12px_rgba(95,166,165,0.4)] lg:left-1/2 lg:-translate-x-1/2" />
-
-      <div className="space-y-10 lg:space-y-14">
-        {items.map((item, index) => {
-          const isLeft = index % 2 === 0;
-
-          return (
-            <div
-              key={item.id}
-              className={`relative flex flex-col lg:grid lg:grid-cols-2 lg:gap-x-16 ${
-                isLeft ? "lg:flex-row" : "lg:flex-row-reverse"
-              }`}
-            >
-              {/* Bullet/Node */}
-              <div className="absolute left-6 top-8 z-10 flex size-[18px] -translate-x-1/2 items-center justify-center rounded-full border border-white bg-[#064452] shadow-[0_0_10px_rgba(6,68,82,0.3)] lg:left-1/2 lg:-translate-x-1/2">
-                <div className="size-[8px] rounded-full bg-[#faadb6] animate-pulse" />
-              </div>
-
-              {/* Card Container */}
-              <div
-                className={`ml-12 lg:ml-0 ${
-                  isLeft ? "lg:col-start-1" : "lg:col-start-2"
-                }`}
-              >
-                <article
-                  className={[
-                    "min-w-0 rounded-[1.45rem] border border-white/76 bg-white/64 px-6 py-6 shadow-[0_12px_36px_rgba(6,68,82,0.06),inset_0_1px_0_rgba(255,255,255,0.92)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:bg-white/80 hover:shadow-[0_16px_44px_rgba(6,68,82,0.12)]",
-                    isLeft ? "lg:origin-right" : "lg:origin-left",
-                  ].join(" ")}
-                >
-                  {/* Date Badge */}
-                  <span
-                    className="inline-flex items-center rounded-full border border-[#faadb6]/35 bg-[#faadb6]/20 px-3.5 py-1 text-[10px] font-black uppercase tracking-wider text-[#7E032F]"
-                  >
-                    {formatTimelineDateRange(item.start_date, item.end_date)}
-                  </span>
-
-                  {/* Title */}
-                  <h3 className="mt-3 text-lg font-black leading-snug text-[#064452] md:text-xl">
-                    {item.title}
-                  </h3>
-
-                  {/* Description */}
-                  {item.description ? (
-                    <p className="mt-3 text-[0.88rem] font-semibold leading-relaxed text-[#064452]/70 break-words text-left">
-                      {item.description}
-                    </p>
-                  ) : null}
-                </article>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
 
 function TimelineHeroVisual() {
   return (
