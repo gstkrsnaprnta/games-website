@@ -297,14 +297,13 @@ export const COMPETITION_DETAILS: Record<string, DetailedCompetition> = {
     shortDescription: "Kompetisi menulis esai kreatif jenjang SMA/sederajat se-Indonesia untuk mengembangkan solusi berbasis logika matematika dalam era kompetisi global.",
     description: "Lomba Esai GAMES 2026 mengundang siswa SMA sederajat untuk menuliskan gagasan solutif, analitis, dan aplikatif seputar tantangan global berbasis matematika. Karya terbaik disaring menjadi 5 besar untuk dipresentasikan langsung di depan dewan juri.",
     requirements: [
-      "Peserta merupakan siswa/i aktif jenjang SMA/Sederajat di Indonesia.",
-      "Pendaftaran bersifat perorangan (individu) ataupun kelompok/tim maksimal 2 orang.",
-      "Anggota tim harus berasal dari sekolah/instansi yang sama.",
-      "Tiap sekolah hanya diperbolehkan mendaftarkan maksimal dua tim/karya.",
+      "Peserta merupakan siswa/i aktif jenjang SMA/Sederajat di Indonesia (dibuktikan dengan mengirimkan scan kartu identitas pelajar yang masih berlaku).",
+      "Sekolah telah menyelesaikan biaya administrasi pendaftaran.",
+      "Peserta bersifat perorangan ataupun grup yang terdiri dari 2 orang.",
+      "Tidak boleh menggunakan karya yang sudah pernah diperlombakan sebelumnya.",
+      "Tiap sekolah hanya bisa mendaftarkan maksimal dua tim.",
       "Peserta tidak boleh tergabung dalam dua tim yang berbeda.",
-      "Peserta hanya diperbolehkan mengirimkan satu karya tulis.",
-      "Naskah esai harus asli (orisinal), belum pernah dipublikasikan, dan tidak sedang diikutkan lomba lain.",
-      "Sekolah telah menyelesaikan biaya administrasi pendaftaran."
+      "Peserta hanya diperbolehkan mengirim satu karya."
     ],
     requiredUploads: [
       "Scan Kartu Pelajar aktif dari seluruh anggota tim",
@@ -343,6 +342,46 @@ export const COMPETITION_DETAILS: Record<string, DetailedCompetition> = {
         ]
       }
     ],
+    rules: [
+      "Sesuai dengan tema dan subtema yang telah ditentukan.",
+      "Isi naskah essay merupakan hasil pendapat, tanggapan atau pengetahuan, dan pola pikir seseorang dalam menanggapi suatu fenomena.",
+      "Naskah essay bersifat objektif dan tidak mengandung unsur SARA serta didukung oleh fakta.",
+      "Tiap langkah tulisan naskah essay dilakukan secara sistematis sesuai dengan kaidah penulisan naskah essay yang benar (dapat dilihat pada sistematika penulisan).",
+      "Naskah essay harus bersifat asli, bukan plagiat, belum pernah dipublikasikan, dan tidak sedang diikutsertakan dalam ajang lomba lain.",
+      "Ditulis dalam Bahasa Indonesia yang baik dan benar sesuai EYD.",
+      "Karya yang telah dikirimkan akan diseleksi dan diambil 5 karya terbaik yang akan dipresentasikan di hadapan dewan juri secara offline.",
+      "Untuk masing-masing 5 besar karya terbaik diharuskan membuat media PowerPoint untuk presentasi karya. Hasil final lomba akan diumumkan kemudian.",
+      "Naskah essay merupakan karya asli yang belum pernah menjadi juara dan tidak sedang diikutkan dalam lomba lain."
+    ],
+    writingSystem: {
+      abstract: [
+        "Seluruh bagian naskah ditulis dengan menggunakan font Times New Roman dengan jarak spasi satu.",
+        "Judul Essay: Ditulis dengan huruf kapital, font 14, rata tengah (center), dan dicetak tebal (bold).",
+        "Sub Judul: (Jika ada) ditulis dengan font 12, rata tengah (center), dan dicetak tebal (bold).",
+        "Identitas Penulis: Mencantumkan nama anggota tim (jika berkelompok). Nama diberi nomor urut superscript di akhir nama, rata tengah (center), font 12, dan dicetak tebal (bold).",
+        "Isi Karya: Dibuat dengan format rata kanan-kiri (justify), menggunakan font 12.",
+        "Kata Kunci: Dibuat rata kanan-kiri (justify)."
+      ],
+      initial: [
+        "Halaman Judul: memuat judul karya tulis yang ditulis dengan dengan huruf kapital dan bersifat ekspresif, logo Sekolah, nama penulis (peserta), nama sekolah dan tahun penulisan.",
+        "Lembar Orisinalitas Karya.",
+        "Kata Pengantar"
+      ],
+      core: [
+        "PENDAHULUAN: Mencakup Latar Belakang (alasan mengangkat masalah), Identifikasi Masalah, Rumusan Masalah, Tujuan, dan Manfaat Penulisan.",
+        "PEMBAHASAN: Analisis permasalahan berdasarkan data, informasi, atau telaah pustaka untuk menghasilkan gagasan kreatif.",
+        "PENUTUP: Kesimpulan yang konsisten dengan analisis serta saran berupa prediksi transfer gagasan.",
+        "DAFTAR PUSTAKA"
+      ],
+      requirements: [
+        "Panjang naskah ditulis minimal 20 – 25 halaman.",
+        "Menggunakan Bahasa Indonesia yang baik dan benar.",
+        "Penomoran halaman pada bagian awal menggunakan angka Romawi kecil (i, ii, iii) dan bagian isi menggunakan angka Arab (1, 2, 3) di sebelah kanan atas.",
+        "Format dokumen font Times New Roman 12 pt, spasi 1.5, pada kertas A4.",
+        "Margin Kiri 4 cm, Atas 4 cm, Kanan 3 cm, dan Bawah 3 cm.",
+        "Pengiriman karya dikumpulkan dalam bentuk softcopy PDF pada saat pendaftaran."
+      ]
+    },
     timelines: [
       { title: "Pendaftaran Gelombang I", dateLabel: "13 Juli – 29 Agustus 2026", description: "Registrasi dan submit naskah dengan biaya Gelombang I." },
       { title: "Pendaftaran Gelombang II", dateLabel: "31 Agustus – 25 September 2026", description: "Registrasi dan submit naskah dengan biaya Gelombang II." },
@@ -357,7 +396,7 @@ export const COMPETITION_DETAILS: Record<string, DetailedCompetition> = {
       { label: "Pendaftaran Gelombang II", period: "31 Agustus – 25 September 2026", price: "Rp 75.000 / tim" }
     ],
     contactPersons: [
-      { name: "Syalza (Esai CP)", phone: "0878-8506-2787", waUrl: "https://wa.me/6287885062787" }
+      { name: "Syalza (Esai SMA CP)", phone: "0878-8506-2787", waUrl: "https://wa.me/6287885062787" }
     ],
     downloads: [
       { title: "Guidebook Regional GAMES 2026", meta: "PDF · Ketentuan & Aturan Esai", url: "https://drive.google.com/drive/folders/1m79FvIwAUj5De740G9i0EMVVk2Iz7Cnc" }
@@ -377,10 +416,11 @@ export const COMPETITION_DETAILS: Record<string, DetailedCompetition> = {
     shortDescription: "Kompetisi matematika individu tingkat regional se-Sulawesi Tenggara yang menguji kemampuan logika, penalaran, dan pemecahan masalah secara kreatif.",
     description: "Olimpiade Matematika GAMES 2026 merupakan wadah kompetisi bagi siswa SD, SMP, dan SMA sederajat untuk menantang diri dalam menyelesaikan persoalan matematika non-rutin. Kompetisi ini bertujuan memotivasi siswa untuk berpikir kritis, mengaplikasikan ilmu matematika secara kreatif, dan melahirkan generasi berdaya saing tinggi.",
     requirements: [
-      "Tiap sekolah tingkat SD, SMP, atau SMA sederajat dapat mengirimkan paling banyak 7 siswa.",
-      "Peserta aktif SD (kelas 4, 5, 6), SMP (kelas 7, 8, 9), atau SMA (kelas 10, 11, 12).",
-      "Perubahan nama peserta hanya diperbolehkan hingga tanggal 9 Oktober 2026.",
-      "Peserta wajib menggunakan seragam sekolah selama perlombaan berlangsung.",
+      "SD/Sederajat: Tiap sekolah SD/Sederajat dapat mengirimkan paling banyak 7 siswa. Peserta kelas 4, 5, dan 6 (dibuktikan dengan scan kartu identitas pelajar).",
+      "SMP/Sederajat: Tiap sekolah SMP/Sederajat dapat mengirimkan paling banyak 7 siswa. Peserta kelas 7, 8, dan 9 (dibuktikan dengan scan kartu identitas pelajar).",
+      "SMA/Sederajat: Tiap sekolah SMA/Sederajat dapat mengirimkan paling banyak 7 siswa. Peserta kelas 10, 11, dan 12 (dibuktikan dengan scan kartu identitas pelajar).",
+      "Tidak ada perubahan peserta dadakan (perubahan paling lambat 9 Oktober 2026).",
+      "Peserta wajib menggunakan seragam sekolah saat mengikuti lomba.",
       "Sekolah telah menyelesaikan biaya administrasi pendaftaran."
     ],
     requiredUploads: [
@@ -389,14 +429,42 @@ export const COMPETITION_DETAILS: Record<string, DetailedCompetition> = {
       "Formulir Pendaftaran terisi lengkap"
     ],
     materials: [
-      "SD: Bilangan bulat/rasional/prima, KPK/FPB, Pola bilangan, Aritmatika linear, Geometri datar/ruang, Statistika dasar (rata-rata, diagram), Kombinatorik counting.",
-      "SMP: Operasi bilangan & sifat pangkat, Aljabar (himpunan, relasi/fungsi, deret, SPLDV), Geometri (dalil phytagoras, transformasi, bangun ruang), Statistika & Peluang.",
-      "SMA: Aljabar (sistem bilangan real, ketaksamaan, barisan/deret), Geometri (dalil ceva, stewart, ptolemy, menelaus, trigonometri), Kombinatorika, Teori Bilangan (algoritma euclid, bilangan prima)."
+      "Materi meliputi konsep Bilangan, Aritmatika, Geometri, Statistika, Data, Pengukuran, Aljabar, Kombinatorika, dan Teori Bilangan sesuai tingkat jenjang SD, SMP, dan SMA."
+    ],
+    syllabus: [
+      {
+        title: "SILABUS OLIMPIADE SD",
+        items: [
+          "Bilangan: bilangan bulat, bilangan rasional, bilangan prima, KPK, FPB, pola bilangan.",
+          "Aritmatika: operasi bilangan, persamaan linear satu variabel, sistem pertidaksamaan linear.",
+          "Geometri: bidang datar dan geometri ruang.",
+          "Statistika, Data dan Pengukuran: rata-rata, perbandingan, diagram batang, lingkaran dan garis, persentase, pengukuran dan kecepatan.",
+          "Kombinatorik: penggunaan kombinasi dengan teknik counting problem."
+        ]
+      },
+      {
+        title: "SILABUS OLIMPIADE SMP/MTS",
+        items: [
+          "Bilangan: operasi bilangan bulat dan sifat-sifatnya, FPB, KPK, sifat-sifat bilangan berpangkat, basis bilangan.",
+          "Aljabar: pengertian, notasi, dan operasi himpunan, relasi dan fungsi, perbandingan senilai dan berbalik nilai, operasi aljabar yang melibatkan bilangan rasional, pangkat, maupun akar, persamaan dan pertidaksamaan, sistem persamaan linear dua peubah, barisan dan deret.",
+          "Geometri: garis dan sudut, bangun datar, teorema phytagoras, transformasi, bangun ruang.",
+          "Statistika dan Peluang: rata-rata, median, modus data tunggal dan penafsirannya, penyajian data, percobaan dan ruang sampel, aturan pencacahan, peluang suatu kejadian."
+        ]
+      },
+      {
+        title: "SILABUS OLIMPIADE SMA/MA",
+        items: [
+          "Aljabar: sistem bilangan real, ketaksamaan, persamaan dan sistem persamaan, barisan dan deret, fungsi.",
+          "Geometri: sifat-sifat bangun datar segitiga, segiempat dan lingkaran, kesebangunan dan kekongruenan, dalil ceva, dalil stewart, dalil ptolemy, dalil menelaus, lingkaran dalam dan lingkaran luar segitiga, trigonometri.",
+          "Kombinatorika: definisi peluang, prinsip pencacahan, prinsip paritas, prinsip binomial.",
+          "Teori Bilangan: sistem bilangan bulat, keterbagian, FPB, KPK, relatif prima, algoritma euclid, bilangan prima, faktorisasi prima, persamaan dan sistem persamaan bilangan bulat."
+        ]
+      }
     ],
     stages: [
       { title: "Pendaftaran Peserta", description: "Pengisian berkas pendaftaran online atau offline (13 Juli - 09 Oktober 2026)." },
       { title: "Technical Meeting", description: "Penjelasan tata cara ujian tertulis di Aula FMIPA UHO pada 10 Oktober 2026." },
-      { title: "Pelaksanaan Ujian", description: "Pengerjaan soal ujian secara offline di Gedung B Lt. 3 FMIPA UHO pada 16 Oktober 2026." },
+      { title: "Pelaksanaan Ujian", description: "Pengerjaan soal ujian secara offline di Gedung B Lt. 3 FMIPA UHO pada 16 Oktober 2026 (10.00 - 12.00)." },
       { title: "Pengumuman Juara", description: "Pengumuman juara dirilis pukul 19.30 WITA via WhatsApp Group resmi (16 Oktober 2026)." },
       { title: "Penutupan & Awarding", description: "Penyerahan hadiah piala dan uang pembinaan di Aula FMIPA UHO (17 Oktober 2026)." }
     ],
@@ -428,9 +496,9 @@ export const COMPETITION_DETAILS: Record<string, DetailedCompetition> = {
       { label: "Biaya Registrasi", period: "13 Juli – 09 Oktober 2026", price: "Rp 60.000 / orang" }
     ],
     contactPersons: [
-      { name: "Sasa (SD)", phone: "0838-1854-6626", waUrl: "https://wa.me/6283818546626" },
-      { name: "Aina (SMP)", phone: "0858-4814-7073", waUrl: "https://wa.me/6285848147073" },
-      { name: "Ilmi (SMA)", phone: "0813-2559-1564", waUrl: "https://wa.me/6281325591564" }
+      { name: "Sasa (SD CP)", phone: "0838-1854-6626", waUrl: "https://wa.me/6283818546626" },
+      { name: "Aina (SMP CP)", phone: "0858-4814-7073", waUrl: "https://wa.me/6285848147073" },
+      { name: "Ilmi (SMA CP)", phone: "0813-2559-1564", waUrl: "https://wa.me/6281325591564" }
     ],
     downloads: [
       { title: "Guidebook Regional GAMES 2026", meta: "PDF · Panduan Lengkap Olimpiade", url: "https://drive.google.com/drive/folders/1m79FvIwAUj5De740G9i0EMVVk2Iz7Cnc" }
@@ -452,8 +520,8 @@ export const COMPETITION_DETAILS: Record<string, DetailedCompetition> = {
     requirements: [
       "Satu tim terdiri atas 3 orang siswa peserta yang didaftarkan.",
       "Tiap sekolah tingkat SMP atau SMA sederajat dapat mengirimkan maksimal 2 tim per jenjang.",
-      "Peserta aktif SMP (kelas 7-9) atau SMA (kelas 10-12).",
-      "Perubahan nama anggota maksimal 9 Oktober 2026.",
+      "Peserta aktif SMP (kelas 7-9) atau SMA (kelas 10-12) dibuktikan dengan scan kartu identitas pelajar.",
+      "Tidak ada perubahan peserta dadakan (perubahan paling lambat 9 Oktober 2026).",
       "Pendaftaran ditutup jika kuota 24 slot tim telah terpenuhi.",
       "Peserta wajib menggunakan seragam sekolah saat lomba berlangsung.",
       "Sekolah telah menyelesaikan biaya administrasi pendaftaran."
@@ -464,14 +532,63 @@ export const COMPETITION_DETAILS: Record<string, DetailedCompetition> = {
       "Formulir Pendaftaran terisi lengkap"
     ],
     materials: [
-      "SMP: Bilangan bulat/pecahan, himpunan, aljabar, perbandingan, aritmetika sosial, garis & sudut, geometri, relasi/fungsi, SPLDV, koordinat kartesius, peluang.",
-      "SMA: Eksponen, logaritma, nilai mutlak, SPLDV/SPLTV, matriks, relasi/fungsi, deret, kuadrat, geometri, trigonometri, limit, turunan, integral, statistika, peluang, vektor."
+      "Materi meliputi konsep aljabar, bilangan bulat/pecahan, geometri, statistika, peluang, trigonometri, limit, turunan, dan integral sesuai tingkat jenjang SMP dan SMA."
+    ],
+    syllabus: [
+      {
+        title: "SILABUS LCTM SMP",
+        items: [
+          "Bilangan bulat dan pecahan",
+          "Himpunan",
+          "Operasi bentuk aljabar",
+          "Persamaan dan pertidaksamaan linear satu variabel",
+          "Perbandingan",
+          "Aritmetika sosial",
+          "Garis dan sudut",
+          "Bangun datar",
+          "Penyajian data",
+          "Fungsi dan relasi",
+          "Persamaan garis lurus",
+          "Sistem Persamaan linear dua variabel",
+          "Koordinat kartesius",
+          "Persamaan kuadrat",
+          "Bangun ruang",
+          "Kesebangunan dan kekongruenan",
+          "Statistika dan peluang",
+          "Barisan dan deret"
+        ]
+      },
+      {
+        title: "SILABUS LCTM SMA",
+        items: [
+          "Eksponen, akar dan logaritma",
+          "Persamaan dan pertidaksamaan nilai mutlak",
+          "Sistem persamaan dan pertidaksamaan linier dua variabel, dan sistem persamaan linier tiga variabel",
+          "Matriks",
+          "Relasi dan fungsi",
+          "Barisan dan deret",
+          "Persamaan dan fungsi kuadrat",
+          "Geometri",
+          "Trigonometri",
+          "Limit",
+          "Turunan",
+          "Integral",
+          "Statistika",
+          "Peluang",
+          "Fungsi komposisi dan invers fungsi",
+          "Program linear",
+          "Transformasi geometri",
+          "Persamaan lingkaran",
+          "Suku banyak",
+          "Vektor"
+        ]
+      }
     ],
     stages: [
       { title: "Pendaftaran", description: "Pengisian berkas pendaftaran online atau offline (13 Juli - 09 Oktober 2026)." },
       { title: "Technical Meeting", description: "Penjelasan sistem bel dan lempar soal di Aula FMIPA UHO (10 Oktober 2026)." },
       { title: "Pencabutan Lot", description: "Pencabutan lot tanding tim di Aula FMIPA UHO pada 12 Oktober 2026 (13.00 - 14.00)." },
-      { title: "Pelaksanaan Tanding", description: "Babak penyisihan grup hingga final di Aula & R. Senat FMIPA UHO (13 - 15 Oktober 2026)." }
+      { title: "Pelaksanaan Tanding", description: "Babak penyisihan grup hingga final secara offline di Aula & R. Senat FMIPA UHO (13 - 15 Oktober 2026)." }
     ],
     mechanisms: [
       {
@@ -501,8 +618,8 @@ export const COMPETITION_DETAILS: Record<string, DetailedCompetition> = {
       { label: "Biaya Registrasi", period: "13 Juli – 09 Oktober 2026", price: "Rp 230.000 / tim" }
     ],
     contactPersons: [
-      { name: "Rini (SMP)", phone: "0823-9364-7144", waUrl: "https://wa.me/6282393647144" },
-      { name: "Elis (SMA)", phone: "0881-0111-8461-2", waUrl: "https://wa.me/62881011184612" }
+      { name: "Rini (SMP LCTM CP)", phone: "0823-9364-7144", waUrl: "https://wa.me/6282393647144" },
+      { name: "Elis (SMA LCTM CP)", phone: "0881-0111-8461-2", waUrl: "https://wa.me/62881011184612" }
     ],
     downloads: [
       { title: "Guidebook Regional GAMES 2026", meta: "PDF · Panduan Lengkap LCTM", url: "https://drive.google.com/drive/folders/1m79FvIwAUj5De740G9i0EMVVk2Iz7Cnc" }

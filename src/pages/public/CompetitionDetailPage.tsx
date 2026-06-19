@@ -329,6 +329,76 @@ export function CompetitionDetailPage() {
 
       {/* Content sections */}
       <div className="mt-7 grid gap-6">
+        {/* Kata Pengantar & Pendahuluan (Khusus Regional) */}
+        {detail.category === "Regional" && (
+          <DetailSection icon={<BookOpen size={21} />} title="Kata Pengantar & Pendahuluan">
+            <div className="mt-5 space-y-5 text-left text-[#064452] leading-7">
+              <div className="rounded-2xl border border-white/75 bg-white/48 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
+                <h3 className="text-sm font-black uppercase tracking-wider mb-3 text-[#7E032F]">Kata Pengantar</h3>
+                <div className="space-y-3 text-sm font-semibold text-[#064452]/80">
+                  <p>
+                    Puji syukur kami panjatkan ke hadirat Tuhan Yang Maha Esa atas rahmat dan karunia-Nya sehingga rangkaian kegiatan Gebyar Matematika Sains (GAMES) Volume XXI tahun 2026 dapat terselenggara. Kegiatan ini merupakan agenda tahunan HMPS Matematika FMIPA Universitas Halu Oleo sebagai wujud nyata pengabdian mahasiswa dalam meningkatkan kualitas pendidikan dan literasi matematika di Indonesia.
+                  </p>
+                  <p>
+                    GAMES 2026 mengusung tema besar “Building Resilience Through the Synergy of Mathematical Logic and Creative Innovation in a Spirit of Competition”. Melalui tema ini, kami berupaya menghadirkan berbagai wadah kompetisi yang komprehensif bagi pelajar, mulai dari Olimpiade Matematika untuk jenjang SD hingga SMA, Lomba Cepat Tepat Matematika (LCTM) untuk jenjang SMP dan SMA, hingga kompetisi gagasan melalui Lomba Esai bagi siswa SMA/Sederajat.
+                  </p>
+                  <p>
+                    Panduan ini disusun sebagai pedoman teknis bagi seluruh peserta dan pendamping guna memahami alur pendaftaran, mekanisme perlombaan, hingga aturan-aturan yang berlaku di setiap jenis kegiatan. Kami berharap panduan ini dapat mempermudah proses persiapan para peserta dalam menunjukkan kemampuan terbaiknya.
+                  </p>
+                  <p>
+                    Kami menyampaikan apresiasi dan terima kasih yang tulus kepada pimpinan universitas, fakultas, jurusan, serta seluruh panitia dan mitra yang telah bekerja keras menyukseskan kegiatan ini. Selamat berkompetisi kepada seluruh peserta. Mari jadikan ajang ini sebagai sarana untuk mengasah logika, sportivitas, dan kreativitas demi kemajuan bangsa.
+                  </p>
+                </div>
+                <div className="mt-4 text-right text-xs font-black text-[#064452]/70">
+                  <p>Kendari, 01 Mei 2026</p>
+                  <p className="text-[#7E032F]">Tim Penyusun</p>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-white/75 bg-white/48 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
+                <h3 className="text-sm font-black uppercase tracking-wider mb-3 text-[#7E032F]">A. Pendahuluan</h3>
+                <p className="text-sm font-semibold text-[#064452]/80">
+                  Gebyar Matematika Sains adalah lomba matematika yang diselenggarakan oleh HMPS Matematika FMIPA UHO sebagai bentuk perwujudan dari pengabdian mahasiswa matematika FMIPA UHO terhadap masyarakat untuk meningkatkan kualitas mutu pendidikan khususnya dibidang ilmu matematika. Dalam perkembangannya, GAMES telah 20 kali dilaksanakan. Semula bernama Lomba Cepat Tepat (LCT) Matematika dan pada tahun 2010 berganti nama menjadi Gebyar Matematika Sains (GAMES) dan saat ini juga bernama Gebyar Matematika Sains (GAMES) 2026.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-white/75 bg-white/48 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
+                <h3 className="text-sm font-black uppercase tracking-wider mb-3 text-[#7E032F]">B. Tema &amp; Tujuan Kegiatan</h3>
+                <p className="text-sm font-black text-[#064452] mb-3">
+                  Tema: <span className="italic">“Building Resilience Through the Synergy of Mathematical Logic and Creative Innovation in a Spirit of Competition”</span>
+                </p>
+                <h4 className="text-xs font-black uppercase tracking-wider mb-2 text-[#064452]/70">Tujuan Kegiatan:</h4>
+                <ul className="grid gap-2 text-sm font-semibold text-[#064452]/80">
+                  <li className="flex gap-2">
+                    <span className="text-[#0b5a63] font-bold">1.</span>
+                    <span>Meningkatkan motivasi belajar siswa tingkat SD, SMP dan SMA se-Sulawesi Tenggara di bidang Matematika.</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-[#0b5a63] font-bold">2.</span>
+                    <span>Meningkatkan mutu dan keterampilan para pelajar di Sulawesi Tenggara dalam mengaplikasikan ilmu Matematika yang telah digeluti.</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-[#0b5a63] font-bold">3.</span>
+                    <span>Meningkatkan peran pelajar dan pengajar dalam upaya peningkatan kualitas pendidikan khususnya di bidang Matematika di Sulawesi Tenggara.</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-[#0b5a63] font-bold">4.</span>
+                    <span>Meningkatkan daya saing antar sekolah di bidang akademik tingkat Provinsi Sulawesi Tenggara.</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-[#0b5a63] font-bold">5.</span>
+                    <span>Mendorong pelajar untuk aktif mengikuti dan menyelenggarakan forum ilmiah yang bersifat regional sebagai bagian dari pengembangan kapasitas intelektual.</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-[#0b5a63] font-bold">6.</span>
+                    <span>Menumbuhkan semangat berpikir kritis, inovatif, dan ilmiah di kalangan pelajar serta memberikan ruang dialog akademik antar pelajar dan pengajar.</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </DetailSection>
+        )}
+
         {/* Timeline */}
         <DetailSection
           icon={<CalendarDays size={21} />}
@@ -387,27 +457,52 @@ export function CompetitionDetailPage() {
         </DetailSection>
 
         {/* Silabus / Subtema */}
-        {detail.materials && detail.materials.length > 0 && (
-          <DetailSection
-            icon={<BookOpen size={21} />}
-            title={
-              detail.code === "LKTI" || detail.code === "ESAI"
-                ? "Subtema Lomba"
-                : "Materi / Silabus Lomba"
-            }
-          >
-            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {detail.materials.map((material) => (
+        {detail.syllabus && detail.syllabus.length > 0 ? (
+          <DetailSection icon={<BookOpen size={21} />} title="Materi / Silabus Lomba">
+            <div className="mt-5 space-y-6">
+              {detail.syllabus.map((category) => (
                 <div
-                  key={material}
-                  className="flex items-center gap-3 rounded-2xl border border-white/75 bg-white/50 px-4 py-3 text-sm font-black text-[#064452] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
+                  key={category.title}
+                  className="rounded-2xl border border-white/75 bg-white/48 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
                 >
-                  <div className="size-2 rounded-full bg-[#0b5a63] shrink-0" />
-                  <span>{material}</span>
+                  <h3 className="font-black text-[#064452] border-b border-[#0b5a63]/15 pb-2 mb-3">
+                    {category.title}
+                  </h3>
+                  <ul className="grid gap-3 text-sm font-semibold leading-6 text-[#064452]/72 sm:grid-cols-2">
+                    {category.items.map((item, idx) => (
+                      <li key={idx} className="flex gap-2.5">
+                        <span className="text-[#0b5a63] font-bold shrink-0">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               ))}
             </div>
           </DetailSection>
+        ) : (
+          detail.materials && detail.materials.length > 0 && (
+            <DetailSection
+              icon={<BookOpen size={21} />}
+              title={
+                detail.code === "LKTI" || detail.code === "ESAI"
+                  ? "Subtema Lomba"
+                  : "Materi / Silabus Lomba"
+              }
+            >
+              <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {detail.materials.map((material) => (
+                  <div
+                    key={material}
+                    className="flex items-center gap-3 rounded-2xl border border-white/75 bg-white/50 px-4 py-3 text-sm font-black text-[#064452] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
+                  >
+                    <div className="size-2 rounded-full bg-[#0b5a63] shrink-0" />
+                    <span>{material}</span>
+                  </div>
+                ))}
+              </div>
+            </DetailSection>
+          )
         )}
 
         {/* Mekanisme */}
@@ -485,7 +580,9 @@ export function CompetitionDetailPage() {
             <div className="mt-5 space-y-6 text-left">
               {detail.writingSystem.abstract && detail.writingSystem.abstract.length > 0 && (
                 <div>
-                  <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">Format Penulisan Abstrak</h3>
+                  <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">
+                    {detail.code === "ESAI" ? "Format Penulisan Naskah Esai" : "Format Penulisan Abstrak"}
+                  </h3>
                   <ul className="grid gap-2 text-sm font-semibold leading-6 text-[#064452]/74">
                     {detail.writingSystem.abstract.map((item, idx) => (
                       <li key={idx} className="flex gap-2.5">
@@ -498,7 +595,9 @@ export function CompetitionDetailPage() {
               )}
               {detail.writingSystem.initial && detail.writingSystem.initial.length > 0 && (
                 <div>
-                  <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">Karya Tulis Ilmiah (Bagian Awal)</h3>
+                  <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">
+                    {detail.code === "ESAI" ? "Format Penulisan Essay Bagian Awal" : "Karya Tulis Ilmiah (Bagian Awal)"}
+                  </h3>
                   <ul className="grid gap-2 text-sm font-semibold leading-6 text-[#064452]/74">
                     {detail.writingSystem.initial.map((item, idx) => (
                       <li key={idx} className="flex gap-2.5">
@@ -511,9 +610,24 @@ export function CompetitionDetailPage() {
               )}
               {detail.writingSystem.core && detail.writingSystem.core.length > 0 && (
                 <div>
-                  <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">Karya Tulis Ilmiah (Bagian Inti)</h3>
+                  <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">
+                    {detail.code === "ESAI" ? "Format Penulisan Essay Bagian Inti" : "Karya Tulis Ilmiah (Bagian Inti)"}
+                  </h3>
                   <ul className="grid gap-2 text-sm font-semibold leading-6 text-[#064452]/74">
                     {detail.writingSystem.core.map((item, idx) => (
+                      <li key={idx} className="flex gap-2.5">
+                        <span className="text-[#0b5a63] font-bold shrink-0">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {detail.writingSystem.requirements && detail.writingSystem.requirements.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">Persyaratan Penulisan</h3>
+                  <ul className="grid gap-2 text-sm font-semibold leading-6 text-[#064452]/74">
+                    {detail.writingSystem.requirements.map((item, idx) => (
                       <li key={idx} className="flex gap-2.5">
                         <span className="text-[#0b5a63] font-bold shrink-0">•</span>
                         <span>{item}</span>

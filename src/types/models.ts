@@ -289,8 +289,13 @@ export interface DetailedCompetition {
   subthemes?: string[];
   rules?: string[];
   writingSystem?: {
-    abstract: string[];
-    initial: string[];
-    core: string[];
+    abstract?: string[];
+    initial?: string[];
+    core?: string[];
+    requirements?: string[];
   };
+  syllabus?: {
+    title: string;
+    items: string[];
+  }[];
 }
