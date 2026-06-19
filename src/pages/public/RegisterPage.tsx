@@ -129,6 +129,7 @@ export function RegisterPage() {
       availablePaymentMethods.length === 1 &&
       form.payment_method_id !== availablePaymentMethods[0].id
     ) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setForm((prev) => ({
         ...prev,
         payment_method_id: availablePaymentMethods[0].id,
@@ -773,7 +774,7 @@ export function RegisterPage() {
                   <p className="mt-1.5 text-sm font-semibold leading-relaxed text-[#004551]">
                     {selectedCompetition.slug === "esai-regional"
                       ? "Breaking the Code: Mengasah Logika Matematika sebagai Senjata Kreatif di Era Kompetisi Global"
-                      : selectedCompetition.slug === "lkti-nasional"
+                      : (selectedCompetition.slug === "lkti-nasional" || selectedCompetition.slug === "lomba-karya-tulis-ilmiah-nasional")
                         ? "Advancing Sustainable Development through Mathematical Thinking and Innovation"
                         : "—"}
                   </p>

@@ -286,4 +286,11 @@ export interface DetailedCompetition {
     email: string;
     instagram: string;
   };
+  subthemes?: string[];
+  rules?: string[];
+  writingSystem?: {
+    abstract: string[];
+    initial: string[];
+    core: string[];
+  };
 }

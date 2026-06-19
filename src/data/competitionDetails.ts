@@ -166,8 +166,8 @@ export const COMPETITION_DETAILS: Record<string, DetailedCompetition> = {
     generalContacts: GENERAL_CONTACTS,
   },
 
-  "lkti-nasional": {
-    slug: "lkti-nasional",
+  "lomba-karya-tulis-ilmiah-nasional": {
+    slug: "lomba-karya-tulis-ilmiah-nasional",
     code: "LKTI",
     fullName: "Lomba Karya Tulis Ilmiah Nasional",
     category: "Nasional",
@@ -175,6 +175,43 @@ export const COMPETITION_DETAILS: Record<string, DetailedCompetition> = {
     participationMode: "team",
     memberLimits: { min: 1, max: 3, notes: "Setiap tim harus berasal dari universitas/instansi yang sama." },
     sloganTheme: "Advancing Sustainable Development through Mathematical Thinking and Innovation",
+    rules: [
+      "Sesuai dengan tema dan subtema yang telah ditentukan.",
+      "Isi naskah LKTI merupakan hasil penelitian atau gagasan kreatif yang didukung oleh fakta dan temuan yang objektif.",
+      "Naskah LKTI bersifat objektif, tidak mengandung unsur SARA, serta memberikan kontribusi nyata dalam pemecahan masalah.",
+      "Tiap langkah penulisan dilakukan secara sistematis mengikuti kaidah yang benar, mencakup: Abstrak, Pendahuluan, Tinjauan Pustaka, Metodologi Penelitian, Hasil dan Pembahasan, Penutup, Daftar Pustaka.",
+      "Karya harus bersifat asli, menunjukkan kebaruan ide (novelty), bukan hasil plagiat, dan belum pernah menjuarai ajang lomba lain.",
+      "Ditulis menggunakan Bahasa Indonesia yang baik dan benar sesuai EYD, dengan penggunaan konsep serta istilah yang tepat dan konsisten.",
+      "Karya yang dikirimkan akan diseleksi untuk menentukan finalis yang berhak mengikuti tahap presentasi di hadapan dewan juri.",
+      "Peserta yang lolos diwajibkan menyiapkan media (seperti PowerPoint) untuk memaparkan keunggulan karyanya saat sesi presentasi."
+    ],
+    writingSystem: {
+      abstract: [
+        "Seluruh bagian abstrak ditulis menggunakan font Times New Roman, jarak satu spasi, baik dalam bahasa Indonesia maupun bahasa Inggris (jika ada).",
+        "Judul Penelitian: Ditulis dengan huruf kapital, font 14, rata tengah (center), dan dicetak tebal (bold).",
+        "Sub judul: (Jika ada) ditulis dengan font 12, rata tengah (center), dan dicetak tebal (bold).",
+        "Nama Penulis: Mencantumkan nama anggota tim. Nama masing-masing peserta diberi nomor urut superscript di akhir nama, font 12, rata tengah (center), dan dicetak tebal (bold).",
+        "Nama PTN/PTS: Ditulis rata tengah (center), font 12, dan dicetak tebal (bold).",
+        "Kontak: Mencantumkan nomor HP dan alamat email ketua tim, rata tengah (center), font 12, dan dicetak tebal (bold).",
+        "Judul 'ABSTRAK': Ditulis dengan huruf kapital, rata tengah (center), font 12, dan dicetak tebal (bold).",
+        "Isi Abstrak: Dibuat dengan format rata kanan-kiri (justify), maksimal 500 kata, menggunakan font 12.",
+        "Kata Kunci: Ditulis di bawah isi abstrak dengan format rata kanan-kiri (justify)."
+      ],
+      initial: [
+        "Halaman Judul: Memuat judul karya tulis yang bersifat ekspresif, logo universitas, nama peserta, NIM, dan tahun penulisan.",
+        "Kata Pengantar",
+        "Daftar Isi: Serta daftar lainnya jika diperlukan (Daftar tabel, Daftar Gambar, dsb).",
+        "Abstrak: Ringkasan karya tulis, maksimal 500 kata."
+      ],
+      core: [
+        "BAB I PENDAHULUAN: Latar Belakang (alasan/urgensi mengangkat masalah), Identifikasi Masalah (inti pembahasan), Rumusan Masalah (rangkaian pertanyaan analisis), Tujuan Penulisan (sasaran), Manfaat Penulisan.",
+        "BAB II TINJAUAN PUSTAKA: Uraian landasan teori dan konsep-konsep yang relevan.",
+        "BAB III METODOLOGI PENELITIAN: Uraian cermat mengenai cara pengumpulan, pengolahan, analisis data, kesimpulan, dan saran/rekomendasi.",
+        "BAB IV HASIL DAN PEMBAHASAN: Analisis permasalahan berdasarkan data/informasi serta telaah pustaka untuk menghasilkan alternatif pemecahan masalah.",
+        "BAB V KESIMPULAN DAN SARAN: Kesimpulan (konsisten dengan pembahasan) & Saran (kemungkinan transfer gagasan/adopsi teknologi).",
+        "DAFTAR PUSTAKA & Lampiran."
+      ]
+    },
     shortDescription: "Kompetisi karya tulis ilmiah mahasiswa tingkat nasional untuk mendorong inovasi pembangunan berkelanjutan berbasis matematika.",
     description: "LKTI Nasional GAMES 2026 memberikan tantangan bagi mahasiswa se-Indonesia untuk menyumbang gagasan inovatif berupa hasil penelitian atau kajian kritis teoritis berbasis matematika. Solusi yang dirancang diharapkan berkontribusi pada pencapaian Tujuan Pembangunan Berkelanjutan (SDGs).",
     requirements: [
@@ -477,3 +514,4 @@ export const COMPETITION_DETAILS: Record<string, DetailedCompetition> = {
 
 // Alias for backwards compatibility or short codes
 COMPETITION_DETAILS["lctm"] = COMPETITION_DETAILS["lomba-cepat-tepat-matematika"];
+COMPETITION_DETAILS["lkti-nasional"] = COMPETITION_DETAILS["lomba-karya-tulis-ilmiah-nasional"];

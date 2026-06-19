@@ -386,6 +386,30 @@ export function CompetitionDetailPage() {
           </div>
         </DetailSection>
 
+        {/* Silabus / Subtema */}
+        {detail.materials && detail.materials.length > 0 && (
+          <DetailSection
+            icon={<BookOpen size={21} />}
+            title={
+              detail.code === "LKTI" || detail.code === "ESAI"
+                ? "Subtema Lomba"
+                : "Materi / Silabus Lomba"
+            }
+          >
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {detail.materials.map((material) => (
+                <div
+                  key={material}
+                  className="flex items-center gap-3 rounded-2xl border border-white/75 bg-white/50 px-4 py-3 text-sm font-black text-[#064452] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
+                >
+                  <div className="size-2 rounded-full bg-[#0b5a63] shrink-0" />
+                  <span>{material}</span>
+                </div>
+              ))}
+            </div>
+          </DetailSection>
+        )}
+
         {/* Mekanisme */}
         <DetailSection icon={<Trophy size={21} />} title="Mekanisme Lomba">
           <div className="mt-5 grid gap-4">
@@ -410,6 +434,20 @@ export function CompetitionDetailPage() {
             ))}
           </div>
         </DetailSection>
+
+        {/* Ketentuan Hasil Karya */}
+        {detail.rules && detail.rules.length > 0 && (
+          <DetailSection icon={<ShieldCheck size={21} />} title="Ketentuan Hasil Karya">
+            <ul className="mt-5 grid gap-3 text-sm font-semibold leading-7 text-[#064452]/74">
+              {detail.rules.map((rule, idx) => (
+                <li key={idx} className="flex gap-3">
+                  <Check size={18} className="mt-1 shrink-0 text-[#0b5a63]" />
+                  <span>{rule}</span>
+                </li>
+              ))}
+            </ul>
+          </DetailSection>
+        )}
 
         {/* Persyaratan */}
         <DetailSection icon={<ShieldCheck size={21} />} title="Persyaratan">
@@ -440,6 +478,53 @@ export function CompetitionDetailPage() {
             )}
           </div>
         </DetailSection>
+
+        {/* Sistematika Penulisan */}
+        {detail.writingSystem && (
+          <DetailSection icon={<FileText size={21} />} title="Sistematika Penulisan Naskah">
+            <div className="mt-5 space-y-6 text-left">
+              {detail.writingSystem.abstract && detail.writingSystem.abstract.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">Format Penulisan Abstrak</h3>
+                  <ul className="grid gap-2 text-sm font-semibold leading-6 text-[#064452]/74">
+                    {detail.writingSystem.abstract.map((item, idx) => (
+                      <li key={idx} className="flex gap-2.5">
+                        <span className="text-[#0b5a63] font-bold shrink-0">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {detail.writingSystem.initial && detail.writingSystem.initial.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">Karya Tulis Ilmiah (Bagian Awal)</h3>
+                  <ul className="grid gap-2 text-sm font-semibold leading-6 text-[#064452]/74">
+                    {detail.writingSystem.initial.map((item, idx) => (
+                      <li key={idx} className="flex gap-2.5">
+                        <span className="text-[#0b5a63] font-bold shrink-0">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {detail.writingSystem.core && detail.writingSystem.core.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">Karya Tulis Ilmiah (Bagian Inti)</h3>
+                  <ul className="grid gap-2 text-sm font-semibold leading-6 text-[#064452]/74">
+                    {detail.writingSystem.core.map((item, idx) => (
+                      <li key={idx} className="flex gap-2.5">
+                        <span className="text-[#0b5a63] font-bold shrink-0">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </DetailSection>
+        )}
 
         {/* Biaya */}
         <DetailSection
