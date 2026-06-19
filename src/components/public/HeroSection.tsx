@@ -103,7 +103,7 @@ export function HeroSection() {
               prestasi generasi muda Indonesia melalui berbagai cabang kompetisi
               yang menantang dan inspiratif.
               <span className="mt-2 block font-bold text-[#7E032F]">
-                Kreatif dengan Angka, Sukses dengan Logika
+                #Kreatif dengan Angka, Sukses dengan Logika
               </span>
             </p>
 
