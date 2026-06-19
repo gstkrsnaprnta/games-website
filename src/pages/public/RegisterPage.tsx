@@ -852,15 +852,17 @@ export function RegisterPage() {
                   <PaymentInstruction method={selectedPaymentMethod} />
                 </div>
               )}
-              
-              <PublicFormFileInput
-                label="Upload bukti pembayaran (gambar/PDF, maks. 1 MB)"
-                required
-                accept="image/*,application/pdf"
-                maxSizeBytes={1024 * 1024}
-                file={form.payment_proof_file}
-                onChange={(file) => updateField("payment_proof_file", file)}
-              />
+
+              <div className="md:col-span-2">
+                <PublicFormFileInput
+                  label="Upload bukti pembayaran (gambar/PDF, maks. 1 MB)"
+                  required
+                  accept="image/*,application/pdf"
+                  maxSizeBytes={1024 * 1024}
+                  file={form.payment_proof_file}
+                  onChange={(file) => updateField("payment_proof_file", file)}
+                />
+              </div>
             </FormGroup>
 
             {/* ── Persetujuan + Submit ───────────────────────────────────────── */}
