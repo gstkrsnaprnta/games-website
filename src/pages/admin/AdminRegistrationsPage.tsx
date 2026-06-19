@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { CSVExportButton } from "../../components/admin/CSVExportButton";
+import { ExcelExportButton } from "../../components/admin/ExcelExportButton";
 import { DataTable } from "../../components/admin/DataTable";
 import { FormSelect } from "../../components/admin/FormSelect";
 import { SearchInput } from "../../components/admin/SearchInput";
@@ -10,7 +10,6 @@ import {
   deleteAdminRegistration,
   getAdminRegistrations,
 } from "../../services/adminRegistrations";
-import { toCsv } from "../../utils/csv";
 import { formatDate } from "../../utils/date";
 import { useAsyncData } from "../../utils/useAsyncData";
 import { AdminPageState, TableCellMuted } from "./adminPageUtils";
@@ -160,26 +159,24 @@ export function AdminRegistrationsPage() {
     submissionFilter,
   ].filter(Boolean).length;
 
-  const csv = useMemo(
+  const exportData = useMemo(
     () =>
-      toCsv(
-        rows.map((registration) => ({
-          kode: registration.registration_code,
-          nama: registration.team_name || registration.leader_name,
-          ketua: registration.leader_name,
-          email: registration.email,
-          whatsapp: registration.whatsapp,
-          instansi: registration.institution,
-          jenjang: registration.level,
-          lomba: registration.competitions?.name,
-          kode_lomba: registration.competitions?.code,
-          status_pendaftaran: registration.registration_status,
-          status_pembayaran: registration.payment_status,
-          status_berkas: registration.submission_status,
-          catatan_admin: registration.admin_note,
-          tanggal_daftar: registration.created_at,
-        })),
-      ),
+      rows.map((registration) => ({
+        "Kode Registrasi": registration.registration_code,
+        "Nama Tim / Ketua": registration.team_name || registration.leader_name,
+        "Nama Ketua": registration.leader_name,
+        "Email": registration.email,
+        "WhatsApp": registration.whatsapp,
+        "Instansi": registration.institution,
+        "Tingkat/Jenjang": registration.level || "—",
+        "Lomba": registration.competitions?.name || "—",
+        "Kode Lomba": registration.competitions?.code || "—",
+        "Status Pendaftaran": registration.registration_status,
+        "Status Pembayaran": registration.payment_status,
+        "Status Berkas": registration.submission_status,
+        "Catatan Admin": registration.admin_note || "—",
+        "Tanggal Daftar": formatDate(registration.created_at),
+      })),
     [rows],
   );
 
@@ -208,7 +205,7 @@ export function AdminRegistrationsPage() {
             Daftar peserta yang masuk dari form pendaftaran.
           </p>
         </div>
-        <CSVExportButton filename="registrations-games.csv" csv={csv} />
+        <ExcelExportButton filename="registrations-games.xlsx" data={exportData} />
       </div>
 
       {/* Delete error banner */}
