@@ -12,7 +12,7 @@ import {
   Trophy,
   Users,
 } from "lucide-react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { AnnouncementCard } from "../../components/public/AnnouncementCard";
 import { CTASection } from "../../components/public/CTASection";
@@ -24,7 +24,8 @@ import { ErrorState } from "../../components/shared/ErrorState";
 import { LoadingState } from "../../components/shared/LoadingState";
 import { getAnnouncements } from "../../services/announcements";
 import { getCompetitions } from "../../services/competitions";
-import type { Competition, Timeline } from "../../types/models";
+import { getGeneralTimelines } from "../../services/timelines";
+import type { Competition, Timeline, GeneralTimelineItem, TimelineScope } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
 
 const stats = [
@@ -58,73 +59,41 @@ const stats = [
   },
 ];
 
-// ===== Timeline statis (umum) GAMES 2026 =====
-// Sama dengan timeline pada halaman /timeline — diambil & dirangkum dari
-// Panduan Lomba Tingkat Nasional (PTN/PTS) dan Panduan Lomba Tingkat
-// Regional (SD/SMP/SMA) agar mewakili gambaran umum seluruh rangkaian
-// kegiatan, bukan hanya satu jenis lomba saja.
-const STATIC_TIMELINE: Timeline[] = [
-  {
-    id: "1",
-    competition_id: null,
-    title: "Pendaftaran Peserta",
-    start_date: "2026-06-15",
-    end_date: "2026-10-09",
-    description:
-      "Pendaftaran seluruh cabang lomba GAMES 2026, baik tingkat Nasional (Calculus Competition, Mathematical Statistics Competition, LKTI) maupun tingkat Regional (Olimpiade Matematika, LCTM, dan Esai).",
-    is_active: true,
-    sort_order: 1,
-  },
-  {
-    id: "2",
-    competition_id: null,
-    title: "Penyisihan & Pengumpulan Karya",
-    start_date: "2026-09-14",
-    end_date: "2026-09-25",
-    description:
-      "Tahap penyisihan Calculus Competition & Mathematical Statistics Competition, serta pengumpulan full paper LKTI dari peserta yang dinyatakan lolos abstrak.",
-    is_active: true,
-    sort_order: 2,
-  },
-  {
-    id: "3",
-    competition_id: null,
-    title: "Pengumuman Finalis",
-    start_date: "2026-10-02",
-    end_date: "2026-10-02",
-    description:
-      "Pengumuman finalis LKTI (5 karya terbaik) dan 5 besar Esai yang berhak melaju ke tahap presentasi di hadapan dewan juri.",
-    is_active: true,
-    sort_order: 3,
-  },
-  {
-    id: "4",
-    competition_id: null,
-    title: "Pembukaan & Final Lomba",
-    start_date: "2026-10-12",
-    end_date: "2026-10-16",
-    description:
-      "Pembukaan acara, seminar nasional, serta pelaksanaan final seluruh cabang lomba: Calculus Competition, Mathematical Statistics Competition, LKTI, LCTM, Olimpiade Matematika, dan Esai.",
-    is_active: true,
-    sort_order: 4,
-  },
-  {
-    id: "5",
-    competition_id: null,
-    title: "Pengumuman Juara & Penutupan",
-    start_date: "2026-10-17",
-    end_date: "2026-10-17",
-    description:
-      "Pengumuman juara seluruh cabang lomba GAMES 2026 serta acara penutupan resmi.",
-    is_active: true,
-    sort_order: 5,
-  },
-];
+
 
 export function HomePage() {
   const competitions = useAsyncData(getCompetitions, []);
   const announcements = useAsyncData(getAnnouncements, []);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const [timelineData, setTimelineData] = useState<GeneralTimelineItem[]>([]);
+  const [timelineLoading, setTimelineLoading] = useState<boolean>(true);
+  const [timelineError, setTimelineError] = useState<string | null>(null);
+  const [activeScope, setActiveScope] = useState<TimelineScope>("regional");
+
+  useEffect(() => {
+    async function fetchTimeline() {
+      try {
+        setTimelineLoading(true);
+        setTimelineError(null);
+        const EVENT_ID = "916561f8-9237-490f-98f4-3db9a46575a7";
+        const { data: timelinesData, error: dbError } = await getGeneralTimelines(EVENT_ID);
+        if (dbError) throw dbError;
+        setTimelineData(timelinesData);
+      } catch (err: unknown) {
+        console.error("Error fetching homepage timelines:", err);
+        const errMsg = err instanceof Error ? err.message : "Gagal memuat timeline.";
+        setTimelineError(errMsg);
+      } finally {
+        setTimelineLoading(false);
+      }
+    }
+    fetchTimeline();
+  }, []);
+
+  const regionalTimeline = timelineData.filter((item) => item.timeline_scope === "regional");
+  const nationalTimeline = timelineData.filter((item) => item.timeline_scope === "nasional");
+  const activeTimeline = activeScope === "regional" ? regionalTimeline : nationalTimeline;
 
   const scroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
@@ -252,19 +221,53 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ===== Timeline Horizontal ===== */}
+      {/* ===== Timeline Section ===== */}
       <section className="container-hero relative pt-4 pb-10 lg:pt-5 lg:pb-14">
         <div className="pointer-events-none absolute -left-16 top-10 size-[360px] rounded-full bg-[#c2e1df]/12 blur-[100px] -z-10" />
         <div className="pointer-events-none absolute right-0 bottom-0 size-[440px] rounded-full bg-[#064252]/8 blur-[120px] -z-10" />
 
-        <div className="mb-6 flex items-center gap-4 md:mb-8">
-          <div className="h-9 w-1.5 shrink-0 rounded-full bg-[#faadb6] shadow-[0_0_18px_rgba(250,173,182,0.55)] md:h-10" />
-          <h2 className="games-display text-[1.85rem] font-black leading-tight tracking-[-0.04em] text-[#064252] min-[390px]:text-[2.05rem] md:text-4xl">
-            Timeline GAMES 2026
-          </h2>
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between md:mb-8">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-1.5 shrink-0 rounded-full bg-[#faadb6] shadow-[0_0_18px_rgba(250,173,182,0.55)] md:h-10" />
+            <h2 className="games-display text-[1.85rem] font-black leading-tight tracking-[-0.04em] text-[#064252] min-[390px]:text-[2.05rem] md:text-4xl">
+              Timeline GAMES 2026
+            </h2>
+          </div>
+
+          {/* Switcher */}
+          <div className="flex items-center gap-1.5 rounded-full border border-white/60 bg-white/35 p-1 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_8px_24px_rgba(6,66,82,0.06)] backdrop-blur-md self-start sm:self-auto">
+            <button
+              onClick={() => setActiveScope("regional")}
+              className={`rounded-full px-4 py-1.5 text-xs font-black uppercase tracking-wider transition-all duration-200 cursor-pointer ${
+                activeScope === "regional"
+                  ? "bg-[#7E032F] text-white shadow-[0_3px_10px_rgba(126,3,47,0.2)]"
+                  : "text-[#064452] hover:text-[#7E032F]"
+              }`}
+            >
+              Regional
+            </button>
+            <button
+              onClick={() => setActiveScope("nasional")}
+              className={`rounded-full px-4 py-1.5 text-xs font-black uppercase tracking-wider transition-all duration-200 cursor-pointer ${
+                activeScope === "nasional"
+                  ? "bg-[#7E032F] text-white shadow-[0_3px_10px_rgba(126,3,47,0.2)]"
+                  : "text-[#064452] hover:text-[#7E032F]"
+              }`}
+            >
+              Nasional
+            </button>
+          </div>
         </div>
 
-        <TimelineHorizontal items={STATIC_TIMELINE.slice(0, 5)} />
+        {timelineLoading ? (
+          <div className="py-12"><LoadingState /></div>
+        ) : timelineError ? (
+          <div className="py-8"><ErrorState message={timelineError} /></div>
+        ) : activeTimeline.length === 0 ? (
+          <div className="py-12"><EmptyState description={`Timeline ${activeScope === "regional" ? "Regional" : "Nasional"} belum tersedia.`} /></div>
+        ) : (
+          <TimelineHorizontal items={activeTimeline as unknown as Timeline[]} />
+        )}
       </section>
 
       {/* ===== Pengumuman ===== */}
