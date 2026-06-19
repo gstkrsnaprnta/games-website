@@ -56,6 +56,15 @@ export type Timeline = {
   sort_order: number;
 };
 
+// Kontak WhatsApp panitia (CP) untuk konfirmasi otomatis pendaftaran.
+// `level` null/kosong = berlaku untuk semua jenjang (dipakai sebagai fallback
+// kalau tidak ada kontak yang cocok dengan jenjang yang dipilih peserta).
+export type WhatsappContact = {
+  level: string | null;
+  name?: string | null;
+  phone: string;
+};
+
 export type Competition = {
   id: string;
   event_id: string | null;
@@ -75,6 +84,7 @@ export type Competition = {
   guidebook_url: string | null;
   poster_url: string | null;
   contact_person: string | null;
+  whatsapp_cp: WhatsappContact[] | null;
   is_active: boolean;
   timelines?: Timeline[];
 
@@ -82,6 +92,7 @@ export type Competition = {
   max_teams_per_school?: number | null;
   total_quota?: number | null;
   has_work_submission?: boolean;
+  main_theme?: string | null;
   subthemes?: string[];
 };
 

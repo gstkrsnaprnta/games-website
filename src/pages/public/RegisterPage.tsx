@@ -7,6 +7,7 @@ import {
   Plus,
   Trash2,
   Info,
+  MessageCircle,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PublicFormInput } from "../../components/public/PublicFormInput";
@@ -23,7 +24,11 @@ import {
   uploadPaymentProof,
   uploadIdCard,
 } from "../../services/registrations";
-import type { Competition, PaymentMethod } from "../../types/models";
+import type {
+  Competition,
+  PaymentMethod,
+  WhatsappContact,
+} from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
 
 // ── Tipe data form ──────────────────────────────────────────────────────────
@@ -82,6 +87,75 @@ const initialForm: FormState = {
   agreement: false,
 };
 
+// Data yang ditampilkan & dipakai untuk pesan WA di halaman sukses.
+// Di-snapshot terpisah dari `form` karena `form` di-reset setelah submit.
+type SuccessInfo = {
+  registration_code: string;
+  leader_name: string;
+  competition_name: string;
+  institution: string;
+  level: string;
+  email: string;
+  whatsapp: string;
+  admin_whatsapp: string | null;
+  admin_contact_name: string | null;
+};
+
+// ── Helper WhatsApp ───────────────────────────────────────────────────────────
+
+// Cari kontak CP yang cocok dengan jenjang peserta. Kalau tidak ada yang
+// spesifik untuk jenjang itu, fallback ke kontak yang levelnya dikosongkan
+// (berlaku untuk semua jenjang). Kalau tidak ada sama sekali, return null.
+function findWhatsappContact(
+  contacts: WhatsappContact[] | null | undefined,
+  level: string,
+): WhatsappContact | null {
+  if (!contacts || contacts.length === 0) return null;
+  const specific = contacts.find((c) => c.level === level);
+  if (specific) return specific;
+  const fallback = contacts.find((c) => !c.level);
+  return fallback ?? null;
+}
+
+// Normalisasi nomor lokal (08xx) maupun yang sudah berkode negara (62xx)
+// menjadi format yang valid untuk wa.me (tanpa "+", tanpa "0" di depan).
+function toWhatsAppNumber(raw: string): string {
+  const digits = raw.replace(/\D/g, "");
+  if (!digits) return "";
+  if (digits.startsWith("0")) return `62${digits.slice(1)}`;
+  if (digits.startsWith("62")) return digits;
+  return digits;
+}
+
+function buildConfirmationMessage(info: SuccessInfo): string {
+  return [
+    `Halo ${info.admin_contact_name ? `Kak ${info.admin_contact_name}` : "Panitia GAMES 2026"}.`,
+    "Saya telah melakukan pendaftaran.",
+    "",
+    "=== DATA PENDAFTAR ===",
+    `Kode Registrasi: ${info.registration_code}`,
+    `Lomba: ${info.competition_name}`,
+    `Nama Ketua: ${info.leader_name}`,
+    `Instansi: ${info.institution}`,
+    `Jenjang: ${info.level}`,
+    `Email: ${info.email}`,
+    `WhatsApp: ${info.whatsapp}`,
+    "Status: Menunggu Verifikasi",
+    "",
+    "=== PERTANYAAN ===",
+    "Mohon konfirmasi apakah data dan pembayaran saya sudah diterima.",
+    "Terima kasih.",
+  ].join("\n");
+}
+
+function buildWhatsAppConfirmationUrl(info: SuccessInfo): string | null {
+  if (!info.admin_whatsapp) return null;
+  const number = toWhatsAppNumber(info.admin_whatsapp);
+  if (!number) return null;
+  const message = buildConfirmationMessage(info);
+  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+}
+
 // ── Komponen utama ───────────────────────────────────────────────────────────
 
 export function RegisterPage() {
@@ -89,7 +163,7 @@ export function RegisterPage() {
   const paymentMethods = useAsyncData(getActivePaymentMethods, []);
   const [form, setForm] = useState<FormState>(initialForm);
   const [error, setError] = useState("");
-  const [successCode, setSuccessCode] = useState("");
+  const [successInfo, setSuccessInfo] = useState<SuccessInfo | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -360,13 +434,31 @@ export function RegisterPage() {
       return;
     }
 
-    setSuccessCode(result.registration_code);
+    // Cari kontak CP sesuai jenjang yang dipilih peserta, sebelum form di-reset
+    const contact = findWhatsappContact(
+      selectedCompetition.whatsapp_cp,
+      form.level,
+    );
+
+    setSuccessInfo({
+      registration_code: result.registration_code,
+      leader_name: form.leader_name.trim(),
+      competition_name: selectedCompetition.name,
+      institution: form.institution.trim(),
+      level: form.level,
+      email: form.email.trim(),
+      whatsapp: form.whatsapp.trim(),
+      admin_whatsapp: contact?.phone ?? null,
+      admin_contact_name: contact?.name ?? null,
+    });
     setForm(initialForm);
   }
 
   // ── Tampilan sukses ────────────────────────────────────────────────────────
 
-  if (successCode) {
+  if (successInfo) {
+    const waUrl = buildWhatsAppConfirmationUrl(successInfo);
+
     return (
       <section className="container-hero py-20">
         <div className="mx-auto max-w-2xl">
@@ -387,22 +479,67 @@ export function RegisterPage() {
 
               <div className="mx-auto mt-8 max-w-md rounded-2xl border border-[#004551]/10 bg-white p-6 shadow-[inset_0_2px_12px_rgba(6,66,82,0.06)]">
                 <p className="text-3xl font-black tracking-wider text-[#7E032F] md:text-4xl">
-                  {successCode}
+                  {successInfo.registration_code}
                 </p>
+
+                <dl className="mt-5 grid gap-3 border-t border-[#004551]/10 pt-5 text-left text-sm">
+                  <div className="flex items-center justify-between gap-3">
+                    <dt className="font-bold text-[#004551]/55">Nama</dt>
+                    <dd className="text-right font-black text-[#004551]">
+                      {successInfo.leader_name}
+                    </dd>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <dt className="font-bold text-[#004551]/55">Lomba</dt>
+                    <dd className="text-right font-black text-[#004551]">
+                      {successInfo.competition_name}
+                    </dd>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <dt className="font-bold text-[#004551]/55">Status</dt>
+                    <dd>
+                      <span className="rounded-full bg-[#7E032F]/10 px-3 py-1 text-xs font-black uppercase tracking-wider text-[#7E032F]">
+                        Menunggu Verifikasi
+                      </span>
+                    </dd>
+                  </div>
+                </dl>
               </div>
 
               <button
                 type="button"
                 onClick={() => {
-                  void navigator.clipboard?.writeText(successCode);
+                  void navigator.clipboard?.writeText(
+                    successInfo.registration_code,
+                  );
                   setCopied(true);
                   setTimeout(() => setCopied(false), 2000);
                 }}
-                className="btn-glossy-maroon mt-6 inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-black text-white"
+                className="btn-glass-outline mt-6 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-black text-[#004551]"
               >
                 <Copy size={16} />
                 {copied ? "Tersalin!" : "Salin Kode"}
               </button>
+
+              {waUrl ? (
+                <a
+                  href={waUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-4 text-base font-black text-white shadow-[0_10px_30px_rgba(37,211,102,0.35)] transition hover:bg-[#1ebe5b]"
+                >
+                  <MessageCircle size={20} />
+                  Konfirmasi Pendaftaran via WhatsApp
+                  {successInfo.admin_contact_name
+                    ? ` (${successInfo.admin_contact_name})`
+                    : ""}
+                </a>
+              ) : (
+                <p className="mx-auto mt-6 max-w-md rounded-xl bg-[#004551]/5 px-4 py-3 text-xs font-semibold leading-relaxed text-[#004551]/70">
+                  Panitia akan menghubungi Anda melalui WhatsApp atau email
+                  terdaftar dalam waktu maksimal 1x24 jam.
+                </p>
+              )}
 
               <p className="mx-auto mt-6 max-w-md text-sm leading-7 text-[#004551]/60">
                 Gunakan nomor ini bersama email atau WhatsApp untuk cek status
@@ -772,9 +909,9 @@ export function RegisterPage() {
                     Tema Utama Lomba
                   </p>
                   <p className="mt-1.5 text-sm font-semibold leading-relaxed text-[#004551]">
-                    {(selectedCompetition.slug === "esai-regional" || selectedCompetition.slug === "lomba-esai-regional")
+                    {selectedCompetition.slug === "esai-regional"
                       ? "Breaking the Code: Mengasah Logika Matematika sebagai Senjata Kreatif di Era Kompetisi Global"
-                      : (selectedCompetition.slug === "lkti-nasional" || selectedCompetition.slug === "lomba-karya-tulis-ilmiah-nasional")
+                      : selectedCompetition.slug === "lkti-nasional"
                         ? "Advancing Sustainable Development through Mathematical Thinking and Innovation"
                         : "—"}
                   </p>

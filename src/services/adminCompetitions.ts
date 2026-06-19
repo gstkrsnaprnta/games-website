@@ -1,6 +1,6 @@
 // FILE: src/services/adminCompetitions.ts
 import { supabase } from "../lib/supabase";
-import type { Competition } from "../types/models";
+import type { Competition, WhatsappContact } from "../types/models";
 import { createSlug } from "../utils/slug";
 
 export async function getAdminCompetitions() {
@@ -10,7 +10,7 @@ export async function getAdminCompetitions() {
       `*, timelines (
         id, competition_id, title, description,
         start_date, end_date, is_active, sort_order
-      )`
+      )`,
     )
     .order("name")
     .order("sort_order", { referencedTable: "timelines", ascending: true });
@@ -32,10 +32,13 @@ type CompetitionInput = {
   registration_fee?: number;
   registration_status?: "open" | "closed";
   is_active?: boolean;
+  // Kontak WhatsApp panitia (CP), bisa beda nomor per jenjang
+  whatsapp_cp?: WhatsappContact[] | null;
   // Kolom baru
   max_teams_per_school?: number | null;
   total_quota?: number | null;
   has_work_submission?: boolean;
+  main_theme?: string | null;
   subthemes?: string[];
 };
 
@@ -50,7 +53,7 @@ async function getDefaultEventId() {
 
 export async function saveAdminCompetition(
   input: CompetitionInput,
-  id?: string
+  id?: string,
 ) {
   const eventId = input.event_id ?? (await getDefaultEventId());
   const payload = {
@@ -59,6 +62,7 @@ export async function saveAdminCompetition(
     slug: input.slug?.trim() || createSlug(input.name),
     participant_levels: input.participant_levels ?? [],
     subthemes: input.subthemes ?? [],
+    whatsapp_cp: input.whatsapp_cp ?? [],
   };
 
   if (id) {
