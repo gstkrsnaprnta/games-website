@@ -21,6 +21,7 @@ import { getActivePaymentMethods } from "../../services/paymentMethods";
 import {
   submitRegistration,
   uploadPaymentProof,
+  uploadIdCard,
 } from "../../services/registrations";
 import type { Competition, PaymentMethod } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
@@ -31,7 +32,7 @@ type MemberForm = {
   name: string;
   identity_number: string;
   class_or_semester: string;
-  id_card_url: string;
+  id_card_file: File | null;
 };
 
 function emptyMember(): MemberForm {
@@ -39,7 +40,7 @@ function emptyMember(): MemberForm {
     name: "",
     identity_number: "",
     class_or_semester: "",
-    id_card_url: "",
+    id_card_file: null,
   };
 }
 
@@ -50,7 +51,7 @@ type FormState = {
   leader_name: string;
   leader_identity_number: string;
   leader_class_or_semester: string;
-  leader_id_card_url: string;
+  leader_id_card_file: File | null;
   email: string;
   whatsapp: string;
   institution: string;
@@ -69,7 +70,7 @@ const initialForm: FormState = {
   leader_name: "",
   leader_identity_number: "",
   leader_class_or_semester: "",
-  leader_id_card_url: "",
+  leader_id_card_file: null,
   email: "",
   whatsapp: "",
   institution: "",
@@ -150,7 +151,11 @@ export function RegisterPage() {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  function updateMember(index: number, key: keyof MemberForm, value: string) {
+  function updateMember(
+    index: number,
+    key: keyof MemberForm,
+    value: string | File | null,
+  ) {
     setForm((prev) => {
       const updated = prev.members.map((m, i) =>
         i === index ? { ...m, [key]: value } : m,
@@ -223,8 +228,8 @@ export function RegisterPage() {
       setError("Kelas/semester ketua wajib diisi.");
       return;
     }
-    if (!form.leader_id_card_url.trim()) {
-      setError("Link kartu pelajar/KTM ketua wajib diisi.");
+    if (!form.leader_id_card_file) {
+      setError("Upload kartu pelajar/KTM ketua wajib dilampirkan.");
       return;
     }
     if (isTeam && !form.team_name.trim()) {
@@ -252,8 +257,8 @@ export function RegisterPage() {
         setError(`Kelas/semester anggota ${no} wajib diisi.`);
         return;
       }
-      if (!m.id_card_url.trim()) {
-        setError(`Link kartu pelajar/KTM anggota ${no} wajib diisi.`);
+      if (!m.id_card_file) {
+        setError(`Upload kartu pelajar/KTM anggota ${no} wajib dilampirkan.`);
         return;
       }
     }
@@ -282,7 +287,7 @@ export function RegisterPage() {
 
     setSubmitting(true);
 
-    // Upload bukti pembayaran terlebih dahulu, baru kirim URL hasilnya
+    // Upload bukti pembayaran
     const uploadResult = await uploadPaymentProof(form.payment_proof_file);
     if (uploadResult.error || !uploadResult.url) {
       setSubmitting(false);
@@ -293,6 +298,27 @@ export function RegisterPage() {
       return;
     }
 
+    // Upload semua kartu pelajar/KTM secara paralel (ketua + seluruh anggota)
+    const idCardFiles = [
+      form.leader_id_card_file,
+      ...form.members.map((m) => m.id_card_file!),
+    ];
+    const idCardUploads = await Promise.all(
+      idCardFiles.map((file) => uploadIdCard(file!)),
+    );
+    const firstIdCardError = idCardUploads.find((r) => r.error || !r.url);
+    if (firstIdCardError) {
+      setSubmitting(false);
+      setError(
+        firstIdCardError.error?.message ??
+          "Gagal mengunggah kartu pelajar/KTM. Coba lagi.",
+      );
+      return;
+    }
+    const [leaderIdCardUrl, ...memberIdCardUrls] = idCardUploads.map(
+      (r) => r.url!,
+    );
+
     // Gabungkan ketua sebagai anggota pertama
     const allMembers = [
       {
@@ -300,14 +326,14 @@ export function RegisterPage() {
         role: "Ketua",
         identity_number: form.leader_identity_number.trim(),
         class_or_semester: form.leader_class_or_semester.trim(),
-        id_card_url: form.leader_id_card_url.trim(),
+        id_card_url: leaderIdCardUrl,
       },
       ...form.members.map((m, i) => ({
         name: m.name.trim(),
         role: `Anggota ${i + 1}`,
         identity_number: m.identity_number.trim(),
         class_or_semester: m.class_or_semester.trim(),
-        id_card_url: m.id_card_url.trim(),
+        id_card_url: memberIdCardUrls[i],
       })),
     ];
 
@@ -612,18 +638,17 @@ export function RegisterPage() {
               />
 
               <div className="md:col-span-2">
-                <PublicFormInput
+                <PublicFormFileInput
                   label={
                     form.level === "Mahasiswa"
-                      ? "Link KTM (Google Drive / Cloud)"
-                      : "Link kartu pelajar (Google Drive / Cloud)"
-                  }
-                  value={form.leader_id_card_url}
-                  onChange={(e) =>
-                    updateField("leader_id_card_url", e.target.value)
+                      ? "Upload KTM (gambar/PDF, maks. 1 MB)"
+                      : "Upload kartu pelajar (gambar/PDF, maks. 1 MB)"
                   }
                   required
-                  placeholder="https://drive.google.com/..."
+                  accept="image/*,application/pdf"
+                  maxSizeBytes={1024 * 1024}
+                  file={form.leader_id_card_file}
+                  onChange={(file) => updateField("leader_id_card_file", file)}
                 />
               </div>
             </FormGroup>
@@ -705,18 +730,19 @@ export function RegisterPage() {
                             : "Contoh: XI IPA 3"
                         }
                       />
-                      <PublicFormInput
+                      <PublicFormFileInput
                         label={
                           form.level === "Mahasiswa"
-                            ? "Link KTM (Google Drive)"
-                            : "Link kartu pelajar (Google Drive)"
-                        }
-                        value={member.id_card_url}
-                        onChange={(e) =>
-                          updateMember(index, "id_card_url", e.target.value)
+                            ? "Upload KTM (gambar/PDF, maks. 1 MB)"
+                            : "Upload kartu pelajar (gambar/PDF, maks. 1 MB)"
                         }
                         required
-                        placeholder="https://drive.google.com/..."
+                        accept="image/*,application/pdf"
+                        maxSizeBytes={1024 * 1024}
+                        file={member.id_card_file}
+                        onChange={(file) =>
+                          updateMember(index, "id_card_file", file)
+                        }
                       />
                     </div>
                   </div>

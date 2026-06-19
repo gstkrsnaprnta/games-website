@@ -55,10 +55,10 @@ export async function submitRegistration(
   return result;
 }
 
-// Maksimal ukuran file bukti pembayaran (1 MB)
-export const MAX_PAYMENT_PROOF_SIZE = 1024 * 1024;
+// ── Upload bukti pembayaran ──────────────────────────────────────────────────
 
-// Tipe file yang diizinkan untuk bukti pembayaran
+export const MAX_PAYMENT_PROOF_SIZE = 1024 * 1024; // 1 MB
+
 export const ALLOWED_PAYMENT_PROOF_TYPES = [
   "image/jpeg",
   "image/jpg",
@@ -97,7 +97,50 @@ export async function uploadPaymentProof(
   return { url: data.publicUrl, error: null };
 }
 
-// Legacy helpers tetap dipertahankan agar halaman lain tidak rusak
+// ── Upload kartu pelajar / KTM ───────────────────────────────────────────────
+
+export const MAX_ID_CARD_SIZE = 1024 * 1024; // 1 MB
+
+export const ALLOWED_ID_CARD_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+  "application/pdf",
+];
+
+export async function uploadIdCard(
+  file: File,
+): Promise<{ url: string | null; error: Error | null }> {
+  if (file.size > MAX_ID_CARD_SIZE) {
+    return {
+      url: null,
+      error: new Error("Ukuran file maksimal 1 MB."),
+    };
+  }
+  if (!ALLOWED_ID_CARD_TYPES.includes(file.type)) {
+    return {
+      url: null,
+      error: new Error("Format file harus JPG, PNG, WEBP, atau PDF."),
+    };
+  }
+
+  const ext = file.name.split(".").pop();
+  const uniqueId = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+  const path = `${uniqueId}.${ext}`;
+
+  const { error } = await supabase.storage
+    .from("id-cards")
+    .upload(path, file, { upsert: false });
+
+  if (error) return { url: null, error };
+
+  const { data } = supabase.storage.from("id-cards").getPublicUrl(path);
+  return { url: data.publicUrl, error: null };
+}
+
+// ── Legacy helpers ───────────────────────────────────────────────────────────
+
 export type RegistrationPayload = {
   id: string;
   event_id: string;
