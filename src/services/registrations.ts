@@ -44,7 +44,7 @@ export async function submitRegistration(
     p_work_subtheme: payload.work_subtheme,
     p_payment_method_id: payload.payment_method_id || null,
     p_payment_proof_url: payload.payment_proof_url,
-    p_members: JSON.stringify(payload.members),
+    p_members: payload.members,
   });
 
   if (error) {
