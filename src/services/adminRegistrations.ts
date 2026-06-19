@@ -6,6 +6,15 @@ import type {
   SubmissionStatus,
 } from "../types/models";
 
+export type AdminMemberRow = {
+  id: string;
+  name: string;
+  role: string | null;
+  identity_number?: string | null;
+  class_or_semester?: string | null;
+  id_card_url?: string | null;
+};
+
 export type AdminRegistrationRow = {
   id: string;
   registration_code: string;
@@ -23,6 +32,8 @@ export type AdminRegistrationRow = {
   payment_method_id?: string | null;
   payment_proof_url?: string | null;
   competition_id?: string;
+  work_title?: string | null;
+  work_subtheme?: string | null;
   competitions: { name: string; code: string } | null;
   payment_methods?: Pick<
     PaymentMethod,
@@ -34,7 +45,7 @@ export type AdminRegistrationRow = {
     | "qris_image_url"
     | "notes"
   > | null;
-  registration_members?: { id: string; name: string; role: string | null }[];
+  registration_members?: AdminMemberRow[];
 };
 
 export async function getAdminRegistrations() {
@@ -52,7 +63,7 @@ export async function getAdminRegistrationById(id: string) {
   const { data, error } = await supabase
     .from("registrations")
     .select(
-      "id, registration_code, leader_name, team_name, email, whatsapp, institution, level, payment_method_id, payment_proof_url, registration_status, payment_status, submission_status, admin_note, created_at, competitions(name, code), payment_methods(label, type, bank_name, account_number, account_holder, qris_image_url, notes), registration_members(id, name, role)",
+      "id, registration_code, leader_name, team_name, email, whatsapp, institution, level, payment_method_id, payment_proof_url, registration_status, payment_status, submission_status, admin_note, created_at, work_title, work_subtheme, competitions(name, code), payment_methods(label, type, bank_name, account_number, account_holder, qris_image_url, notes), registration_members(id, name, role, identity_number, class_or_semester, id_card_url)",
     )
     .eq("id", id)
     .maybeSingle();
