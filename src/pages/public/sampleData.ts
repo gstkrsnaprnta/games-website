@@ -1,4 +1,6 @@
-import type { Announcement, Competition, FAQ, Timeline } from "../../types/models";
+import type {
+  Competition
+} from "../../types/models";
 
 export const sampleCompetitions: Competition[] = [
   {
@@ -20,6 +22,7 @@ export const sampleCompetitions: Competition[] = [
     guidebook_url: null,
     poster_url: null,
     contact_person: null,
+    whatsapp_cp: null,
     is_active: true,
   },
   {
@@ -41,6 +44,7 @@ export const sampleCompetitions: Competition[] = [
     guidebook_url: null,
     poster_url: null,
     contact_person: null,
+    whatsapp_cp: null,
     is_active: true,
   },
   {
@@ -62,21 +66,7 @@ export const sampleCompetitions: Competition[] = [
     guidebook_url: null,
     poster_url: null,
     contact_person: null,
+    whatsapp_cp: null,
     is_active: true,
   },
-];
-
-export const sampleTimelines: Timeline[] = [
-  { id: "1", title: "Pembukaan pendaftaran", description: "Pendaftaran peserta GAMES dibuka.", start_date: "2026-06-01", end_date: null, sort_order: 1, competition_id: null, is_active: true  },
-  { id: "2", title: "Penutupan pendaftaran", description: "Batas akhir pengisian formulir dan pembayaran.", start_date: "2026-07-15", end_date: null, sort_order: 2, competition_id: null, is_active: true  },
-  { id: "3", title: "Pelaksanaan lomba", description: "Pelaksanaan cabang lomba sesuai jadwal panitia.", start_date: "2026-08-03", end_date: "2026-08-10", sort_order: 3, competition_id: null, is_active: true  },
-];
-
-export const sampleFaqs: FAQ[] = [
-  { id: "1", question: "Apakah pendaftaran dilakukan online?", answer: "Ya, peserta mengisi formulir pendaftaran melalui website GAMES.", sort_order: 1 },
-  { id: "2", question: "Bagaimana cara cek status?", answer: "Gunakan nomor registrasi serta email atau WhatsApp pada halaman cek status.", sort_order: 2 },
-];
-
-export const sampleAnnouncements: Announcement[] = [
-  { id: "1", title: "Pendaftaran GAMES 2026 segera dibuka", slug: "pendaftaran-games-2026", category: "general", content: "Pantau website resmi GAMES untuk informasi pembukaan pendaftaran, guidebook, dan kontak panitia.", attachment_url: null, published_at: "2026-05-09" },
 ];
