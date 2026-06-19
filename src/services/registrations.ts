@@ -30,7 +30,7 @@ export type SubmitRegistrationResult =
   | { ok: false; error: string };
 
 export async function submitRegistration(
-  payload: SubmitRegistrationPayload
+  payload: SubmitRegistrationPayload,
 ): Promise<SubmitRegistrationResult> {
   const { data, error } = await supabase.rpc("submit_registration", {
     p_competition_id: payload.competition_id,
@@ -53,6 +53,48 @@ export async function submitRegistration(
 
   const result = data as SubmitRegistrationResult;
   return result;
+}
+
+// Maksimal ukuran file bukti pembayaran (1 MB)
+export const MAX_PAYMENT_PROOF_SIZE = 1024 * 1024;
+
+// Tipe file yang diizinkan untuk bukti pembayaran
+export const ALLOWED_PAYMENT_PROOF_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+  "application/pdf",
+];
+
+export async function uploadPaymentProof(
+  file: File,
+): Promise<{ url: string | null; error: Error | null }> {
+  if (file.size > MAX_PAYMENT_PROOF_SIZE) {
+    return {
+      url: null,
+      error: new Error("Ukuran file maksimal 1 MB."),
+    };
+  }
+  if (!ALLOWED_PAYMENT_PROOF_TYPES.includes(file.type)) {
+    return {
+      url: null,
+      error: new Error("Format file harus JPG, PNG, WEBP, atau PDF."),
+    };
+  }
+
+  const ext = file.name.split(".").pop();
+  const uniqueId = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+  const path = `${uniqueId}.${ext}`;
+
+  const { error } = await supabase.storage
+    .from("payment-proofs")
+    .upload(path, file, { upsert: false });
+
+  if (error) return { url: null, error };
+
+  const { data } = supabase.storage.from("payment-proofs").getPublicUrl(path);
+  return { url: data.publicUrl, error: null };
 }
 
 // Legacy helpers tetap dipertahankan agar halaman lain tidak rusak
@@ -93,7 +135,7 @@ export async function createRegistration(payload: RegistrationPayload) {
 }
 
 export async function createRegistrationMembers(
-  members: RegistrationMemberPayload[]
+  members: RegistrationMemberPayload[],
 ) {
   if (members.length === 0) return { error: null };
   return supabase.from("registration_members").insert(members);
@@ -101,7 +143,7 @@ export async function createRegistrationMembers(
 
 export async function checkRegistrationStatus(
   registrationCode: string,
-  contact: string
+  contact: string,
 ) {
   const { data, error } = await supabase.rpc("check_registration_status", {
     contact_input: contact,

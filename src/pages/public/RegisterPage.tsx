@@ -1,8 +1,16 @@
 // FILE: src/pages/public/RegisterPage.tsx
-import { useMemo, useState } from "react";
-import { CheckCircle, Copy, ArrowRight, Plus, Trash2, Info } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  CheckCircle,
+  Copy,
+  ArrowRight,
+  Plus,
+  Trash2,
+  Info,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { PublicFormInput } from "../../components/public/PublicFormInput";
+import { PublicFormFileInput } from "../../components/public/PublicFormFileInput";
 import { PublicFormSelect } from "../../components/public/PublicFormSelect";
 import { PageHero } from "../../components/public/PageHero";
 import { EmptyState } from "../../components/shared/EmptyState";
@@ -10,7 +18,10 @@ import { ErrorState } from "../../components/shared/ErrorState";
 import { LoadingState } from "../../components/shared/LoadingState";
 import { getOpenCompetitions } from "../../services/competitions";
 import { getActivePaymentMethods } from "../../services/paymentMethods";
-import { submitRegistration } from "../../services/registrations";
+import {
+  submitRegistration,
+  uploadPaymentProof,
+} from "../../services/registrations";
 import type { Competition, PaymentMethod } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
 
@@ -24,7 +35,12 @@ type MemberForm = {
 };
 
 function emptyMember(): MemberForm {
-  return { name: "", identity_number: "", class_or_semester: "", id_card_url: "" };
+  return {
+    name: "",
+    identity_number: "",
+    class_or_semester: "",
+    id_card_url: "",
+  };
 }
 
 type FormState = {
@@ -41,7 +57,7 @@ type FormState = {
   work_title: string;
   work_subtheme: string;
   payment_method_id: string;
-  payment_proof_url: string;
+  payment_proof_file: File | null;
   members: MemberForm[];
   agreement: boolean;
 };
@@ -60,7 +76,7 @@ const initialForm: FormState = {
   work_title: "",
   work_subtheme: "",
   payment_method_id: "",
-  payment_proof_url: "",
+  payment_proof_file: null,
   members: [],
   agreement: false,
 };
@@ -78,9 +94,8 @@ export function RegisterPage() {
 
   // Kompetisi yang sedang dipilih
   const selectedCompetition = useMemo<Competition | null>(
-    () =>
-      competitions.data?.find((c) => c.id === form.competition_id) ?? null,
-    [competitions.data, form.competition_id]
+    () => competitions.data?.find((c) => c.id === form.competition_id) ?? null,
+    [competitions.data, form.competition_id],
   );
 
   // Jenjang yang tersedia berdasarkan kompetisi terpilih
@@ -94,18 +109,31 @@ export function RegisterPage() {
     () =>
       selectedCompetition?.event_id
         ? (paymentMethods.data?.filter(
-            (m) => m.event_id === selectedCompetition.event_id
+            (m) => m.event_id === selectedCompetition.event_id,
           ) ?? [])
         : [],
-    [paymentMethods.data, selectedCompetition]
+    [paymentMethods.data, selectedCompetition],
   );
 
   const selectedPaymentMethod = useMemo<PaymentMethod | null>(
     () =>
       availablePaymentMethods.find((m) => m.id === form.payment_method_id) ??
       null,
-    [availablePaymentMethods, form.payment_method_id]
+    [availablePaymentMethods, form.payment_method_id],
   );
+
+  // Jika hanya ada 1 metode pembayaran tersedia, pilih otomatis tanpa dropdown
+  useEffect(() => {
+    if (
+      availablePaymentMethods.length === 1 &&
+      form.payment_method_id !== availablePaymentMethods[0].id
+    ) {
+      setForm((prev) => ({
+        ...prev,
+        payment_method_id: availablePaymentMethods[0].id,
+      }));
+    }
+  }, [availablePaymentMethods, form.payment_method_id]);
 
   // Apakah lomba ini tim (max_members > 1)?
   const isTeam = (selectedCompetition?.max_members ?? 1) > 1;
@@ -125,7 +153,7 @@ export function RegisterPage() {
   function updateMember(index: number, key: keyof MemberForm, value: string) {
     setForm((prev) => {
       const updated = prev.members.map((m, i) =>
-        i === index ? { ...m, [key]: value } : m
+        i === index ? { ...m, [key]: value } : m,
       );
       return { ...prev, members: updated };
     });
@@ -205,7 +233,7 @@ export function RegisterPage() {
     }
     if (form.members.length < minExtra) {
       setError(
-        `Lomba ini membutuhkan minimal ${selectedCompetition.min_members} peserta (termasuk ketua). Tambahkan ${minExtra - form.members.length} anggota lagi.`
+        `Lomba ini membutuhkan minimal ${selectedCompetition.min_members} peserta (termasuk ketua). Tambahkan ${minExtra - form.members.length} anggota lagi.`,
       );
       return;
     }
@@ -243,8 +271,8 @@ export function RegisterPage() {
       setError("Pilih metode pembayaran.");
       return;
     }
-    if (!form.payment_proof_url.trim()) {
-      setError("Link bukti pembayaran wajib diisi.");
+    if (!form.payment_proof_file) {
+      setError("Upload bukti pembayaran wajib dilampirkan.");
       return;
     }
     if (!form.agreement) {
@@ -253,6 +281,17 @@ export function RegisterPage() {
     }
 
     setSubmitting(true);
+
+    // Upload bukti pembayaran terlebih dahulu, baru kirim URL hasilnya
+    const uploadResult = await uploadPaymentProof(form.payment_proof_file);
+    if (uploadResult.error || !uploadResult.url) {
+      setSubmitting(false);
+      setError(
+        uploadResult.error?.message ??
+          "Gagal mengunggah bukti pembayaran. Coba lagi.",
+      );
+      return;
+    }
 
     // Gabungkan ketua sebagai anggota pertama
     const allMembers = [
@@ -283,7 +322,7 @@ export function RegisterPage() {
       work_title: form.work_title.trim(),
       work_subtheme: form.work_subtheme,
       payment_method_id: form.payment_method_id,
-      payment_proof_url: form.payment_proof_url.trim(),
+      payment_proof_url: uploadResult.url,
       members: allMembers,
     });
 
@@ -399,8 +438,11 @@ export function RegisterPage() {
         )}
 
         <div className="mx-auto max-w-3xl">
-          <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
-
+          <form
+            onSubmit={handleSubmit}
+            noValidate
+            className="flex flex-col gap-5"
+          >
             {/* ── STEP 01: Pilih Lomba ───────────────────────────────────────── */}
             <FormGroup step="01" title="Pilih Lomba">
               <div className="md:col-span-2">
@@ -427,8 +469,8 @@ export function RegisterPage() {
                       {selectedCompetition.competition_type === "team"
                         ? `Tim (${selectedCompetition.min_members}–${selectedCompetition.max_members} orang)`
                         : selectedCompetition.max_members > 1
-                        ? `Individu / Kelompok maks. ${selectedCompetition.max_members} orang`
-                        : "Individu"}
+                          ? `Individu / Kelompok maks. ${selectedCompetition.max_members} orang`
+                          : "Individu"}
                     </span>
                     {selectedCompetition.total_quota && (
                       <span className="rounded-full bg-[#7E032F]/10 px-3 py-1 text-xs font-black uppercase tracking-wider text-[#7E032F]">
@@ -437,13 +479,17 @@ export function RegisterPage() {
                     )}
                     {selectedCompetition.max_teams_per_school && (
                       <span className="rounded-full bg-[#004551]/10 px-3 py-1 text-xs font-semibold text-[#004551]/70">
-                        Maks. {selectedCompetition.max_teams_per_school} per sekolah
+                        Maks. {selectedCompetition.max_teams_per_school} per
+                        sekolah
                       </span>
                     )}
                   </div>
                   {selectedCompetition.has_work_submission && (
                     <div className="mt-3 flex items-start gap-2 rounded-xl bg-[#004551]/5 p-3">
-                      <Info size={15} className="mt-0.5 shrink-0 text-[#004551]/60" />
+                      <Info
+                        size={15}
+                        className="mt-0.5 shrink-0 text-[#004551]/60"
+                      />
                       <p className="text-xs leading-relaxed text-[#004551]/70">
                         Lomba ini memerlukan pengumpulan karya tulis. Anda akan
                         diminta mengisi judul dan subtema karya.
@@ -481,7 +527,10 @@ export function RegisterPage() {
             </FormGroup>
 
             {/* ── STEP 02: Data Peserta / Ketua ──────────────────────────────── */}
-            <FormGroup step="02" title={isTeam ? "Data Ketua Tim" : "Data Peserta"}>
+            <FormGroup
+              step="02"
+              title={isTeam ? "Data Ketua Tim" : "Data Peserta"}
+            >
               {isTeam && (
                 <div className="md:col-span-2">
                   <PublicFormInput
@@ -546,7 +595,9 @@ export function RegisterPage() {
 
               <PublicFormInput
                 label={
-                  form.level === "Mahasiswa" ? "Semester saat ini" : "Kelas saat ini"
+                  form.level === "Mahasiswa"
+                    ? "Semester saat ini"
+                    : "Kelas saat ini"
                 }
                 value={form.leader_class_or_semester}
                 onChange={(e) =>
@@ -644,7 +695,7 @@ export function RegisterPage() {
                           updateMember(
                             index,
                             "class_or_semester",
-                            e.target.value
+                            e.target.value,
                           )
                         }
                         required
@@ -697,8 +748,8 @@ export function RegisterPage() {
                     {selectedCompetition.slug === "esai-regional"
                       ? "Breaking the Code: Mengasah Logika Matematika sebagai Senjata Kreatif di Era Kompetisi Global"
                       : selectedCompetition.slug === "lkti-nasional"
-                      ? "Advancing Sustainable Development through Mathematical Thinking and Innovation"
-                      : "—"}
+                        ? "Advancing Sustainable Development through Mathematical Thinking and Innovation"
+                        : "—"}
                   </p>
                 </div>
 
@@ -738,8 +789,8 @@ export function RegisterPage() {
                 isTeam && selectedCompetition?.has_work_submission
                   ? "05"
                   : isTeam || selectedCompetition?.has_work_submission
-                  ? "04"
-                  : "03"
+                    ? "04"
+                    : "03"
               }
               title="Pembayaran"
             >
@@ -753,8 +804,8 @@ export function RegisterPage() {
                     {formatCurrency(selectedCompetition.registration_fee)}
                   </p>
                   <p className="mt-1.5 text-xs font-semibold text-[#004551]/65">
-                    Lakukan pembayaran ke salah satu metode aktif panitia, lalu
-                    tempel link bukti pembayaran di bawah.
+                    Lakukan pembayaran sesuai instruksi di bawah, lalu upload
+                    bukti pembayaran.
                   </p>
                 </div>
               )}
@@ -776,38 +827,40 @@ export function RegisterPage() {
                   </div>
                 )}
 
-              <PublicFormSelect
-                label="Metode pembayaran"
-                value={form.payment_method_id}
-                onChange={(e) =>
-                  updateField("payment_method_id", e.target.value)
-                }
-                disabled={!selectedCompetition || paymentMethods.loading}
-                required
-                options={[
-                  { label: "Pilih metode pembayaran", value: "" },
-                  ...availablePaymentMethods.map((m) => ({
-                    label: `${formatPaymentType(m.type)} — ${m.label}`,
-                    value: m.id,
-                  })),
-                ]}
-              />
-
-              <PublicFormInput
-                label="Link bukti pembayaran"
-                value={form.payment_proof_url}
-                onChange={(e) =>
-                  updateField("payment_proof_url", e.target.value)
-                }
-                required
-                placeholder="https://drive.google.com/..."
-              />
+              {/* Dropdown hanya ditampilkan jika ada lebih dari 1 metode pembayaran */}
+              {availablePaymentMethods.length > 1 && (
+                <PublicFormSelect
+                  label="Metode pembayaran"
+                  value={form.payment_method_id}
+                  onChange={(e) =>
+                    updateField("payment_method_id", e.target.value)
+                  }
+                  disabled={!selectedCompetition || paymentMethods.loading}
+                  required
+                  options={[
+                    { label: "Pilih metode pembayaran", value: "" },
+                    ...availablePaymentMethods.map((m) => ({
+                      label: `${formatPaymentType(m.type)} — ${m.label}`,
+                      value: m.id,
+                    })),
+                  ]}
+                />
+              )}
 
               {selectedPaymentMethod && (
                 <div className="md:col-span-2">
                   <PaymentInstruction method={selectedPaymentMethod} />
                 </div>
               )}
+              
+              <PublicFormFileInput
+                label="Upload bukti pembayaran (gambar/PDF, maks. 1 MB)"
+                required
+                accept="image/*,application/pdf"
+                maxSizeBytes={1024 * 1024}
+                file={form.payment_proof_file}
+                onChange={(file) => updateField("payment_proof_file", file)}
+              />
             </FormGroup>
 
             {/* ── Persetujuan + Submit ───────────────────────────────────────── */}
@@ -878,7 +931,7 @@ function PaymentInstruction({ method }: { method: PaymentMethod }) {
           )}
           <p className="leading-7 text-[#004551]/75">
             {method.notes ??
-              "Scan QRIS, lakukan pembayaran sesuai biaya lomba, lalu tempel link bukti pembayaran."}
+              "Scan QRIS, lakukan pembayaran sesuai biaya lomba, lalu upload bukti pembayaran."}
           </p>
         </div>
       )}
@@ -905,7 +958,7 @@ function PaymentInstruction({ method }: { method: PaymentMethod }) {
       {method.type === "ewallet" && (
         <p className="mt-4 leading-7 text-[#004551]/75">
           {method.notes ??
-            "Ikuti instruksi e-wallet dari panitia, lalu tempel link bukti pembayaran."}
+            "Ikuti instruksi e-wallet dari panitia, lalu upload bukti pembayaran."}
         </p>
       )}
     </div>
