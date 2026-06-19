@@ -1,76 +1,101 @@
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   Bell,
   CalendarDays,
-  CheckCircle2,
   Clock3,
-  FileText,
-  Hourglass,
   Rocket,
-  Trophy,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { formatDate } from "../../utils/date";
+import { getGeneralTimelines } from "../../services/timelines";
+import type { GeneralTimelineItem, TimelineScope } from "../../types/models";
 
-const stepIcons = [CalendarDays, FileText, CheckCircle2, Trophy, Hourglass];
+function parseLocalDate(dateString: string): Date {
+  const [year, month, day] = dateString.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
 
-// ===== Timeline statis (umum) GAMES 2026 =====
-// Diambil & dirangkum dari Panduan Lomba Tingkat Nasional (PTN/PTS) dan
-// Panduan Lomba Tingkat Regional (SD/SMP/SMA) agar mewakili gambaran
-// umum seluruh rangkaian kegiatan, bukan hanya satu jenis lomba saja.
-type TimelineItem = {
-  id: string;
-  title: string;
-  start_date: string;
-  end_date?: string;
-  description?: string;
-};
+function formatDate(dateString: string): string {
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(parseLocalDate(dateString));
+}
 
-const STATIC_TIMELINE: TimelineItem[] = [
-  {
-    id: "1",
-    title: "Pendaftaran Peserta",
-    start_date: "2026-06-15",
-    end_date: "2026-10-09",
-    description:
-      "Pendaftaran seluruh cabang lomba GAMES 2026, baik tingkat Nasional (Calculus Competition, Mathematical Statistics Competition, LKTI) maupun tingkat Regional (Olimpiade Matematika, LCTM, dan Esai).",
-  },
-  {
-    id: "2",
-    title: "Penyisihan & Pengumpulan Karya",
-    start_date: "2026-09-14",
-    end_date: "2026-09-25",
-    description:
-      "Tahap penyisihan Calculus Competition & Mathematical Statistics Competition, serta pengumpulan full paper LKTI dari peserta yang dinyatakan lolos abstrak.",
-  },
-  {
-    id: "3",
-    title: "Pengumuman Finalis",
-    start_date: "2026-10-02",
-    end_date: "2026-10-02",
-    description:
-      "Pengumuman finalis LKTI (5 karya terbaik) dan 5 besar Esai yang berhak melaju ke tahap presentasi di hadapan dewan juri.",
-  },
-  {
-    id: "4",
-    title: "Pembukaan & Final Lomba",
-    start_date: "2026-10-12",
-    end_date: "2026-10-16",
-    description:
-      "Pembukaan acara, seminar nasional, serta pelaksanaan final seluruh cabang lomba: Calculus Competition, Mathematical Statistics Competition, LKTI, LCTM, Olimpiade Matematika, dan Esai.",
-  },
-  {
-    id: "5",
-    title: "Pengumuman Juara & Penutupan",
-    start_date: "2026-10-17",
-    end_date: "2026-10-17",
-    description:
-      "Pengumuman juara seluruh cabang lomba GAMES 2026 serta acara penutupan resmi.",
-  },
-];
+function formatTimelineDateRange(startDateStr: string, endDateStr: string | null): string {
+  if (!endDateStr || startDateStr === endDateStr) {
+    return formatDate(startDateStr);
+  }
+
+  const start = parseLocalDate(startDateStr);
+  const end = parseLocalDate(endDateStr);
+
+  const startDay = start.getDate();
+  const startMonth = start.getMonth();
+  const startYear = start.getFullYear();
+
+  const endDay = end.getDate();
+  const endMonth = end.getMonth();
+  const endYear = end.getFullYear();
+
+  const monthNames = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+  ];
+
+  if (startYear === endYear) {
+    if (startMonth === endMonth) {
+      return `${startDay}–${endDay} ${monthNames[startMonth]} ${startYear}`;
+    } else {
+      return `${startDay} ${monthNames[startMonth]}–${endDay} ${monthNames[endMonth]} ${startYear}`;
+    }
+  } else {
+    return `${startDay} ${monthNames[startMonth]} ${startYear}–${endDay} ${monthNames[endMonth]} ${endYear}`;
+  }
+}
 
 export function TimelinePage() {
-  const items = STATIC_TIMELINE;
+  const [data, setData] = useState<GeneralTimelineItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [activeScope, setActiveScope] = useState<TimelineScope>("regional");
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setLoading(true);
+        setError(null);
+        const EVENT_ID = "916561f8-9237-490f-98f4-3db9a46575a7";
+        const { data: timelinesData, error: dbError } = await getGeneralTimelines(EVENT_ID);
+        if (dbError) {
+          throw dbError;
+        }
+        setData(timelinesData);
+
+        const regCount = timelinesData.filter((item) => item.timeline_scope === "regional").length;
+        const natCount = timelinesData.filter((item) => item.timeline_scope === "nasional").length;
+        if (import.meta.env.DEV) {
+          console.info("General timeline count:", {
+            regional: regCount,
+            nasional: natCount,
+          });
+        }
+      } catch (err: unknown) {
+        console.error("Error fetching timelines:", err);
+        const errMsg =
+          err instanceof Error ? err.message : "Gagal memuat timeline.";
+        setError(errMsg);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  const regionalTimeline = data.filter((item) => item.timeline_scope === "regional");
+  const nationalTimeline = data.filter((item) => item.timeline_scope === "nasional");
+  const activeTimeline = activeScope === "regional" ? regionalTimeline : nationalTimeline;
 
   return (
     <>
@@ -116,15 +141,70 @@ export function TimelinePage() {
         </div>
       </section>
 
-      {/* ===== Timeline ===== */}
-      <section className="container-hero py-7 md:py-12">
-        <div className="hidden md:block">
-          <DesktopTimeline items={items.slice(0, 5)} />
+      {/* ===== Tabs Section ===== */}
+      <section className="container-hero mt-8">
+        <div className="mx-auto flex max-w-[400px] justify-center px-4">
+          <div
+            role="tablist"
+            aria-label="Kategori Timeline"
+            className="flex w-full items-center gap-1.5 rounded-full border border-white/60 bg-white/35 p-1.5 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_8px_24px_rgba(6,66,82,0.06)] backdrop-blur-md"
+          >
+            <button
+              role="tab"
+              id="tab-regional"
+              aria-selected={activeScope === "regional"}
+              aria-controls="panel-regional"
+              tabIndex={activeScope === "regional" ? 0 : -1}
+              onClick={() => setActiveScope("regional")}
+              className={`flex-1 rounded-full py-2.5 text-xs font-black uppercase tracking-wider transition-all duration-200 cursor-pointer ${
+                activeScope === "regional"
+                  ? "bg-[#7E032F] text-white shadow-[0_4px_12px_rgba(126,3,47,0.22)]"
+                  : "text-[#064452] hover:bg-white/40 hover:text-[#7E032F]"
+              }`}
+            >
+              Regional
+            </button>
+            <button
+              role="tab"
+              id="tab-nasional"
+              aria-selected={activeScope === "nasional"}
+              aria-controls="panel-nasional"
+              tabIndex={activeScope === "nasional" ? 0 : -1}
+              onClick={() => setActiveScope("nasional")}
+              className={`flex-1 rounded-full py-2.5 text-xs font-black uppercase tracking-wider transition-all duration-200 cursor-pointer ${
+                activeScope === "nasional"
+                  ? "bg-[#7E032F] text-white shadow-[0_4px_12px_rgba(126,3,47,0.22)]"
+                  : "text-[#064452] hover:bg-white/40 hover:text-[#7E032F]"
+              }`}
+            >
+              Nasional
+            </button>
+          </div>
         </div>
+      </section>
 
-        <div className="md:hidden">
-          <MobileTimeline items={items.slice(0, 5)} />
-        </div>
+      {/* ===== Timeline Content Section ===== */}
+      <section className="container-hero py-4 md:py-6">
+        {loading ? (
+          <TimelineSkeleton />
+        ) : error ? (
+          <div className="mx-auto max-w-md px-4 py-16 text-center">
+            <div className="rounded-[1.45rem] border border-red-200 bg-red-50/80 p-6 shadow-md backdrop-blur-md">
+              <p className="text-sm font-semibold text-red-800">
+                Terjadi kesalahan saat memuat data:
+              </p>
+              <p className="mt-2 text-xs font-medium text-red-600">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-red-800 px-4 py-2 text-xs font-bold text-white transition hover:bg-red-900 cursor-pointer"
+              >
+                Coba Lagi
+              </button>
+            </div>
+          </div>
+        ) : (
+          <VerticalTimeline items={activeTimeline} scope={activeScope} />
+        )}
       </section>
 
       {/* ===== Note ===== */}
@@ -159,91 +239,35 @@ export function TimelinePage() {
   );
 }
 
-function DesktopTimeline({ items }: { items: TimelineItem[] }) {
-  const columnCount = Math.min(Math.max(items.length, 1), 5);
-  const activeIndex = Math.min(3, Math.max(0, items.length - 1));
-
+function TimelineSkeleton() {
   return (
-    <div className="relative overflow-hidden rounded-[2.15rem] border border-white/88 bg-white/48 p-6 shadow-[0_22px_56px_rgba(6,68,82,0.12),inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-[24px] md:p-8 lg:p-10">
-      <div
-        className="grid"
-        style={{
-          gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,
-        }}
-      >
-        {items.map((item, index) => {
-          const Icon = stepIcons[index % stepIcons.length];
-          const featured = index === activeIndex;
-
+    <div className="relative mx-auto max-w-[850px] px-4 py-12 lg:py-16">
+      {/* Center line skeleton */}
+      <div className="absolute left-6 top-4 bottom-4 w-[3px] bg-white/20 lg:left-1/2 lg:-translate-x-1/2" />
+      
+      <div className="space-y-10 lg:space-y-14">
+        {[1, 2, 3, 4].map((i) => {
+          const isLeft = i % 2 === 0;
           return (
-            <div key={item.id} className="relative px-3">
-              <div className="relative h-28">
-                {index > 0 ? (
-                  <div
-                    className={`absolute left-0 right-1/2 top-10 h-[3px] -translate-y-1/2 ${getTimelineSegmentClass(index - 1)}`}
-                  />
-                ) : null}
+            <div
+              key={i}
+              className={`relative flex flex-col lg:grid lg:grid-cols-2 lg:gap-x-16 ${
+                isLeft ? "lg:flex-row" : "lg:flex-row-reverse"
+              }`}
+            >
+              {/* Dot skeleton */}
+              <div className="absolute left-6 top-8 z-10 flex size-[18px] -translate-x-1/2 items-center justify-center rounded-full border border-white/40 bg-white/20 shadow-sm lg:left-1/2 lg:-translate-x-1/2" />
 
-                {index < items.length - 1 ? (
-                  <div
-                    className={`absolute left-1/2 right-0 top-10 h-[3px] -translate-y-1/2 ${getTimelineSegmentClass(index)}`}
-                  />
-                ) : null}
-
-                <div className="absolute left-1/2 top-0 z-10 -translate-x-1/2">
-                  <div
-                    className={[
-                      "grid size-18 place-items-center rounded-full border shadow-[0_0_26px_rgba(194,225,223,0.42)] backdrop-blur-2xl",
-                      featured
-                        ? "border-[#faadb6]/65 bg-[#7E032F] text-white"
-                        : "border-white/75 bg-[#064452]/76 text-white",
-                    ].join(" ")}
-                  >
-                    <Icon
-                      size={25}
-                      className={featured ? "text-[#faadb6]" : "text-[#c2e1df]"}
-                    />
-                  </div>
-                </div>
-
-                <div
-                  className={[
-                    "absolute left-1/2 top-[4.5rem] h-10 w-px -translate-x-1/2",
-                    featured ? "bg-[#7E032F]" : "bg-[#5fa6a5]/70",
-                  ].join(" ")}
-                />
-              </div>
-
+              {/* Card skeleton */}
               <div
-                className={[
-                  "min-h-[250px] rounded-[1.35rem] border bg-white/62 p-5 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.92)]",
-                  featured ? "border-[#7E032F]/42" : "border-white/75",
-                ].join(" ")}
+                className={`ml-12 lg:ml-0 rounded-[1.45rem] border border-white/40 bg-white/30 p-6 shadow-sm animate-pulse ${
+                  isLeft ? "lg:col-start-1" : "lg:col-start-2"
+                }`}
               >
-                <span
-                  className={[
-                    "rounded-full px-3 py-1.5 text-[11px] font-black",
-                    featured
-                      ? "bg-[#faadb6]/35 text-[#7E032F]"
-                      : "bg-[#c2e1df]/55 text-[#064452]",
-                  ].join(" ")}
-                >
-                  Tahap {index + 1}
-                </span>
-
-                <h3 className="mt-5 text-xl font-black leading-tight text-[#064452]">
-                  {item.title}
-                </h3>
-
-                <p className="mt-4 inline-flex items-center justify-center gap-2 text-sm font-black text-[#064452]">
-                  <CalendarDays size={15} /> {formatTimelineDate(item)}
-                </p>
-
-                {item.description ? (
-                  <p className="mt-5 text-sm font-semibold leading-7 text-[#064452]/70">
-                    {item.description}
-                  </p>
-                ) : null}
+                <div className="h-4 w-1/3 rounded bg-white/30 mb-3" />
+                <div className="h-6 w-3/4 rounded bg-white/40 mb-3" />
+                <div className="h-4 w-full rounded bg-white/20 mb-2" />
+                <div className="h-4 w-5/6 rounded bg-white/20" />
               </div>
             </div>
           );
@@ -253,77 +277,83 @@ function DesktopTimeline({ items }: { items: TimelineItem[] }) {
   );
 }
 
-function MobileTimeline({ items }: { items: TimelineItem[] }) {
-  const activeIndex = Math.min(3, Math.max(0, items.length - 1));
+function VerticalTimeline({ items, scope }: { items: GeneralTimelineItem[]; scope: TimelineScope }) {
+  if (items.length === 0) {
+    return (
+      <div
+        role="tabpanel"
+        id={`panel-${scope}`}
+        aria-labelledby={`tab-${scope}`}
+        className="mx-auto max-w-md py-16 text-center"
+      >
+        <p className="text-base font-semibold text-[#064452]/72">
+          Timeline {scope === "regional" ? "Regional" : "Nasional"} belum tersedia.
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="relative overflow-hidden rounded-[1.75rem] border border-white/88 bg-white/58 px-4 py-5 shadow-[0_18px_44px_rgba(6,68,82,0.1),inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-[24px]">
-      <div className="pointer-events-none absolute -right-24 top-6 size-56 rounded-full bg-[#c2e1df]/25 blur-3xl" />
-      <div className="pointer-events-none absolute -left-24 bottom-0 size-56 rounded-full bg-[#064452]/10 blur-3xl" />
+    <div
+      role="tabpanel"
+      id={`panel-${scope}`}
+      aria-labelledby={`tab-${scope}`}
+      className="relative mx-auto max-w-[850px] px-4 py-12 lg:py-16"
+    >
+      {/* Central Line for Desktop >= 1024px, Left Line for Mobile/Tablet < 1024px */}
+      <div className="absolute left-6 top-4 bottom-4 w-[3px] rounded-full bg-gradient-to-b from-[#5fa6a5] via-[#7E032F] to-[#c2e1df] shadow-[0_0_12px_rgba(95,166,165,0.4)] lg:left-1/2 lg:-translate-x-1/2" />
 
-      <div className="relative">
-        <div className="absolute bottom-8 left-[1.45rem] top-8 w-[2px] rounded-full bg-gradient-to-b from-[#5fa6a5] via-[#7E032F] to-[#c2e1df] shadow-[0_0_16px_rgba(194,225,223,0.55)]" />
+      <div className="space-y-10 lg:space-y-14">
+        {items.map((item, index) => {
+          const isLeft = index % 2 === 0;
 
-        <div className="grid gap-4">
-          {items.map((item, index) => {
-            const Icon = stepIcons[index % stepIcons.length];
-            const featured = index === activeIndex;
+          return (
+            <div
+              key={item.id}
+              className={`relative flex flex-col lg:grid lg:grid-cols-2 lg:gap-x-16 ${
+                isLeft ? "lg:flex-row" : "lg:flex-row-reverse"
+              }`}
+            >
+              {/* Bullet/Node */}
+              <div className="absolute left-6 top-8 z-10 flex size-[18px] -translate-x-1/2 items-center justify-center rounded-full border border-white bg-[#064452] shadow-[0_0_10px_rgba(6,68,82,0.3)] lg:left-1/2 lg:-translate-x-1/2">
+                <div className="size-[8px] rounded-full bg-[#faadb6] animate-pulse" />
+              </div>
 
-            return (
+              {/* Card Container */}
               <div
-                key={item.id}
-                className="relative grid min-w-0 grid-cols-[3.05rem_1fr] gap-3"
+                className={`ml-12 lg:ml-0 ${
+                  isLeft ? "lg:col-start-1" : "lg:col-start-2"
+                }`}
               >
-                <div className="relative z-10 flex justify-center pt-4">
-                  <div className="grid size-11 place-items-center rounded-full border border-white/80 bg-white/62 shadow-[0_12px_28px_rgba(6,68,82,0.13),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-md">
-                    <div
-                      className={[
-                        "grid size-8 place-items-center rounded-full",
-                        featured
-                          ? "bg-gradient-to-br from-[#7E032F] to-[#a60b3a] text-white shadow-[0_0_20px_rgba(126,3,47,0.34)]"
-                          : "bg-gradient-to-br from-[#064452] to-[#0b5a63] text-[#c2e1df]",
-                      ].join(" ")}
-                    >
-                      <Icon size={15} />
-                    </div>
-                  </div>
-                </div>
-
                 <article
                   className={[
-                    "min-w-0 rounded-[1.2rem] border bg-white/64 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.92)]",
-                    featured ? "border-[#7E032F]/42" : "border-white/76",
+                    "min-w-0 rounded-[1.45rem] border border-white/76 bg-white/64 px-6 py-6 shadow-[0_12px_36px_rgba(6,68,82,0.06),inset_0_1px_0_rgba(255,255,255,0.92)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:bg-white/80 hover:shadow-[0_16px_44px_rgba(6,68,82,0.12)]",
+                    isLeft ? "lg:origin-right" : "lg:origin-left",
                   ].join(" ")}
                 >
+                  {/* Date Badge */}
                   <span
-                    className={[
-                      "inline-flex rounded-full px-3 py-1 text-[10px] font-black",
-                      featured
-                        ? "bg-[#faadb6]/35 text-[#7E032F]"
-                        : "bg-[#c2e1df]/55 text-[#064452]",
-                    ].join(" ")}
+                    className="inline-flex items-center rounded-full border border-[#faadb6]/35 bg-[#faadb6]/20 px-3.5 py-1 text-[10px] font-black uppercase tracking-wider text-[#7E032F]"
                   >
-                    Tahap {index + 1}
+                    {formatTimelineDateRange(item.start_date, item.end_date)}
                   </span>
 
-                  <h3 className="mt-2.5 text-[1rem] font-black leading-snug text-[#064452]">
+                  {/* Title */}
+                  <h3 className="mt-3 text-lg font-black leading-snug text-[#064452] md:text-xl">
                     {item.title}
                   </h3>
 
-                  <p className="mt-1.5 text-[0.78rem] font-black leading-5 text-[#064452]/80">
-                    {formatTimelineDate(item)}
-                  </p>
-
+                  {/* Description */}
                   {item.description ? (
-                    <p className="mt-2 text-[0.78rem] font-semibold leading-5 text-[#064452]/68">
+                    <p className="mt-3 text-[0.88rem] font-semibold leading-relaxed text-[#064452]/70 break-words text-left">
                       {item.description}
                     </p>
                   ) : null}
                 </article>
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -399,15 +429,4 @@ function TimelineHeroVisual() {
       </div>
     </div>
   );
-}
-
-function getTimelineSegmentClass(index: number) {
-  if (index === 2 || index === 3) return "bg-[#7E032F]";
-  if (index > 3) return "bg-[#9fbec0]";
-  return "bg-[#5fd0cc]";
-}
-
-function formatTimelineDate(item: TimelineItem) {
-  if (!item.end_date) return formatDate(item.start_date);
-  return `${formatDate(item.start_date)} - ${formatDate(item.end_date)}`;
 }

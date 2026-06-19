@@ -29,9 +29,22 @@ export type Event = {
   is_active: boolean;
 };
 
+export type TimelineScope = "regional" | "nasional";
+
+export interface GeneralTimelineItem {
+  id: string;
+  timeline_scope: TimelineScope;
+  title: string;
+  description: string | null;
+  start_date: string;
+  end_date: string | null;
+  sort_order: number;
+}
+
 export type Timeline = {
   id: string;
   competition_id: string | null; // ← tambah
+  timeline_scope?: TimelineScope | null; // ← tambah
   title: string;
   description: string | null;
   start_date: string;
