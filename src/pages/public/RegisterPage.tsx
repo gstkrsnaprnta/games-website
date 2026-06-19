@@ -1,54 +1,71 @@
+// FILE: src/pages/public/RegisterPage.tsx
 import { useMemo, useState } from "react";
-import { CheckCircle, Copy, ArrowRight } from "lucide-react";
+import { CheckCircle, Copy, ArrowRight, Plus, Trash2, Info } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PublicFormInput } from "../../components/public/PublicFormInput";
 import { PublicFormSelect } from "../../components/public/PublicFormSelect";
-import { PublicFormTextarea } from "../../components/public/PublicFormTextarea";
 import { PageHero } from "../../components/public/PageHero";
 import { EmptyState } from "../../components/shared/EmptyState";
 import { ErrorState } from "../../components/shared/ErrorState";
 import { LoadingState } from "../../components/shared/LoadingState";
 import { getOpenCompetitions } from "../../services/competitions";
 import { getActivePaymentMethods } from "../../services/paymentMethods";
-import {
-  createRegistration,
-  createRegistrationMembers,
-  getNextRegistrationCode,
-} from "../../services/registrations";
-import type { PaymentMethod } from "../../types/models";
+import { submitRegistration } from "../../services/registrations";
+import type { Competition, PaymentMethod } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
+
+// ── Tipe data form ──────────────────────────────────────────────────────────
+
+type MemberForm = {
+  name: string;
+  identity_number: string;
+  class_or_semester: string;
+  id_card_url: string;
+};
+
+function emptyMember(): MemberForm {
+  return { name: "", identity_number: "", class_or_semester: "", id_card_url: "" };
+}
 
 type FormState = {
   competition_id: string;
   level: string;
-  participant_type: "individual" | "team";
   team_name: string;
   leader_name: string;
+  leader_identity_number: string;
+  leader_class_or_semester: string;
+  leader_id_card_url: string;
   email: string;
   whatsapp: string;
   institution: string;
+  work_title: string;
+  work_subtheme: string;
   payment_method_id: string;
   payment_proof_url: string;
-  submission_url: string;
-  members: string;
+  members: MemberForm[];
   agreement: boolean;
 };
 
 const initialForm: FormState = {
   competition_id: "",
   level: "",
-  participant_type: "individual",
   team_name: "",
   leader_name: "",
+  leader_identity_number: "",
+  leader_class_or_semester: "",
+  leader_id_card_url: "",
   email: "",
   whatsapp: "",
   institution: "",
+  work_title: "",
+  work_subtheme: "",
   payment_method_id: "",
   payment_proof_url: "",
-  submission_url: "",
-  members: "",
+  members: [],
   agreement: false,
 };
+
+// ── Komponen utama ───────────────────────────────────────────────────────────
 
 export function RegisterPage() {
   const competitions = useAsyncData(getOpenCompetitions, []);
@@ -57,142 +74,232 @@ export function RegisterPage() {
   const [error, setError] = useState("");
   const [successCode, setSuccessCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  const selectedCompetition = useMemo(
+  // Kompetisi yang sedang dipilih
+  const selectedCompetition = useMemo<Competition | null>(
     () =>
-      competitions.data?.find(
-        (competition) => competition.id === form.competition_id,
-      ) ?? null,
-    [competitions.data, form.competition_id],
+      competitions.data?.find((c) => c.id === form.competition_id) ?? null,
+    [competitions.data, form.competition_id]
   );
-  const selectedEventId = selectedCompetition?.event_id ?? "";
 
-  const availablePaymentMethods = useMemo(
+  // Jenjang yang tersedia berdasarkan kompetisi terpilih
+  const availableLevels = useMemo<string[]>(() => {
+    if (!selectedCompetition) return [];
+    return selectedCompetition.participant_levels ?? [];
+  }, [selectedCompetition]);
+
+  // Metode pembayaran yang tersedia berdasarkan event kompetisi terpilih
+  const availablePaymentMethods = useMemo<PaymentMethod[]>(
     () =>
-      selectedEventId
+      selectedCompetition?.event_id
         ? (paymentMethods.data?.filter(
-            (method) => method.event_id === selectedEventId,
+            (m) => m.event_id === selectedCompetition.event_id
           ) ?? [])
         : [],
-    [paymentMethods.data, selectedEventId],
+    [paymentMethods.data, selectedCompetition]
   );
 
-  const selectedPaymentMethod = useMemo(
+  const selectedPaymentMethod = useMemo<PaymentMethod | null>(
     () =>
-      availablePaymentMethods.find(
-        (method) => method.id === form.payment_method_id,
-      ) ?? null,
-    [availablePaymentMethods, form.payment_method_id],
+      availablePaymentMethods.find((m) => m.id === form.payment_method_id) ??
+      null,
+    [availablePaymentMethods, form.payment_method_id]
   );
 
-  function updateField<Key extends keyof FormState>(
-    key: Key,
-    value: FormState[Key],
-  ) {
-    setForm((current) => ({ ...current, [key]: value }));
+  // Apakah lomba ini tim (max_members > 1)?
+  const isTeam = (selectedCompetition?.max_members ?? 1) > 1;
+  const maxExtra = selectedCompetition
+    ? selectedCompetition.max_members - 1
+    : 0;
+  const minExtra = selectedCompetition
+    ? selectedCompetition.min_members - 1
+    : 0;
+
+  // ── Helpers update form ────────────────────────────────────────────────────
+
+  function updateField<K extends keyof FormState>(key: K, value: FormState[K]) {
+    setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError("");
-    setSuccessCode("");
+  function updateMember(index: number, key: keyof MemberForm, value: string) {
+    setForm((prev) => {
+      const updated = prev.members.map((m, i) =>
+        i === index ? { ...m, [key]: value } : m
+      );
+      return { ...prev, members: updated };
+    });
+  }
 
-    if (!selectedCompetition?.event_id) {
+  function addMember() {
+    if (form.members.length >= maxExtra) return;
+    setForm((prev) => ({ ...prev, members: [...prev.members, emptyMember()] }));
+  }
+
+  function removeMember(index: number) {
+    setForm((prev) => ({
+      ...prev,
+      members: prev.members.filter((_, i) => i !== index),
+    }));
+  }
+
+  // Reset level dan anggota saat kompetisi berubah
+  function handleCompetitionChange(competitionId: string) {
+    setForm((prev) => ({
+      ...prev,
+      competition_id: competitionId,
+      level: "",
+      team_name: "",
+      work_title: "",
+      work_subtheme: "",
+      payment_method_id: "",
+      members: [],
+    }));
+  }
+
+  // ── Submit ─────────────────────────────────────────────────────────────────
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError("");
+
+    if (!selectedCompetition) {
       setError("Pilih lomba yang tersedia.");
       return;
     }
-
-    if (
-      !form.level ||
-      !form.leader_name ||
-      !form.email ||
-      !form.whatsapp ||
-      !form.institution ||
-      !form.agreement
-    ) {
-      setError("Lengkapi semua field wajib dan centang persetujuan.");
+    if (!form.level) {
+      setError("Pilih jenjang pendidikan.");
       return;
     }
-
-    if (form.participant_type === "team" && !form.team_name.trim()) {
+    if (!form.leader_name.trim()) {
+      setError("Nama ketua/peserta wajib diisi.");
+      return;
+    }
+    if (!form.email.trim()) {
+      setError("Email wajib diisi.");
+      return;
+    }
+    if (!form.whatsapp.trim()) {
+      setError("Nomor WhatsApp wajib diisi.");
+      return;
+    }
+    if (!form.institution.trim()) {
+      setError("Asal sekolah/instansi wajib diisi.");
+      return;
+    }
+    if (!form.leader_identity_number.trim()) {
+      setError("NISN/NIM ketua wajib diisi.");
+      return;
+    }
+    if (!form.leader_class_or_semester.trim()) {
+      setError("Kelas/semester ketua wajib diisi.");
+      return;
+    }
+    if (!form.leader_id_card_url.trim()) {
+      setError("Link kartu pelajar/KTM ketua wajib diisi.");
+      return;
+    }
+    if (isTeam && !form.team_name.trim()) {
       setError("Nama tim wajib diisi untuk pendaftaran tim.");
       return;
     }
-
-    if (!form.payment_method_id || !selectedPaymentMethod) {
-      setError("Pilih metode pembayaran yang tersedia.");
+    if (form.members.length < minExtra) {
+      setError(
+        `Lomba ini membutuhkan minimal ${selectedCompetition.min_members} peserta (termasuk ketua). Tambahkan ${minExtra - form.members.length} anggota lagi.`
+      );
       return;
     }
-
+    for (let i = 0; i < form.members.length; i++) {
+      const m = form.members[i];
+      const no = i + 2;
+      if (!m.name.trim()) {
+        setError(`Nama anggota ${no} wajib diisi.`);
+        return;
+      }
+      if (!m.identity_number.trim()) {
+        setError(`NISN/NIM anggota ${no} wajib diisi.`);
+        return;
+      }
+      if (!m.class_or_semester.trim()) {
+        setError(`Kelas/semester anggota ${no} wajib diisi.`);
+        return;
+      }
+      if (!m.id_card_url.trim()) {
+        setError(`Link kartu pelajar/KTM anggota ${no} wajib diisi.`);
+        return;
+      }
+    }
+    if (selectedCompetition.has_work_submission) {
+      if (!form.work_title.trim()) {
+        setError("Judul karya wajib diisi.");
+        return;
+      }
+      if (!form.work_subtheme) {
+        setError("Subtema karya wajib dipilih.");
+        return;
+      }
+    }
+    if (!form.payment_method_id) {
+      setError("Pilih metode pembayaran.");
+      return;
+    }
     if (!form.payment_proof_url.trim()) {
-      setError(
-        "Link bukti pembayaran wajib diisi setelah melakukan pembayaran manual.",
-      );
+      setError("Link bukti pembayaran wajib diisi.");
+      return;
+    }
+    if (!form.agreement) {
+      setError("Centang pernyataan persetujuan untuk melanjutkan.");
       return;
     }
 
     setSubmitting(true);
-    const registrationId = crypto.randomUUID();
-    const codeResult = await getNextRegistrationCode(form.competition_id);
 
-    if (codeResult.error || !codeResult.data) {
-      setSubmitting(false);
-      setError(
-        codeResult.error?.message ?? "Nomor registrasi belum bisa dibuat.",
-      );
-      return;
-    }
+    // Gabungkan ketua sebagai anggota pertama
+    const allMembers = [
+      {
+        name: form.leader_name.trim(),
+        role: "Ketua",
+        identity_number: form.leader_identity_number.trim(),
+        class_or_semester: form.leader_class_or_semester.trim(),
+        id_card_url: form.leader_id_card_url.trim(),
+      },
+      ...form.members.map((m, i) => ({
+        name: m.name.trim(),
+        role: `Anggota ${i + 1}`,
+        identity_number: m.identity_number.trim(),
+        class_or_semester: m.class_or_semester.trim(),
+        id_card_url: m.id_card_url.trim(),
+      })),
+    ];
 
-    const registrationResult = await createRegistration({
-      id: registrationId,
-      event_id: selectedCompetition.event_id,
+    const result = await submitRegistration({
       competition_id: form.competition_id,
-      registration_code: codeResult.data,
-      participant_type: form.participant_type,
-      team_name: form.team_name.trim() || null,
+      team_name: form.team_name.trim(),
       leader_name: form.leader_name.trim(),
       email: form.email.trim(),
       whatsapp: form.whatsapp.trim(),
       institution: form.institution.trim(),
       level: form.level,
+      work_title: form.work_title.trim(),
+      work_subtheme: form.work_subtheme,
       payment_method_id: form.payment_method_id,
-      payment_proof_url: form.payment_proof_url.trim() || null,
-      submission_url: form.submission_url.trim() || null,
-      payment_status: form.payment_proof_url.trim() ? "pending" : "unpaid",
-      submission_status: form.submission_url.trim()
-        ? "pending"
-        : "not_required",
+      payment_proof_url: form.payment_proof_url.trim(),
+      members: allMembers,
     });
 
-    if (registrationResult.error) {
-      setSubmitting(false);
-      setError(registrationResult.error.message);
-      return;
-    }
-
-    const members = form.members
-      .split("\n")
-      .map((name) => name.trim())
-      .filter(Boolean)
-      .map((name) => ({
-        registration_id: registrationId,
-        name,
-        role: "Anggota",
-      }));
-
-    const membersResult = await createRegistrationMembers(members);
     setSubmitting(false);
 
-    if (membersResult.error) {
-      setError(membersResult.error.message);
+    if (!result.ok) {
+      setError(result.error);
       return;
     }
 
-    setSuccessCode(codeResult.data);
+    setSuccessCode(result.registration_code);
     setForm(initialForm);
   }
 
-  // ── Success state ────────────────────────────────────────────────────────
+  // ── Tampilan sukses ────────────────────────────────────────────────────────
+
   if (successCode) {
     return (
       <section className="container-hero py-20">
@@ -220,10 +327,15 @@ export function RegisterPage() {
 
               <button
                 type="button"
-                onClick={() => void navigator.clipboard?.writeText(successCode)}
+                onClick={() => {
+                  void navigator.clipboard?.writeText(successCode);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }}
                 className="btn-glossy-maroon mt-6 inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-black text-white"
               >
-                <Copy size={16} /> Salin Kode
+                <Copy size={16} />
+                {copied ? "Tersalin!" : "Salin Kode"}
               </button>
 
               <p className="mx-auto mt-6 max-w-md text-sm leading-7 text-[#004551]/60">
@@ -252,24 +364,24 @@ export function RegisterPage() {
     );
   }
 
-  // ── Main form ────────────────────────────────────────────────────────────
+  // ── Tampilan form utama ────────────────────────────────────────────────────
+
   return (
     <>
       <PageHero
         eyebrow="Pendaftaran"
         title="Daftarkan diri atau timmu"
-        description="Isi data dengan benar. Nomor registrasi akan muncul setelah pendaftaran berhasil disimpan."
+        description="Isi data dengan benar dan lengkap. Nomor registrasi akan muncul setelah pendaftaran berhasil disimpan."
       />
 
-      {/* Gunakan container-hero agar lebar sama dengan PageHero */}
       <section className="container-hero pb-14 pt-8 md:pb-16 md:pt-10">
-        {/* Loading / error states */}
+        {/* State loading / error / kosong */}
         {(competitions.loading ||
           competitions.error ||
           paymentMethods.error ||
           (!competitions.loading &&
             !competitions.error &&
-            competitions.data?.length === 0)) && (
+            (competitions.data?.length ?? 0) === 0)) && (
           <div className="mb-6">
             {competitions.loading ? <LoadingState /> : null}
             {competitions.error ? (
@@ -280,166 +392,403 @@ export function RegisterPage() {
             ) : null}
             {!competitions.loading &&
             !competitions.error &&
-            competitions.data?.length === 0 ? (
+            (competitions.data?.length ?? 0) === 0 ? (
               <EmptyState description="Belum ada lomba yang membuka pendaftaran." />
             ) : null}
           </div>
         )}
 
-        {/* Center-constrain the form without breaking the outer container width */}
         <div className="mx-auto max-w-3xl">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-            {/* Step 01 */}
+          <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
+
+            {/* ── STEP 01: Pilih Lomba ───────────────────────────────────────── */}
             <FormGroup step="01" title="Pilih Lomba">
-              <PublicFormSelect
-                label="Pilihan lomba"
-                value={form.competition_id}
-                onChange={(event) =>
-                  updateField("competition_id", event.target.value)
-                }
-                required
-                options={[
-                  { label: "Pilih lomba", value: "" },
-                  ...(competitions.data?.map((competition) => ({
-                    label: competition.name,
-                    value: competition.id,
-                  })) ?? []),
-                ]}
-              />
-              <PublicFormSelect
-                label="Jenjang"
-                value={form.level}
-                onChange={(event) => updateField("level", event.target.value)}
-                required
-                options={[
-                  { label: "Pilih jenjang", value: "" },
-                  { label: "SD/sederajat", value: "SD" },
-                  { label: "SMP/sederajat", value: "SMP" },
-                  { label: "SMA/sederajat", value: "SMA" },
-                  { label: "Mahasiswa", value: "Mahasiswa" },
-                ]}
-              />
+              <div className="md:col-span-2">
+                <PublicFormSelect
+                  label="Pilihan lomba"
+                  value={form.competition_id}
+                  onChange={(e) => handleCompetitionChange(e.target.value)}
+                  required
+                  options={[
+                    { label: "Pilih lomba", value: "" },
+                    ...(competitions.data?.map((c) => ({
+                      label: c.name,
+                      value: c.id,
+                    })) ?? []),
+                  ]}
+                />
+              </div>
+
+              {/* Info lomba terpilih */}
+              {selectedCompetition && (
+                <div className="md:col-span-2 rounded-2xl border border-[#c2e1df]/70 bg-white/60 p-4 text-sm text-[#004551] shadow-[inset_0_1px_8px_rgba(6,66,82,0.04)]">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="rounded-full bg-[#004551]/10 px-3 py-1 text-xs font-black uppercase tracking-wider text-[#004551]">
+                      {selectedCompetition.competition_type === "team"
+                        ? `Tim (${selectedCompetition.min_members}–${selectedCompetition.max_members} orang)`
+                        : selectedCompetition.max_members > 1
+                        ? `Individu / Kelompok maks. ${selectedCompetition.max_members} orang`
+                        : "Individu"}
+                    </span>
+                    {selectedCompetition.total_quota && (
+                      <span className="rounded-full bg-[#7E032F]/10 px-3 py-1 text-xs font-black uppercase tracking-wider text-[#7E032F]">
+                        Kuota: {selectedCompetition.total_quota} tim
+                      </span>
+                    )}
+                    {selectedCompetition.max_teams_per_school && (
+                      <span className="rounded-full bg-[#004551]/10 px-3 py-1 text-xs font-semibold text-[#004551]/70">
+                        Maks. {selectedCompetition.max_teams_per_school} per sekolah
+                      </span>
+                    )}
+                  </div>
+                  {selectedCompetition.has_work_submission && (
+                    <div className="mt-3 flex items-start gap-2 rounded-xl bg-[#004551]/5 p-3">
+                      <Info size={15} className="mt-0.5 shrink-0 text-[#004551]/60" />
+                      <p className="text-xs leading-relaxed text-[#004551]/70">
+                        Lomba ini memerlukan pengumpulan karya tulis. Anda akan
+                        diminta mengisi judul dan subtema karya.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Dropdown jenjang — opsi difilter sesuai participant_levels */}
+              <div className="md:col-span-2">
+                <PublicFormSelect
+                  label="Jenjang pendidikan"
+                  value={form.level}
+                  onChange={(e) => updateField("level", e.target.value)}
+                  required
+                  disabled={availableLevels.length === 0}
+                  options={[
+                    { label: "Pilih jenjang", value: "" },
+                    ...(availableLevels.includes("SD")
+                      ? [{ label: "SD/sederajat", value: "SD" }]
+                      : []),
+                    ...(availableLevels.includes("SMP")
+                      ? [{ label: "SMP/sederajat", value: "SMP" }]
+                      : []),
+                    ...(availableLevels.includes("SMA")
+                      ? [{ label: "SMA/sederajat", value: "SMA" }]
+                      : []),
+                    ...(availableLevels.includes("Mahasiswa")
+                      ? [{ label: "Mahasiswa", value: "Mahasiswa" }]
+                      : []),
+                  ]}
+                />
+              </div>
             </FormGroup>
 
-            {/* Step 02 */}
-            <FormGroup step="02" title="Data Peserta / Ketua">
-              <PublicFormSelect
-                label="Tipe peserta"
-                value={form.participant_type}
-                onChange={(event) =>
-                  updateField(
-                    "participant_type",
-                    event.target.value as FormState["participant_type"],
-                  )
-                }
-                options={[
-                  { label: "Individu", value: "individual" },
-                  { label: "Tim", value: "team" },
-                ]}
-              />
+            {/* ── STEP 02: Data Peserta / Ketua ──────────────────────────────── */}
+            <FormGroup step="02" title={isTeam ? "Data Ketua Tim" : "Data Peserta"}>
+              {isTeam && (
+                <div className="md:col-span-2">
+                  <PublicFormInput
+                    label="Nama tim"
+                    value={form.team_name}
+                    onChange={(e) => updateField("team_name", e.target.value)}
+                    required
+                    placeholder="Contoh: Tim Euler"
+                  />
+                </div>
+              )}
+
               <PublicFormInput
-                label="Nama peserta utama / ketua tim"
+                label={isTeam ? "Nama ketua tim" : "Nama peserta"}
                 value={form.leader_name}
-                onChange={(event) =>
-                  updateField("leader_name", event.target.value)
-                }
+                onChange={(e) => updateField("leader_name", e.target.value)}
                 required
+                placeholder="Nama lengkap sesuai identitas"
               />
+
               <PublicFormInput
-                label="Email"
+                label="Email aktif"
                 type="email"
                 value={form.email}
-                onChange={(event) => updateField("email", event.target.value)}
+                onChange={(e) => updateField("email", e.target.value)}
                 required
+                placeholder="contoh@email.com"
               />
+
               <PublicFormInput
-                label="Nomor WhatsApp"
+                label="Nomor WhatsApp aktif"
+                type="tel"
                 value={form.whatsapp}
-                onChange={(event) =>
-                  updateField("whatsapp", event.target.value)
-                }
+                onChange={(e) => updateField("whatsapp", e.target.value)}
                 required
+                placeholder="08xxxxxxxxxx"
               />
+
               <div className="md:col-span-2">
                 <PublicFormInput
-                  label="Asal sekolah/kampus/instansi"
+                  label="Asal sekolah / universitas / instansi"
                   value={form.institution}
-                  onChange={(event) =>
-                    updateField("institution", event.target.value)
+                  onChange={(e) => updateField("institution", e.target.value)}
+                  required
+                  placeholder="Nama lengkap sekolah/kampus"
+                />
+              </div>
+
+              <PublicFormInput
+                label={form.level === "Mahasiswa" ? "NIM" : "NISN"}
+                value={form.leader_identity_number}
+                onChange={(e) =>
+                  updateField("leader_identity_number", e.target.value)
+                }
+                required
+                placeholder={
+                  form.level === "Mahasiswa"
+                    ? "Nomor Induk Mahasiswa"
+                    : "Nomor Induk Siswa Nasional"
+                }
+              />
+
+              <PublicFormInput
+                label={
+                  form.level === "Mahasiswa" ? "Semester saat ini" : "Kelas saat ini"
+                }
+                value={form.leader_class_or_semester}
+                onChange={(e) =>
+                  updateField("leader_class_or_semester", e.target.value)
+                }
+                required
+                placeholder={
+                  form.level === "Mahasiswa"
+                    ? "Contoh: Semester 4"
+                    : "Contoh: XII IPA 2"
+                }
+              />
+
+              <div className="md:col-span-2">
+                <PublicFormInput
+                  label={
+                    form.level === "Mahasiswa"
+                      ? "Link KTM (Google Drive / Cloud)"
+                      : "Link kartu pelajar (Google Drive / Cloud)"
+                  }
+                  value={form.leader_id_card_url}
+                  onChange={(e) =>
+                    updateField("leader_id_card_url", e.target.value)
                   }
                   required
+                  placeholder="https://drive.google.com/..."
                 />
               </div>
             </FormGroup>
 
-            {/* Step 03 */}
-            <FormGroup step="03" title="Data Tim / Anggota">
-              <div className="flex flex-col gap-1.5">
-                <span className="text-sm font-semibold text-[#004551]">
-                  Nama tim
-                </span>
-                <input
-                  value={form.team_name}
-                  onChange={(event) =>
-                    updateField("team_name", event.target.value)
-                  }
-                  className="games-input flex-1"
-                />
-              </div>
-              <PublicFormTextarea
-                label="Anggota tim"
-                placeholder="Satu nama per baris"
-                value={form.members}
-                onChange={(event) => updateField("members", event.target.value)}
-                className="h-full"
-              />
-            </FormGroup>
+            {/* ── STEP 03: Anggota Tim (kondisional, hanya muncul jika tim) ─── */}
+            {isTeam && selectedCompetition && (
+              <FormGroup
+                step="03"
+                title={`Anggota Tim (${form.members.length}/${maxExtra})`}
+              >
+                {form.members.length === 0 && minExtra > 0 && (
+                  <div className="md:col-span-2">
+                    <p className="rounded-xl bg-[#7E032F]/5 px-4 py-3 text-xs font-semibold text-[#7E032F]">
+                      Lomba ini membutuhkan minimal{" "}
+                      {selectedCompetition.min_members} peserta. Tambahkan{" "}
+                      {minExtra} anggota lagi.
+                    </p>
+                  </div>
+                )}
 
-            {/* Step 04 */}
-            <FormGroup step="04" title="Pembayaran / Berkas">
-              {selectedCompetition ? (
-                <div className="rounded-2xl border border-[#004551]/10 bg-white/55 p-4 text-[#004551] md:col-span-2">
+                {form.members.map((member, index) => (
+                  <div
+                    key={index}
+                    className="md:col-span-2 rounded-2xl border border-[#004551]/10 bg-white/50 p-4"
+                  >
+                    <div className="mb-3 flex items-center justify-between">
+                      <span className="text-xs font-black uppercase tracking-widest text-[#004551]/60">
+                        Anggota {index + 2}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => removeMember(index)}
+                        className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold text-[#7E032F] transition hover:bg-[#7E032F]/10"
+                      >
+                        <Trash2 size={13} /> Hapus
+                      </button>
+                    </div>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      <PublicFormInput
+                        label="Nama lengkap"
+                        value={member.name}
+                        onChange={(e) =>
+                          updateMember(index, "name", e.target.value)
+                        }
+                        required
+                        placeholder="Nama sesuai identitas"
+                      />
+                      <PublicFormInput
+                        label={form.level === "Mahasiswa" ? "NIM" : "NISN"}
+                        value={member.identity_number}
+                        onChange={(e) =>
+                          updateMember(index, "identity_number", e.target.value)
+                        }
+                        required
+                        placeholder={
+                          form.level === "Mahasiswa"
+                            ? "Nomor Induk Mahasiswa"
+                            : "Nomor Induk Siswa Nasional"
+                        }
+                      />
+                      <PublicFormInput
+                        label={
+                          form.level === "Mahasiswa"
+                            ? "Semester saat ini"
+                            : "Kelas saat ini"
+                        }
+                        value={member.class_or_semester}
+                        onChange={(e) =>
+                          updateMember(
+                            index,
+                            "class_or_semester",
+                            e.target.value
+                          )
+                        }
+                        required
+                        placeholder={
+                          form.level === "Mahasiswa"
+                            ? "Contoh: Semester 4"
+                            : "Contoh: XI IPA 3"
+                        }
+                      />
+                      <PublicFormInput
+                        label={
+                          form.level === "Mahasiswa"
+                            ? "Link KTM (Google Drive)"
+                            : "Link kartu pelajar (Google Drive)"
+                        }
+                        value={member.id_card_url}
+                        onChange={(e) =>
+                          updateMember(index, "id_card_url", e.target.value)
+                        }
+                        required
+                        placeholder="https://drive.google.com/..."
+                      />
+                    </div>
+                  </div>
+                ))}
+
+                {form.members.length < maxExtra && (
+                  <div className="md:col-span-2">
+                    <button
+                      type="button"
+                      onClick={addMember}
+                      className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[#004551]/20 py-4 text-sm font-bold text-[#004551]/60 transition hover:border-[#004551]/40 hover:text-[#004551]"
+                    >
+                      <Plus size={18} /> Tambah Anggota
+                    </button>
+                  </div>
+                )}
+              </FormGroup>
+            )}
+
+            {/* ── STEP 04: Karya Tulis (kondisional, hanya has_work_submission) */}
+            {selectedCompetition?.has_work_submission && (
+              <FormGroup step={isTeam ? "04" : "03"} title="Data Karya Tulis">
+                {/* Info tema utama berdasarkan kompetisi */}
+                <div className="md:col-span-2 rounded-2xl border border-[#c2e1df]/80 bg-[#004551]/5 p-4">
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-[#004551]/60">
+                    Tema Utama Lomba
+                  </p>
+                  <p className="mt-1.5 text-sm font-semibold leading-relaxed text-[#004551]">
+                    {selectedCompetition.slug === "esai-regional"
+                      ? "Breaking the Code: Mengasah Logika Matematika sebagai Senjata Kreatif di Era Kompetisi Global"
+                      : selectedCompetition.slug === "lkti-nasional"
+                      ? "Advancing Sustainable Development through Mathematical Thinking and Innovation"
+                      : "—"}
+                  </p>
+                </div>
+
+                <div className="md:col-span-2">
+                  <PublicFormInput
+                    label="Judul karya"
+                    value={form.work_title}
+                    onChange={(e) => updateField("work_title", e.target.value)}
+                    required
+                    placeholder="Judul lengkap karya Anda"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <PublicFormSelect
+                    label="Subtema karya"
+                    value={form.work_subtheme}
+                    onChange={(e) =>
+                      updateField("work_subtheme", e.target.value)
+                    }
+                    required
+                    options={[
+                      { label: "Pilih subtema", value: "" },
+                      ...(selectedCompetition.subthemes ?? []).map((s) => ({
+                        label: s,
+                        value: s,
+                      })),
+                    ]}
+                  />
+                </div>
+              </FormGroup>
+            )}
+
+            {/* ── STEP 05: Pembayaran ────────────────────────────────────────── */}
+            <FormGroup
+              step={
+                isTeam && selectedCompetition?.has_work_submission
+                  ? "05"
+                  : isTeam || selectedCompetition?.has_work_submission
+                  ? "04"
+                  : "03"
+              }
+              title="Pembayaran"
+            >
+              {/* Info biaya */}
+              {selectedCompetition && (
+                <div className="md:col-span-2 rounded-2xl border border-[#004551]/10 bg-white/55 p-4 text-[#004551]">
                   <p className="text-xs font-black uppercase tracking-[0.18em] text-[#7E032F]">
-                    Biaya lomba
+                    Biaya pendaftaran
                   </p>
                   <p className="mt-1 text-2xl font-black">
                     {formatCurrency(selectedCompetition.registration_fee)}
                   </p>
-                  <p className="mt-2 text-xs font-semibold text-[#004551]/65">
-                    Lakukan pembayaran manual ke salah satu metode aktif
-                    panitia, lalu tempel link bukti pembayaran.
+                  <p className="mt-1.5 text-xs font-semibold text-[#004551]/65">
+                    Lakukan pembayaran ke salah satu metode aktif panitia, lalu
+                    tempel link bukti pembayaran di bawah.
                   </p>
                 </div>
-              ) : null}
+              )}
 
-              {paymentMethods.loading ? (
+              {/* Loading metode bayar */}
+              {paymentMethods.loading && (
                 <div className="md:col-span-2">
                   <LoadingState label="Memuat metode pembayaran..." />
                 </div>
-              ) : null}
+              )}
 
+              {/* Tidak ada metode pembayaran */}
               {!paymentMethods.loading &&
-              !paymentMethods.error &&
-              selectedCompetition &&
-              availablePaymentMethods.length === 0 ? (
-                <div className="md:col-span-2">
-                  <EmptyState description="Metode pembayaran aktif belum tersedia untuk event ini." />
-                </div>
-              ) : null}
+                !paymentMethods.error &&
+                selectedCompetition &&
+                availablePaymentMethods.length === 0 && (
+                  <div className="md:col-span-2">
+                    <EmptyState description="Metode pembayaran aktif belum tersedia untuk event ini." />
+                  </div>
+                )}
 
               <PublicFormSelect
                 label="Metode pembayaran"
                 value={form.payment_method_id}
-                onChange={(event) =>
-                  updateField("payment_method_id", event.target.value)
+                onChange={(e) =>
+                  updateField("payment_method_id", e.target.value)
                 }
                 disabled={!selectedCompetition || paymentMethods.loading}
                 required
                 options={[
                   { label: "Pilih metode pembayaran", value: "" },
-                  ...availablePaymentMethods.map((method) => ({
-                    label: `${formatPaymentType(method.type)} - ${method.label}`,
-                    value: method.id,
+                  ...availablePaymentMethods.map((m) => ({
+                    label: `${formatPaymentType(m.type)} — ${m.label}`,
+                    value: m.id,
                   })),
                 ]}
               />
@@ -447,56 +796,50 @@ export function RegisterPage() {
               <PublicFormInput
                 label="Link bukti pembayaran"
                 value={form.payment_proof_url}
-                onChange={(event) =>
-                  updateField("payment_proof_url", event.target.value)
+                onChange={(e) =>
+                  updateField("payment_proof_url", e.target.value)
                 }
                 required
+                placeholder="https://drive.google.com/..."
               />
 
-              {selectedPaymentMethod ? (
+              {selectedPaymentMethod && (
                 <div className="md:col-span-2">
                   <PaymentInstruction method={selectedPaymentMethod} />
                 </div>
-              ) : null}
-
-              <div className="md:col-span-2">
-                <PublicFormInput
-                  label="Link karya / berkas Google Drive (opsional)"
-                  value={form.submission_url}
-                  onChange={(event) =>
-                    updateField("submission_url", event.target.value)
-                  }
-                />
-              </div>
+              )}
             </FormGroup>
 
-            {/* Agreement + Submit */}
+            {/* ── Persetujuan + Submit ───────────────────────────────────────── */}
             <div className="glass-card-premium rounded-[2rem] p-6 md:p-8">
               <label className="flex cursor-pointer gap-4 text-sm font-semibold text-[#004551]">
                 <input
                   type="checkbox"
                   checked={form.agreement}
-                  onChange={(event) =>
-                    updateField("agreement", event.target.checked)
-                  }
+                  onChange={(e) => updateField("agreement", e.target.checked)}
                   required
                   className="mt-1 size-5 shrink-0 cursor-pointer accent-[#7E032F]"
                 />
                 <span className="leading-relaxed">
-                  Saya menyatakan bahwa data yang diisikan adalah benar dan saya
-                  menyetujui seluruh syarat serta ketentuan lomba GAMES 2026.
+                  Saya menyatakan bahwa seluruh data yang diisikan adalah benar
+                  dan saya menyetujui seluruh syarat serta ketentuan lomba GAMES
+                  2026.
                 </span>
               </label>
 
-              {error ? (
+              {error && (
                 <div className="mt-5">
                   <ErrorState message={error} />
                 </div>
-              ) : null}
+              )}
 
               <button
+                type="submit"
                 disabled={
-                  submitting || competitions.loading || paymentMethods.loading
+                  submitting ||
+                  competitions.loading ||
+                  paymentMethods.loading ||
+                  !selectedCompetition
                 }
                 className="btn-glossy-maroon mt-6 w-full rounded-full px-6 py-4 text-base font-black text-white disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
               >
@@ -510,7 +853,7 @@ export function RegisterPage() {
   );
 }
 
-// ── Sub-components ────────────────────────────────────────────────────────────
+// ── Sub-komponen ──────────────────────────────────────────────────────────────
 
 function PaymentInstruction({ method }: { method: PaymentMethod }) {
   return (
@@ -520,7 +863,7 @@ function PaymentInstruction({ method }: { method: PaymentMethod }) {
       </p>
       <h3 className="mt-2 text-lg font-black">{method.label}</h3>
 
-      {method.type === "qris" ? (
+      {method.type === "qris" && (
         <div className="mt-4 grid gap-4 md:grid-cols-[180px_1fr]">
           {method.qris_image_url ? (
             <img
@@ -534,37 +877,37 @@ function PaymentInstruction({ method }: { method: PaymentMethod }) {
             </div>
           )}
           <p className="leading-7 text-[#004551]/75">
-            {method.notes ||
+            {method.notes ??
               "Scan QRIS, lakukan pembayaran sesuai biaya lomba, lalu tempel link bukti pembayaran."}
           </p>
         </div>
-      ) : null}
+      )}
 
-      {method.type === "bank_transfer" ? (
+      {method.type === "bank_transfer" && (
         <dl className="mt-4 grid gap-3 rounded-2xl bg-white/70 p-4 md:grid-cols-3">
-          <PaymentDetail label="Bank" value={method.bank_name ?? "-"} />
+          <PaymentDetail label="Bank" value={method.bank_name ?? "—"} />
           <PaymentDetail
             label="Nomor rekening"
-            value={method.account_number ?? "-"}
+            value={method.account_number ?? "—"}
           />
           <PaymentDetail
             label="Atas nama"
-            value={method.account_holder ?? "-"}
+            value={method.account_holder ?? "—"}
           />
-          {method.notes ? (
+          {method.notes && (
             <div className="md:col-span-3">
               <PaymentDetail label="Catatan" value={method.notes} />
             </div>
-          ) : null}
+          )}
         </dl>
-      ) : null}
+      )}
 
-      {method.type === "ewallet" ? (
+      {method.type === "ewallet" && (
         <p className="mt-4 leading-7 text-[#004551]/75">
-          {method.notes ||
+          {method.notes ??
             "Ikuti instruksi e-wallet dari panitia, lalu tempel link bukti pembayaran."}
         </p>
-      ) : null}
+      )}
     </div>
   );
 }
@@ -578,21 +921,6 @@ function PaymentDetail({ label, value }: { label: string; value: string }) {
       <dd className="mt-1 font-black text-[#004551]">{value}</dd>
     </div>
   );
-}
-
-function formatPaymentType(type: PaymentMethod["type"]) {
-  if (type === "qris") return "QRIS";
-  if (type === "bank_transfer") return "Transfer Bank";
-  return "E-Wallet";
-}
-
-function formatCurrency(value: number) {
-  if (value <= 0) return "Gratis";
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(value);
 }
 
 function FormGroup({
@@ -615,4 +943,19 @@ function FormGroup({
       <div className="grid gap-4 md:grid-cols-2">{children}</div>
     </div>
   );
+}
+
+function formatPaymentType(type: PaymentMethod["type"]) {
+  if (type === "qris") return "QRIS";
+  if (type === "bank_transfer") return "Transfer Bank";
+  return "E-Wallet";
+}
+
+function formatCurrency(value: number) {
+  if (value <= 0) return "Gratis";
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0,
+  }).format(value);
 }

@@ -1,9 +1,7 @@
+// FILE: src/services/adminCompetitions.ts
 import { supabase } from "../lib/supabase";
 import type { Competition } from "../types/models";
 import { createSlug } from "../utils/slug";
-
-// ─── Get all ──────────────────────────────────────────────────────────────────
-// Join timelines agar tabel admin bisa tampilkan badge jumlah item per lomba.
 
 export async function getAdminCompetitions() {
   const { data, error } = await supabase
@@ -12,17 +10,13 @@ export async function getAdminCompetitions() {
       `*, timelines (
         id, competition_id, title, description,
         start_date, end_date, is_active, sort_order
-      )`,
+      )`
     )
     .order("name")
     .order("sort_order", { referencedTable: "timelines", ascending: true });
 
   return { data: (data ?? []) as Competition[], error };
 }
-
-// ─── Save (insert / update) ───────────────────────────────────────────────────
-// Return { data: id } setelah upsert agar caller bisa langsung menyimpan
-// timelines dengan competition_id yang benar (terutama saat create baru).
 
 type CompetitionInput = {
   event_id?: string | null;
@@ -38,6 +32,11 @@ type CompetitionInput = {
   registration_fee?: number;
   registration_status?: "open" | "closed";
   is_active?: boolean;
+  // Kolom baru
+  max_teams_per_school?: number | null;
+  total_quota?: number | null;
+  has_work_submission?: boolean;
+  subthemes?: string[];
 };
 
 async function getDefaultEventId() {
@@ -51,7 +50,7 @@ async function getDefaultEventId() {
 
 export async function saveAdminCompetition(
   input: CompetitionInput,
-  id?: string,
+  id?: string
 ) {
   const eventId = input.event_id ?? (await getDefaultEventId());
   const payload = {
@@ -59,6 +58,7 @@ export async function saveAdminCompetition(
     event_id: eventId,
     slug: input.slug?.trim() || createSlug(input.name),
     participant_levels: input.participant_levels ?? [],
+    subthemes: input.subthemes ?? [],
   };
 
   if (id) {
@@ -78,8 +78,6 @@ export async function saveAdminCompetition(
     .single();
   return { data: data?.id as string | null, error };
 }
-
-// ─── Delete ───────────────────────────────────────────────────────────────────
 
 export async function deleteAdminCompetition(id: string) {
   return supabase.from("competitions").delete().eq("id", id);
