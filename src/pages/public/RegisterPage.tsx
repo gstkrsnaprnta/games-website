@@ -772,7 +772,7 @@ export function RegisterPage() {
                     Tema Utama Lomba
                   </p>
                   <p className="mt-1.5 text-sm font-semibold leading-relaxed text-[#004551]">
-                    {selectedCompetition.slug === "esai-regional"
+                    {(selectedCompetition.slug === "esai-regional" || selectedCompetition.slug === "lomba-esai-regional")
                       ? "Breaking the Code: Mengasah Logika Matematika sebagai Senjata Kreatif di Era Kompetisi Global"
                       : (selectedCompetition.slug === "lkti-nasional" || selectedCompetition.slug === "lomba-karya-tulis-ilmiah-nasional")
                         ? "Advancing Sustainable Development through Mathematical Thinking and Innovation"

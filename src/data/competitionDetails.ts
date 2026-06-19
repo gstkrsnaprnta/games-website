@@ -285,8 +285,8 @@ export const COMPETITION_DETAILS: Record<string, DetailedCompetition> = {
     generalContacts: GENERAL_CONTACTS,
   },
 
-  "esai-regional": {
-    slug: "esai-regional",
+  "lomba-esai-regional": {
+    slug: "lomba-esai-regional",
     code: "ESAI",
     fullName: "Lomba Esai Regional",
     category: "Regional",
@@ -632,3 +632,5 @@ export const COMPETITION_DETAILS: Record<string, DetailedCompetition> = {
 // Alias for backwards compatibility or short codes
 COMPETITION_DETAILS["lctm"] = COMPETITION_DETAILS["lomba-cepat-tepat-matematika"];
 COMPETITION_DETAILS["lkti-nasional"] = COMPETITION_DETAILS["lomba-karya-tulis-ilmiah-nasional"];
+COMPETITION_DETAILS["esai-regional"] = COMPETITION_DETAILS["lomba-esai-regional"];
+COMPETITION_DETAILS["esai"] = COMPETITION_DETAILS["lomba-esai-regional"];
