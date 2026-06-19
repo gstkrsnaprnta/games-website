@@ -1,3 +1,4 @@
+import { createElement } from "react";
 import {
   ArrowRight,
   Bell,
@@ -30,7 +31,6 @@ export function AnnouncementCard({
   announcement: Announcement;
   index?: number;
 }) {
-  const Icon = getAnnouncementIcon(announcement.category);
   const isPink = index % 3 === 2;
   const isDark = index % 3 === 0;
 
@@ -113,7 +113,10 @@ export function AnnouncementCard({
               : "border-white/55 bg-white/20 text-[#d8eeeb]",
           ].join(" ")}
         >
-          <Icon size={28} strokeWidth={2.1} />
+          {createElement(getAnnouncementIcon(announcement.category), {
+            size: 28,
+            strokeWidth: 2.1,
+          })}
         </div>
       </div>
     </article>

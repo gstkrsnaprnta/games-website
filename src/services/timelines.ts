@@ -1,12 +1,23 @@
 import { supabase } from "../lib/supabase";
-import type { Timeline } from "../types/models";
+import type { GeneralTimelineItem } from "../types/models";
 
-export async function getTimelines() {
+export async function getGeneralTimelines(eventId: string) {
   const { data, error } = await supabase
     .from("timelines")
-    .select("*")
+    .select(`
+      id,
+      timeline_scope,
+      title,
+      description,
+      start_date,
+      end_date,
+      sort_order
+    `)
+    .eq("event_id", eventId)
+    .is("competition_id", null)
     .eq("is_active", true)
-    .order("sort_order")
-    .order("start_date");
-  return { data: (data ?? []) as Timeline[], error };
+    .in("timeline_scope", ["regional", "nasional"])
+    .order("sort_order", { ascending: true });
+
+  return { data: (data ?? []) as GeneralTimelineItem[], error };
 }

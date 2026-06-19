@@ -4,59 +4,94 @@ import type { RegistrationStatusResult } from "../types/models";
 
 export type MemberPayload = {
   name: string;
-  role: string;
-  identity_number: string;
-  class_or_semester: string;
-  id_card_url: string;
+  theme: string | null;
+  description: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  is_active: boolean;
 };
 
-export type SubmitRegistrationPayload = {
-  competition_id: string;
-  team_name: string;
-  leader_name: string;
-  email: string;
-  whatsapp: string;
-  institution: string;
-  level: string;
-  work_title: string;
-  work_subtheme: string;
-  payment_method_id: string;
-  payment_proof_url: string;
-  members: MemberPayload[];
-};
+export type TimelineScope = "regional" | "nasional";
 
-export type SubmitRegistrationResult =
-  | { ok: true; registration_code: string; registration_id: string }
-  | { ok: false; error: string };
-
-export async function submitRegistration(
-  payload: SubmitRegistrationPayload
-): Promise<SubmitRegistrationResult> {
-  const { data, error } = await supabase.rpc("submit_registration", {
-    p_competition_id: payload.competition_id,
-    p_team_name: payload.team_name,
-    p_leader_name: payload.leader_name,
-    p_email: payload.email,
-    p_whatsapp: payload.whatsapp,
-    p_institution: payload.institution,
-    p_level: payload.level,
-    p_work_title: payload.work_title,
-    p_work_subtheme: payload.work_subtheme,
-    p_payment_method_id: payload.payment_method_id || null,
-    p_payment_proof_url: payload.payment_proof_url,
-    p_members: JSON.stringify(payload.members),
-  });
-
-  if (error) {
-    return { ok: false, error: error.message };
-  }
-
-  const result = data as SubmitRegistrationResult;
-  return result;
+export interface GeneralTimelineItem {
+  id: string;
+  timeline_scope: TimelineScope;
+  title: string;
+  description: string | null;
+  start_date: string;
+  end_date: string | null;
+  sort_order: number;
 }
 
-// Legacy helpers tetap dipertahankan agar halaman lain tidak rusak
-export type RegistrationPayload = {
+export type Timeline = {
+  id: string;
+  competition_id: string | null; // ← tambah
+  timeline_scope?: TimelineScope | null; // ← tambah
+  title: string;
+  description: string | null;
+  start_date: string;
+  end_date: string | null;
+  is_active: boolean; // ← tambah (sesuai adminTimelines.ts)
+  sort_order: number;
+};
+
+export type Competition = {
+  id: string;
+  event_id: string | null;
+  name: string;
+  slug: string;
+  code: string;
+  short_description: string | null;
+  description: string | null;
+  participant_levels: string[] | null;
+  competition_type: "individual" | "team";
+  min_members: number;
+  max_members: number;
+  registration_fee: number;
+  registration_status: "open" | "closed";
+  registration_open_at: string | null;
+  registration_close_at: string | null;
+  guidebook_url: string | null;
+  poster_url: string | null;
+  contact_person: string | null;
+  is_active: boolean;
+  timelines?: Timeline[]; // ← tambah (joined saat fetch)
+};
+
+export type PaymentMethod = {
+  id: string;
+  event_id: string | null;
+  type: PaymentMethodType;
+  label: string;
+  is_active: boolean;
+  bank_name: string | null;
+  account_number: string | null;
+  account_holder: string | null;
+  qris_image_url: string | null;
+  notes: string | null;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type FAQ = {
+  id: string;
+  question: string;
+  answer: string;
+  sort_order: number;
+};
+
+export type Announcement = {
+  id: string;
+  title: string;
+  slug: string;
+  category: string;
+  content: string;
+  attachment_url: string | null;
+  published_at: string | null;
+};
+
+export type Registration = {
   id: string;
   event_id: string;
   competition_id: string;
