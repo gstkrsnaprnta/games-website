@@ -14,7 +14,6 @@ import {
   Mail,
   MessageCircle,
   Microscope,
-  Phone,
   Rocket,
   ShieldCheck,
   Trophy,
@@ -27,16 +26,21 @@ import { ErrorState } from "../../components/shared/ErrorState";
 import { LoadingState } from "../../components/shared/LoadingState";
 import { getCompetitionBySlug } from "../../services/competitions";
 import type { Competition, Timeline } from "../../types/models";
+import { COMPETITION_DETAILS } from "../../data/competitionDetails";
 import { useAsyncData } from "../../utils/useAsyncData";
 
 const iconMap: Record<string, ReactNode> = {
   LCT: <Trophy size={34} />,
+  LCTM: <Trophy size={34} />,
   OLIM: <BookOpen size={34} />,
   FIS: <Atom size={34} />,
   KIM: <FlaskConical size={34} />,
   BIO: <Microscope size={34} />,
   KS: <Code size={34} />,
   LKTI: <FileText size={34} />,
+  ESAI: <FileText size={34} />,
+  CALC: <BookOpen size={34} />,
+  MS: <BookOpen size={34} />,
 };
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -45,45 +49,6 @@ type DetailTimeline = {
   title: string;
   dateLabel: string; // sudah diformat, siap tampil
   description?: string;
-};
-
-type DetailStage = {
-  title: string;
-  description?: string;
-};
-
-type DetailMechanism = {
-  title: string;
-  items: string[];
-};
-
-type DetailFee = {
-  label: string;
-  period?: string;
-  price: string;
-};
-
-type DetailDownload = {
-  title: string;
-  meta: string;
-  url?: string | null;
-};
-
-type CompetitionExtra = {
-  subtitle: string;
-  quotaLabel: string;
-  eventPeriod: string;
-  location: string;
-  contactPhone: string;
-  contactEmail: string;
-  contactInstagram: string;
-  timelines: DetailTimeline[];
-  stages: DetailStage[];
-  materials: string[];
-  mechanisms: DetailMechanism[];
-  requirements: string[];
-  fees: DetailFee[];
-  downloads: DetailDownload[];
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -157,7 +122,99 @@ export function CompetitionDetailPage() {
     );
   }
 
-  const extra = getCompetitionExtra(competition);
+  const resolvedTimelines =
+    Array.isArray(competition.timelines) && competition.timelines.length > 0
+      ? toDetailTimelines(competition.timelines)
+      : undefined;
+
+  let detail = COMPETITION_DETAILS[competition.slug];
+
+  if (!detail) {
+    console.warn(
+      `Warning: Detail lomba untuk slug "${competition.slug}" tidak ditemukan di master data COMPETITION_DETAILS. Menggunakan fallback.`
+    );
+
+    const typeLabel = competition.competition_type === "team" ? "tim" : "peserta";
+    const fallbackPhone = "0822-5941-9645";
+    const fallbackEmail = "hmpsmath.fmipauho@gmail.com";
+    const fallbackInstagram = "@games.uho";
+
+    detail = {
+      slug: competition.slug,
+      code: competition.code,
+      fullName: competition.name,
+      category: (competition.name.toLowerCase().includes("nasional") || competition.slug.toLowerCase().includes("nasional")) ? "Nasional" : "Regional",
+      participantLevels: competition.participant_levels ?? ["Umum"],
+      participationMode: competition.competition_type ?? "individual",
+      memberLimits: { min: competition.min_members ?? 1, max: competition.max_members ?? 1 },
+      shortDescription: competition.short_description ?? "Kompetisi matematika dan sains tingkat nasional untuk mengasah kemampuan berpikir kritis, logis, dan kreatif.",
+      description: competition.description ?? "Kompetisi matematika dan sains tingkat nasional untuk mengasah kemampuan berpikir kritis, logis, dan kreatif.",
+      requirements: [
+        `Peserta mendaftar sebagai ${typeLabel} sesuai cabang lomba yang dipilih.`,
+        "Peserta mengisi formulir pendaftaran dengan data yang benar.",
+        "Peserta melampirkan berkas yang diminta oleh panitia.",
+        "Peserta membayar biaya pendaftaran sesuai ketentuan.",
+        "Peserta wajib mengikuti tata tertib lomba."
+      ],
+      requiredUploads: [
+        "Scan kartu identitas pelajar/KTM yang masih berlaku",
+        "Bukti pembayaran pendaftaran"
+      ],
+      materials: [],
+      stages: [
+        { title: "Pendaftaran", description: "Peserta mengisi formulir dan melengkapi persyaratan." },
+        { title: "Verifikasi", description: "Panitia memeriksa data peserta dan bukti pembayaran." },
+        { title: "Pelaksanaan", description: "Peserta mengikuti lomba sesuai jadwal cabang lomba." },
+        { title: "Pengumuman", description: "Pemenang diumumkan melalui website dan kanal resmi." }
+      ],
+      mechanisms: [
+        {
+          title: "Sistem Pelaksanaan",
+          items: [
+            "Lomba dilaksanakan sesuai format yang ditentukan panitia.",
+            "Peserta wajib hadir tepat waktu pada sesi yang telah dijadwalkan.",
+            "Peserta mengikuti instruksi teknis yang disampaikan saat technical meeting."
+          ]
+        }
+      ],
+      timelines: [
+        {
+          title: "Pelaksanaan Lomba",
+          dateLabel: "Sesuai jadwal resmi panitia",
+          description: "Jadwal dan tata tertib lengkap dapat diunduh di panduan teknis."
+        }
+      ],
+      fees: [
+        {
+          label: "Biaya Pendaftaran",
+          period: "Periode Pendaftaran",
+          price: formatCurrency(competition.registration_fee ?? 0, competition.competition_type ?? "individual")
+        }
+      ],
+      contactPersons: [
+        {
+          name: "Panitia GAMES",
+          phone: fallbackPhone,
+          waUrl: `https://wa.me/${fallbackPhone.replace(/\D/g, "")}`
+        }
+      ],
+      downloads: [
+        {
+          title: `Panduan Teknis ${competition.name}`,
+          meta: "PDF · Diperbarui panitia",
+          url: competition.guidebook_url
+        }
+      ],
+      faq: [],
+      generalContacts: {
+        phone: fallbackPhone,
+        email: fallbackEmail,
+        instagram: fallbackInstagram
+      }
+    };
+  }
+
+  const finalTimelines = resolvedTimelines || detail.timelines;
   const isOpen = competition.registration_status === "open";
   const priceLabel = formatCurrency(
     competition.registration_fee,
@@ -203,12 +260,12 @@ export function CompetitionDetailPage() {
             {competition.name}
           </h1>
 
-          <p className="mx-auto mt-2 max-w-2xl text-base font-bold leading-7 text-[#064452]/72 md:text-lg">
-            {competition.short_description || extra.subtitle}
+          <p className="mx-auto mt-2 max-w-3xl text-base font-bold leading-7 text-[#064452]/72 md:text-lg">
+            {detail.description}
           </p>
 
           <div className="mt-5 flex flex-wrap justify-center gap-2">
-            {competition.participant_levels?.map((level) => (
+            {detail.participantLevels?.map((level) => (
               <span
                 key={level}
                 className="rounded-full border border-[#faadb6]/45 bg-[#faadb6]/24 px-4 py-2 text-xs font-black text-[#7E032F]"
@@ -218,19 +275,13 @@ export function CompetitionDetailPage() {
             ))}
             <span className="inline-flex items-center gap-1.5 rounded-full border border-white/85 bg-white/62 px-4 py-2 text-xs font-black text-[#064452]">
               <Users size={13} />
-              {competition.competition_type === "team" ? "Tim" : "Individu"}
+              {detail.participationMode === "team" ? "Tim" : "Individu"}
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-white/85 bg-white/62 px-4 py-2 text-xs font-black text-[#064452]">
               <WalletCards size={13} />
               {priceLabel}
             </span>
           </div>
-
-          <p className="mx-auto mt-7 max-w-2xl text-sm font-semibold leading-8 text-[#064452]/76 md:text-base">
-            {competition.description ||
-              competition.short_description ||
-              extra.subtitle}
-          </p>
 
           <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
             {isOpen ? (
@@ -242,7 +293,7 @@ export function CompetitionDetailPage() {
               </Link>
             ) : null}
             <a
-              href="https://drive.google.com/drive/folders/1m79FvIwAUj5De740G9i0EMVVk2Iz7Cnc"
+              href={competition.guidebook_url || (detail.downloads && detail.downloads[0]?.url) || "https://drive.google.com/drive/folders/1m79FvIwAUj5De740G9i0EMVVk2Iz7Cnc"}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-glass-outline inline-flex h-12 items-center justify-center gap-2 rounded-full px-8 text-sm font-black text-[#064452]"
@@ -258,14 +309,14 @@ export function CompetitionDetailPage() {
         <InfoCard
           icon={<Users size={20} />}
           label="Jenjang Peserta"
-          value={competition.participant_levels?.join(", ") || "-"}
+          value={detail.participantLevels.join(", ") || "-"}
         />
         <InfoCard
           icon={<Users size={20} />}
           label="Tipe Peserta"
           value={
-            competition.competition_type === "team"
-              ? `Tim (1-3 orang)`
+            detail.participationMode === "team"
+              ? `Tim (${detail.memberLimits.min}-${detail.memberLimits.max} orang)`
               : "Individu"
           }
         />
@@ -285,7 +336,7 @@ export function CompetitionDetailPage() {
         >
           <div className="relative mt-5 space-y-4">
             <div className="absolute bottom-5 left-[1.03rem] top-5 w-px rounded-full bg-gradient-to-b from-[#c2e1df] via-[#9fd8d4] to-[#7E032F]/55" />
-            {extra.timelines.map((item, index) => (
+            {finalTimelines.map((item, index) => (
               <div
                 key={`${item.title}-${index}`}
                 className="relative flex gap-4"
@@ -314,7 +365,7 @@ export function CompetitionDetailPage() {
         {/* Tahapan */}
         <DetailSection icon={<CircleDot size={21} />} title="Tahapan Kompetisi">
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            {extra.stages.map((stage, index) => (
+            {detail.stages.map((stage, index) => (
               <div
                 key={stage.title}
                 className="flex gap-4 rounded-2xl border border-white/75 bg-white/52 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
@@ -335,25 +386,10 @@ export function CompetitionDetailPage() {
           </div>
         </DetailSection>
 
-        {/* Materi */}
-        {/* <DetailSection icon={<BookOpen size={21} />} title="Materi Kompetisi">
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {extra.materials.map((material) => (
-              <div
-                key={material}
-                className="flex items-center gap-3 rounded-2xl border border-white/75 bg-white/50 px-4 py-3 text-sm font-black text-[#064452] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
-              >
-                <Sparkles size={15} className="shrink-0 text-[#0b5a63]" />
-                {material}
-              </div>
-            ))}
-          </div>
-        </DetailSection> */}
-
         {/* Mekanisme */}
         <DetailSection icon={<Trophy size={21} />} title="Mekanisme Lomba">
           <div className="mt-5 grid gap-4">
-            {extra.mechanisms.map((mechanism) => (
+            {detail.mechanisms.map((mechanism) => (
               <article
                 key={mechanism.title}
                 className="rounded-2xl border border-white/75 bg-white/48 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
@@ -377,14 +413,32 @@ export function CompetitionDetailPage() {
 
         {/* Persyaratan */}
         <DetailSection icon={<ShieldCheck size={21} />} title="Persyaratan">
-          <ul className="mt-5 grid gap-3 text-sm font-semibold leading-7 text-[#064452]/74">
-            {extra.requirements.map((rule) => (
-              <li key={rule} className="flex gap-3">
-                <Check size={18} className="mt-1 shrink-0 text-[#0b5a63]" />
-                <span>{rule}</span>
-              </li>
-            ))}
-          </ul>
+          <div className="mt-5 space-y-6">
+            <div>
+              <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">Ketentuan Peserta</h3>
+              <ul className="grid gap-3 text-sm font-semibold leading-7 text-[#064452]/74">
+                {detail.requirements.map((rule) => (
+                  <li key={rule} className="flex gap-3">
+                    <Check size={18} className="mt-1 shrink-0 text-[#0b5a63]" />
+                    <span>{rule}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            {detail.requiredUploads && detail.requiredUploads.length > 0 && (
+              <div>
+                <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">Berkas yang Wajib Diunggah</h3>
+                <ul className="grid gap-3 text-sm font-semibold leading-7 text-[#064452]/74">
+                  {detail.requiredUploads.map((file) => (
+                    <li key={file} className="flex gap-3">
+                      <Check size={18} className="mt-1 shrink-0 text-[#0b5a63]" />
+                      <span>{file}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
         </DetailSection>
 
         {/* Biaya */}
@@ -393,7 +447,7 @@ export function CompetitionDetailPage() {
           title="Biaya Pendaftaran"
         >
           <div className="mt-5 grid gap-3">
-            {extra.fees.map((fee) => (
+            {detail.fees.map((fee) => (
               <div
                 key={fee.label}
                 className="flex items-center justify-between gap-4 rounded-2xl border border-white/75 bg-white/50 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
@@ -417,15 +471,52 @@ export function CompetitionDetailPage() {
           icon={<MessageCircle size={21} />}
           title="Kontak Panitia"
         >
-          <div className="mt-5 grid gap-3 text-sm font-semibold text-[#064452]/74">
-            <ContactRow icon={<Phone size={17} />} value={extra.contactPhone} />
-            <ContactRow icon={<Mail size={17} />} value={extra.contactEmail} />
-            <ContactRow
-              icon={<MessageCircle size={17} />}
-              value={extra.contactInstagram}
-            />
+          <div className="mt-5 grid gap-3 text-sm font-semibold text-[#064452]/74 text-left">
+            {detail.contactPersons.map((cp) => (
+              <a
+                key={cp.name}
+                href={cp.waUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between gap-3 rounded-2xl border border-white/70 bg-white/45 px-4 py-3 hover:bg-white/60 transition"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-[#0b5a63]"><MessageCircle size={17} /></span>
+                  <span>{cp.name} ({cp.phone})</span>
+                </div>
+                <span className="text-xs font-black text-[#0b5a63] uppercase">Hubungi WA</span>
+              </a>
+            ))}
+            {detail.generalContacts.email && (
+              <ContactRow icon={<Mail size={17} />} value={detail.generalContacts.email} />
+            )}
+            {detail.generalContacts.instagram && (
+              <ContactRow
+                icon={<MessageCircle size={17} />}
+                value={detail.generalContacts.instagram}
+              />
+            )}
           </div>
         </DetailSection>
+
+        {/* FAQ */}
+        {detail.faq && detail.faq.length > 0 && (
+          <DetailSection icon={<BookOpen size={21} />} title="FAQ (Tanya Jawab)">
+            <div className="mt-5 space-y-4">
+              {detail.faq.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-2xl border border-white/75 bg-white/48 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
+                >
+                  <h3 className="font-black text-[#064452]">{item.question}</h3>
+                  <p className="mt-2 text-sm font-semibold leading-6 text-[#064452]/72">
+                    {item.answer}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </DetailSection>
+        )}
 
         {/* CTA */}
         <section className="relative overflow-hidden rounded-[1.8rem] border border-white/90 bg-[linear-gradient(90deg,rgba(194,225,223,0.5)_0%,rgba(248,240,231,0.78)_42%,rgba(255,255,255,0.9)_100%)] p-6 shadow-[0_18px_44px_rgba(6,68,82,0.12),inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-[24px] md:p-8">
@@ -529,325 +620,4 @@ function formatCurrency(value: number, type: Competition["competition_type"]) {
     currency: "IDR",
     maximumFractionDigits: 0,
   }).format(value)} / ${type === "team" ? "tim" : "peserta"}`;
-}
-
-// ─── Default timelines (fallback) ─────────────────────────────────────────────
-
-const DEFAULT_TIMELINES: DetailTimeline[] = [
-  {
-    title: "Pembukaan Pendaftaran",
-    dateLabel: "1 Juni 2026",
-    description: "Peserta dapat mengisi formulir pendaftaran secara online.",
-  },
-  {
-    title: "Penutupan Pendaftaran",
-    dateLabel: "31 Juli 2026",
-    description: "Batas akhir pengisian formulir dan pembayaran.",
-  },
-  {
-    title: "Seleksi & Verifikasi",
-    dateLabel: "1 - 10 Agustus 2026",
-    description: "Panitia melakukan verifikasi data dan berkas peserta.",
-  },
-  {
-    title: "Technical Meeting",
-    dateLabel: "15 September 2026",
-    description: "Peserta menerima arahan teknis pelaksanaan lomba.",
-  },
-  {
-    title: "Pelaksanaan Lomba",
-    dateLabel: "20 - 23 September 2026",
-    description: "Kompetisi dilaksanakan sesuai jadwal resmi panitia.",
-  },
-  {
-    title: "Pengumuman Pemenang",
-    dateLabel: "30 September 2026",
-    description: "Pengumuman juara dan proses penyerahan penghargaan.",
-  },
-];
-
-// ─── getCompetitionExtra ──────────────────────────────────────────────────────
-
-function getCompetitionExtra(competition: Competition): CompetitionExtra {
-  const code = competition.code?.toUpperCase() ?? "";
-  const name = competition.name?.toLowerCase() ?? "";
-  const typeLabel = competition.competition_type === "team" ? "tim" : "peserta";
-  const priceLabel = formatCurrency(
-    competition.registration_fee,
-    competition.competition_type,
-  );
-
-  // Timelines: pakai data dari DB jika ada, fallback ke default
-  const resolvedTimelines: DetailTimeline[] =
-    Array.isArray(competition.timelines) && competition.timelines.length > 0
-      ? toDetailTimelines(competition.timelines)
-      : DEFAULT_TIMELINES;
-
-  const defaultExtra: CompetitionExtra = {
-    subtitle:
-      competition.short_description ||
-      "Kompetisi matematika dan sains tingkat nasional untuk mengasah kemampuan berpikir kritis, logis, dan kreatif.",
-    quotaLabel:
-      competition.competition_type === "team"
-        ? "Maks. 100 tim"
-        : "Maks. 100 peserta",
-    eventPeriod: "20 - 23 September 2026",
-    location: "Online / Offline sesuai ketentuan panitia",
-    contactPhone: "+62 858-8560-6308",
-    contactEmail: "panitia@games.example",
-    contactInstagram: "@games.official",
-    timelines: resolvedTimelines,
-    stages: [
-      {
-        title: "Pendaftaran",
-        description: "Peserta mengisi formulir dan melengkapi persyaratan.",
-      },
-      {
-        title: "Verifikasi",
-        description: "Panitia memeriksa data peserta dan bukti pembayaran.",
-      },
-      {
-        title: "Pelaksanaan",
-        description: "Peserta mengikuti lomba sesuai jadwal cabang lomba.",
-      },
-      {
-        title: "Pengumuman",
-        description: "Pemenang diumumkan melalui website dan kanal resmi.",
-      },
-    ],
-    materials: [
-      "Logika Dasar",
-      "Penalaran Matematis",
-      "Pemecahan Masalah",
-      "Analisis Data",
-      "Strategi Kompetisi",
-    ],
-    mechanisms: [
-      {
-        title: "Sistem Pelaksanaan",
-        items: [
-          "Lomba dilaksanakan sesuai format yang ditentukan panitia.",
-          "Peserta wajib hadir tepat waktu pada sesi yang telah dijadwalkan.",
-          "Peserta mengikuti instruksi teknis yang disampaikan saat technical meeting.",
-        ],
-      },
-      {
-        title: "Penilaian",
-        items: [
-          "Penilaian dilakukan berdasarkan ketepatan, kelengkapan, dan kecepatan pengerjaan.",
-          "Keputusan dewan juri bersifat final dan tidak dapat diganggu gugat.",
-        ],
-      },
-    ],
-    requirements: [
-      `Peserta mendaftar sebagai ${typeLabel} sesuai cabang lomba yang dipilih.`,
-      "Peserta mengisi formulir pendaftaran dengan data yang benar.",
-      "Peserta melampirkan berkas yang diminta oleh panitia.",
-      "Peserta membayar biaya pendaftaran sesuai ketentuan.",
-      "Peserta wajib mengikuti tata tertib lomba.",
-    ],
-    fees: [
-      {
-        label: "Biaya Pendaftaran",
-        period: "Periode pendaftaran resmi",
-        price: priceLabel,
-      },
-    ],
-    downloads: [
-      {
-        title: `Panduan Teknis ${competition.name} 2026`,
-        meta: "PDF · diperbarui panitia",
-        url: competition.guidebook_url,
-      },
-      {
-        title: "Template Berkas Peserta",
-        meta: "Dokumen · segera tersedia",
-        url: null,
-      },
-    ],
-  };
-
-  if (code.includes("LCT") || name.includes("cepat tepat")) {
-    return {
-      ...defaultExtra,
-      subtitle:
-        "Lomba cepat tepat matematika yang menguji kemampuan berhitung, logika, strategi, dan ketepatan dalam menyelesaikan soal.",
-      materials: [
-        "Aritmetika",
-        "Aljabar",
-        "Geometri",
-        "Kombinatorika",
-        "Logika Matematika",
-        "Strategi Cepat Tepat",
-      ],
-      stages: [
-        {
-          title: "Babak Penyisihan",
-          description: "Sesi soal tertulis atau kuis cepat.",
-        },
-        {
-          title: "Babak Semifinal",
-          description: "Tim terbaik melaju ke sesi adu cepat.",
-        },
-        {
-          title: "Babak Final",
-          description: "Finalis menyelesaikan soal dengan sistem rebutan.",
-        },
-        {
-          title: "Awarding",
-          description: "Penetapan dan pengumuman pemenang.",
-        },
-      ],
-      mechanisms: [
-        {
-          title: "Babak Penyisihan",
-          items: [
-            "Peserta mengerjakan paket soal matematika dalam durasi yang ditentukan.",
-            "Tim dengan nilai tertinggi berhak melaju ke babak berikutnya.",
-          ],
-        },
-        {
-          title: "Babak Final",
-          items: [
-            "Final menggunakan sistem cepat tepat atau rebutan.",
-            "Jawaban benar mendapat poin, jawaban salah dapat mengurangi poin sesuai ketentuan.",
-            "Tim dengan akumulasi poin tertinggi menjadi pemenang.",
-          ],
-        },
-      ],
-    };
-  }
-
-  if (code.includes("OLIM") || name.includes("olimpiade")) {
-    return {
-      ...defaultExtra,
-      subtitle:
-        "Kompetisi olimpiade matematika untuk menguji kemampuan analisis, pembuktian, dan pemecahan masalah tingkat tinggi.",
-      materials: [
-        "Aljabar",
-        "Geometri",
-        "Teori Bilangan",
-        "Kombinatorika",
-        "Logika",
-        "Problem Solving",
-      ],
-      stages: [
-        {
-          title: "Penyisihan",
-          description: "Tes soal pilihan dan isian singkat.",
-        },
-        {
-          title: "Semifinal",
-          description: "Soal uraian dengan pembahasan mendalam.",
-        },
-        {
-          title: "Final",
-          description: "Sesi pemecahan masalah tingkat lanjut.",
-        },
-      ],
-    };
-  }
-
-  if (code.includes("FIS") || name.includes("fisika")) {
-    return {
-      ...defaultExtra,
-      subtitle:
-        "Kompetisi fisika untuk menguji pemahaman konsep, analisis fenomena, dan penerapan prinsip sains.",
-      materials: [
-        "Mekanika",
-        "Gelombang",
-        "Listrik Magnet",
-        "Termodinamika",
-        "Optika",
-        "Eksperimen Dasar",
-      ],
-    };
-  }
-
-  if (code.includes("KIM") || name.includes("kimia")) {
-    return {
-      ...defaultExtra,
-      subtitle:
-        "Kompetisi kimia untuk menguji pemahaman konsep, analisis reaksi, dan penerapan ilmu kimia.",
-      materials: [
-        "Stoikiometri",
-        "Struktur Atom",
-        "Ikatan Kimia",
-        "Kesetimbangan",
-        "Asam Basa",
-        "Kimia Organik Dasar",
-      ],
-    };
-  }
-
-  if (code.includes("BIO") || name.includes("biologi")) {
-    return {
-      ...defaultExtra,
-      subtitle:
-        "Kompetisi biologi untuk menguji pemahaman ilmu hayati, ekosistem, dan kemampuan analisis fenomena kehidupan.",
-      materials: [
-        "Sel dan Molekuler",
-        "Genetika",
-        "Anatomi Fisiologi",
-        "Ekologi",
-        "Evolusi",
-        "Keanekaragaman Hayati",
-      ],
-    };
-  }
-
-  if (code.includes("KS") || name.includes("komputasi")) {
-    return {
-      ...defaultExtra,
-      subtitle:
-        "Kompetisi komputasi sains untuk menguji logika, algoritma, dan pemecahan masalah berbasis pemrograman.",
-      materials: [
-        "Logika Pemrograman",
-        "Algoritma Dasar",
-        "Struktur Data",
-        "Matematika Diskrit",
-        "Problem Solving",
-      ],
-      mechanisms: [
-        {
-          title: "Format Lomba",
-          items: [
-            "Peserta menyelesaikan soal komputasi dalam platform atau format yang ditentukan.",
-            "Penilaian mempertimbangkan ketepatan solusi dan efisiensi algoritma.",
-          ],
-        },
-      ],
-    };
-  }
-
-  if (code.includes("LKTI") || name.includes("karya tulis")) {
-    return {
-      ...defaultExtra,
-      subtitle:
-        "Kompetisi karya tulis ilmiah untuk mengembangkan gagasan inovatif dan kemampuan berpikir ilmiah.",
-      materials: [
-        "Metodologi Penelitian",
-        "Penulisan Ilmiah",
-        "Analisis Masalah",
-        "Inovasi Sains",
-        "Presentasi Karya",
-      ],
-      stages: [
-        {
-          title: "Pengumpulan Abstrak",
-          description: "Peserta mengirimkan abstrak sesuai tema lomba.",
-        },
-        {
-          title: "Seleksi Karya",
-          description: "Panitia dan juri menilai karya tulis peserta.",
-        },
-        {
-          title: "Presentasi Final",
-          description: "Finalis mempresentasikan karya di depan dewan juri.",
-        },
-      ],
-    };
-  }
-
-  return defaultExtra;
 }

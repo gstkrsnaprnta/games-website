@@ -213,3 +213,77 @@ export type RegistrationMemberPayload = {
   name: string;
   role?: string | null;
 };
+
+// ── DetailedCompetition (Hardcode detail lomba) ─────────────────────────────
+
+export interface ContactPerson {
+  name: string;
+  phone: string;
+  waUrl: string;
+}
+
+export interface FeeWaveDetail {
+  label: string;
+  period: string;
+  price: string;
+  note?: string;
+}
+
+export interface DetailedTimelineItem {
+  title: string;
+  dateLabel: string;
+  description: string;
+}
+
+export interface DetailedStageItem {
+  title: string;
+  description: string;
+}
+
+export interface DetailedMechanismItem {
+  title: string;
+  items: string[];
+}
+
+export interface DetailedDownloadItem {
+  title: string;
+  meta: string;
+  url: string | null;
+}
+
+export interface DetailedFAQItem {
+  question: string;
+  answer: string;
+}
+
+export interface DetailedCompetition {
+  slug: string;
+  code: string;
+  fullName: string;
+  category: "Regional" | "Nasional";
+  participantLevels: string[];
+  participationMode: "individual" | "team";
+  memberLimits: {
+    min: number;
+    max: number;
+    notes?: string;
+  };
+  sloganTheme?: string;
+  shortDescription: string;
+  description: string;
+  requirements: string[];
+  requiredUploads: string[];
+  materials: string[];
+  stages: DetailedStageItem[];
+  mechanisms: DetailedMechanismItem[];
+  timelines: DetailedTimelineItem[];
+  fees: FeeWaveDetail[];
+  contactPersons: ContactPerson[];
+  downloads: DetailedDownloadItem[];
+  faq: DetailedFAQItem[];
+  generalContacts: {
+    phone: string;
+    email: string;
+    instagram: string;
+  };
+}
