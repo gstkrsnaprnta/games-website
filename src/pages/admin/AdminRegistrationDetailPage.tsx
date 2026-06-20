@@ -247,6 +247,25 @@ function RegistrationSummary({
               label="Subtema"
               value={registration.work_subtheme ?? "—"}
             />
+            <div>
+              <dt className="font-semibold text-slate-500">
+                File karya (abstrak/naskah)
+              </dt>
+              <dd className="mt-1 font-semibold text-slate-900">
+                {registration.submission_url ? (
+                  <a
+                    href={registration.submission_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="break-all text-cyan-700 underline underline-offset-2"
+                  >
+                    Buka file karya
+                  </a>
+                ) : (
+                  "—"
+                )}
+              </dd>
+            </div>
           </dl>
         </div>
       )}

@@ -22,6 +22,7 @@ export type SubmitRegistrationPayload = {
   work_subtheme: string;
   payment_method_id: string;
   payment_proof_url: string;
+  submission_url: string;
   members: MemberPayload[];
 };
 
@@ -44,6 +45,7 @@ export async function submitRegistration(
     p_work_subtheme: payload.work_subtheme,
     p_payment_method_id: payload.payment_method_id || null,
     p_payment_proof_url: payload.payment_proof_url,
+    p_submission_url: payload.submission_url || null,
     p_members: payload.members,
   });
 
@@ -136,6 +138,48 @@ export async function uploadIdCard(
   if (error) return { url: null, error };
 
   const { data } = supabase.storage.from("id-cards").getPublicUrl(path);
+  return { url: data.publicUrl, error: null };
+}
+
+// ── Upload karya tulis (abstrak LKTI / naskah esai) ──────────────────────────
+
+export const MAX_SUBMISSION_FILE_SIZE = 1024 * 1024; // 1 MB
+
+export const ALLOWED_SUBMISSION_FILE_TYPES = [
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
+
+export async function uploadSubmissionFile(
+  file: File,
+): Promise<{ url: string | null; error: Error | null }> {
+  if (file.size > MAX_SUBMISSION_FILE_SIZE) {
+    return {
+      url: null,
+      error: new Error("Ukuran file maksimal 1 MB."),
+    };
+  }
+  if (!ALLOWED_SUBMISSION_FILE_TYPES.includes(file.type)) {
+    return {
+      url: null,
+      error: new Error("Format file harus PDF, DOC, atau DOCX."),
+    };
+  }
+
+  const ext = file.name.split(".").pop();
+  const uniqueId = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+  const path = `${uniqueId}.${ext}`;
+
+  const { error } = await supabase.storage
+    .from("work-submissions")
+    .upload(path, file, { upsert: false });
+
+  if (error) return { url: null, error };
+
+  const { data } = supabase.storage
+    .from("work-submissions")
+    .getPublicUrl(path);
   return { url: data.publicUrl, error: null };
 }
 

@@ -23,6 +23,7 @@ import {
   submitRegistration,
   uploadPaymentProof,
   uploadIdCard,
+  uploadSubmissionFile,
 } from "../../services/registrations";
 import type {
   Competition,
@@ -62,6 +63,7 @@ type FormState = {
   institution: string;
   work_title: string;
   work_subtheme: string;
+  work_submission_file: File | null;
   payment_method_id: string;
   payment_proof_file: File | null;
   members: MemberForm[];
@@ -81,6 +83,7 @@ const initialForm: FormState = {
   institution: "",
   work_title: "",
   work_subtheme: "",
+  work_submission_file: null,
   payment_method_id: "",
   payment_proof_file: null,
   members: [],
@@ -260,6 +263,7 @@ export function RegisterPage() {
       team_name: "",
       work_title: "",
       work_subtheme: "",
+      work_submission_file: null,
       payment_method_id: "",
       members: [],
     }));
@@ -346,6 +350,14 @@ export function RegisterPage() {
         setError("Subtema karya wajib dipilih.");
         return;
       }
+      if (!form.work_submission_file) {
+        setError(
+          selectedCompetition.slug === "esai-regional"
+            ? "Upload file naskah esai wajib dilampirkan."
+            : "Upload file abstrak karya wajib dilampirkan.",
+        );
+        return;
+      }
     }
     if (!form.payment_method_id) {
       setError("Pilih metode pembayaran.");
@@ -412,6 +424,23 @@ export function RegisterPage() {
       })),
     ];
 
+    // Upload file karya tulis (abstrak LKTI / naskah esai), jika lomba mewajibkan
+    let submissionUrl = "";
+    if (selectedCompetition.has_work_submission && form.work_submission_file) {
+      const submissionUpload = await uploadSubmissionFile(
+        form.work_submission_file,
+      );
+      if (submissionUpload.error || !submissionUpload.url) {
+        setSubmitting(false);
+        setError(
+          submissionUpload.error?.message ??
+            "Gagal mengunggah file karya tulis. Coba lagi.",
+        );
+        return;
+      }
+      submissionUrl = submissionUpload.url;
+    }
+
     const result = await submitRegistration({
       competition_id: form.competition_id,
       team_name: form.team_name.trim(),
@@ -424,6 +453,7 @@ export function RegisterPage() {
       work_subtheme: form.work_subtheme,
       payment_method_id: form.payment_method_id,
       payment_proof_url: uploadResult.url,
+      submission_url: submissionUrl,
       members: allMembers,
     });
 
@@ -903,19 +933,17 @@ export function RegisterPage() {
             {/* ── STEP 04: Karya Tulis (kondisional, hanya has_work_submission) */}
             {selectedCompetition?.has_work_submission && (
               <FormGroup step={isTeam ? "04" : "03"} title="Data Karya Tulis">
-                {/* Info tema utama berdasarkan kompetisi */}
-                <div className="md:col-span-2 rounded-2xl border border-[#c2e1df]/80 bg-[#004551]/5 p-4">
-                  <p className="text-xs font-black uppercase tracking-[0.16em] text-[#004551]/60">
-                    Tema Utama Lomba
-                  </p>
-                  <p className="mt-1.5 text-sm font-semibold leading-relaxed text-[#004551]">
-                    {selectedCompetition.slug === "esai-regional"
-                      ? "Breaking the Code: Mengasah Logika Matematika sebagai Senjata Kreatif di Era Kompetisi Global"
-                      : selectedCompetition.slug === "lkti-nasional"
-                        ? "Advancing Sustainable Development through Mathematical Thinking and Innovation"
-                        : "—"}
-                  </p>
-                </div>
+                {/* Info tema utama berdasarkan kompetisi (diisi admin) */}
+                {selectedCompetition.main_theme && (
+                  <div className="md:col-span-2 rounded-2xl border border-[#c2e1df]/80 bg-[#004551]/5 p-4">
+                    <p className="text-xs font-black uppercase tracking-[0.16em] text-[#004551]/60">
+                      Tema Utama Lomba
+                    </p>
+                    <p className="mt-1.5 text-sm font-semibold leading-relaxed text-[#004551]">
+                      {selectedCompetition.main_theme}
+                    </p>
+                  </div>
+                )}
 
                 <div className="md:col-span-2">
                   <PublicFormInput
@@ -943,6 +971,34 @@ export function RegisterPage() {
                       })),
                     ]}
                   />
+                </div>
+
+                <div className="md:col-span-2">
+                  <PublicFormFileInput
+                    label={
+                      selectedCompetition.slug === "lomba-esai-regional"
+                        ? "Upload naskah esai (PDF/DOC/DOCX, maks. 1 MB)"
+                        : "Upload abstrak karya (PDF/DOC/DOCX, maks. 1 MB)"
+                    }
+                    required
+                    accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    maxSizeBytes={1024 * 1024}
+                    allowedTypes={[
+                      "application/pdf",
+                      "application/msword",
+                      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    ]}
+                    typeErrorMessage="Format file harus PDF, DOC, atau DOCX."
+                    file={form.work_submission_file}
+                    onChange={(file) =>
+                      updateField("work_submission_file", file)
+                    }
+                  />
+                  <p className="mt-1.5 text-xs font-medium text-[#004551]/55">
+                    {selectedCompetition.slug === "esai-regional"
+                      ? "Unggah naskah esai lengkap sesuai format pada panduan lomba."
+                      : "Unggah abstrak karya tulis ilmiah sesuai format pada panduan lomba."}
+                  </p>
                 </div>
               </FormGroup>
             )}

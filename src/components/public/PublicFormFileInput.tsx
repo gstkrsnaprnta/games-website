@@ -7,16 +7,30 @@ type PublicFormFileInputProps = {
   required?: boolean;
   accept?: string;
   maxSizeBytes?: number;
+  /** Daftar MIME type yang diizinkan. Default: gambar umum + PDF. */
+  allowedTypes?: string[];
+  /** Pesan error yang ditampilkan saat format file tidak sesuai allowedTypes. */
+  typeErrorMessage?: string;
   file: File | null;
   onChange: (file: File | null) => void;
   error?: string;
 };
+
+const DEFAULT_ALLOWED_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+  "application/pdf",
+];
 
 export function PublicFormFileInput({
   label,
   required,
   accept = "image/*,application/pdf",
   maxSizeBytes = 1024 * 1024,
+  allowedTypes = DEFAULT_ALLOWED_TYPES,
+  typeErrorMessage = "Format file harus gambar (JPG/PNG/WEBP) atau PDF.",
   file,
   onChange,
   error,
@@ -46,15 +60,14 @@ export function PublicFormFileInput({
       return;
     }
 
-    const isImage = selected.type.startsWith("image/");
-    const isPdf = selected.type === "application/pdf";
-    if (!isImage && !isPdf) {
-      setLocalError("Format file harus gambar (JPG/PNG/WEBP) atau PDF.");
+    if (!allowedTypes.includes(selected.type)) {
+      setLocalError(typeErrorMessage);
       onChange(null);
       if (inputRef.current) inputRef.current.value = "";
       return;
     }
 
+    const isImage = selected.type.startsWith("image/");
     if (isImage) {
       setPreviewUrl(URL.createObjectURL(selected));
     }
@@ -67,6 +80,7 @@ export function PublicFormFileInput({
   }
 
   const displayError = error || localError;
+  const maxSizeLabel = (maxSizeBytes / (1024 * 1024)).toFixed(0);
 
   return (
     <label className="grid gap-1.5 text-sm font-semibold text-[#004551]">
@@ -79,7 +93,7 @@ export function PublicFormFileInput({
           className="games-input flex items-center justify-center gap-2 border-dashed text-[#004551]/60 hover:text-[#004551]"
         >
           <Upload size={16} />
-          Pilih file (maks. 1 MB)
+          Pilih file (maks. {maxSizeLabel} MB)
         </button>
       ) : (
         <div className="games-input flex items-center justify-between gap-3">
@@ -87,7 +101,7 @@ export function PublicFormFileInput({
             {previewUrl ? (
               <img
                 src={previewUrl}
-                alt="Preview bukti pembayaran"
+                alt="Preview file"
                 className="size-9 shrink-0 rounded-md object-cover"
               />
             ) : (
