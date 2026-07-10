@@ -10,6 +10,7 @@ import {
   getAdminCompetitions,
   saveAdminCompetition,
 } from "../../services/adminCompetitions";
+import { replaceAdminCompetitionStages } from "../../services/adminCompetitionStages";
 import { replaceAdminTimelines } from "../../services/adminTimelines";
 import type { Competition } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
@@ -23,6 +24,19 @@ type TimelineForm = {
   description: string;
   start_date: string;
   end_date: string;
+};
+
+// Tahapan Kompetisi (mis. Pendaftaran → Verifikasi → Pelaksanaan → Pengumuman),
+// tampil di section "Tahapan Kompetisi" halaman detail lomba.
+type StageForm = {
+  id?: string;
+  title: string;
+  description: string;
+};
+
+const emptyStageItem: StageForm = {
+  title: "",
+  description: "",
 };
 
 // Representasi form untuk satu kontak WhatsApp CP.
@@ -53,6 +67,7 @@ type CompetitionForm = {
   main_theme: string;
   subthemes: string;
   timelines: TimelineForm[];
+  stages: StageForm[];
 };
 
 const emptyTimelineItem: TimelineForm = {
@@ -95,6 +110,7 @@ const emptyForm: CompetitionForm = {
   main_theme: "",
   subthemes: "",
   timelines: [],
+  stages: [],
 };
 
 // ─── Contact Editor (Kontak WhatsApp CP per jenjang) ──────────────────────────
@@ -466,7 +482,199 @@ function TimelineEditor({ timelines, onChange }: TimelineEditorProps) {
   );
 }
 
+// ─── Stage Editor (Tahapan Kompetisi) ──────────────────────────────────────────
+
+type StageEditorProps = {
+  stages: StageForm[];
+  onChange: (stages: StageForm[]) => void;
+};
+
+function StageEditor({ stages, onChange }: StageEditorProps) {
+  function addItem() {
+    onChange([...stages, { ...emptyStageItem }]);
+  }
+  function removeItem(index: number) {
+    onChange(stages.filter((_, i) => i !== index));
+  }
+  function updateItem(index: number, patch: Partial<StageForm>) {
+    onChange(stages.map((item, i) => (i === index ? { ...item, ...patch } : item)));
+  }
+  function moveItem(index: number, direction: -1 | 1) {
+    const next = [...stages];
+    const target = index + direction;
+    if (target < 0 || target >= next.length) return;
+    [next[index], next[target]] = [next[target], next[index]];
+    onChange(next);
+  }
+
+  return (
+    <div className="md:col-span-2 space-y-3">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-black text-slate-800">
+            Tahapan Kompetisi
+          </p>
+          <p className="text-xs text-slate-400 mt-0.5">
+            Langkah-langkah (mis. Pendaftaran → Verifikasi → Pelaksanaan →
+            Pengumuman) yang tampil di section "Tahapan Kompetisi" halaman
+            detail lomba.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={addItem}
+          className="flex items-center gap-1.5 rounded-lg bg-cyan-50 border border-cyan-200 px-3 py-1.5 text-xs font-bold text-cyan-700 transition hover:bg-cyan-100 shrink-0"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2.5}
+            stroke="currentColor"
+            className="h-3.5 w-3.5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
+          </svg>
+          Tambah Tahapan
+        </button>
+      </div>
+
+      {stages.length === 0 ? (
+        <div className="rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/60 px-4 py-6 text-center">
+          <p className="text-xs font-semibold text-slate-400">
+            Belum ada tahapan —{" "}
+            <span className="font-bold text-slate-500">Tambah Tahapan</span>{" "}
+            untuk mulai mengisi.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {stages.map((item, index) => (
+            <div
+              key={index}
+              className="rounded-xl border border-slate-200 bg-slate-50/70 p-4"
+            >
+              <div className="mb-3 flex items-center gap-2">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cyan-100 text-[11px] font-black text-cyan-700">
+                  {index + 1}
+                </span>
+                <span className="flex-1 truncate text-xs font-bold text-slate-500">
+                  {item.title || (
+                    <span className="italic text-slate-400">
+                      Belum ada judul
+                    </span>
+                  )}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => moveItem(index, -1)}
+                  disabled={index === 0}
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:opacity-30"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    stroke="currentColor"
+                    className="h-3.5 w-3.5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moveItem(index, 1)}
+                  disabled={index === stages.length - 1}
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:opacity-30"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    stroke="currentColor"
+                    className="h-3.5 w-3.5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeItem(index)}
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-rose-200 text-rose-400 transition hover:bg-rose-50 hover:text-rose-600"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    stroke="currentColor"
+                    className="h-3.5 w-3.5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="sm:col-span-2">
+                  <label className="mb-1 block text-xs font-bold text-slate-600">
+                    Judul <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="cth. Verifikasi Berkas"
+                    value={item.title}
+                    onChange={(e) =>
+                      updateItem(index, { title: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="mb-1 block text-xs font-bold text-slate-600">
+                    Deskripsi{" "}
+                    <span className="font-normal text-slate-400">
+                      (opsional)
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="cth. Panitia memeriksa data peserta dan bukti pembayaran."
+                    value={item.description}
+                    onChange={(e) =>
+                      updateItem(index, { description: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Modal Form ───────────────────────────────────────────────────────────────
+
 
 type FormModalProps = {
   isOpen: boolean;
@@ -727,6 +935,13 @@ function FormModal({
             onChange={(timelines) => onChange({ timelines })}
           />
 
+          {/* ── Bagian 6: Tahapan Kompetisi ── */}
+          <div className="md:col-span-2 border-t border-slate-100 pt-2" />
+          <StageEditor
+            stages={form.stages}
+            onChange={(stages) => onChange({ stages })}
+          />
+
           {formError ? (
             <div className="md:col-span-2">
               <ErrorState message={formError} />
@@ -852,6 +1067,16 @@ function timelinesFromCompetition(competition: Competition): TimelineForm[] {
   }));
 }
 
+function stagesFromCompetition(competition: Competition): StageForm[] {
+  if (!Array.isArray(competition.stages) || competition.stages.length === 0)
+    return [];
+  return competition.stages.map((s) => ({
+    id: s.id,
+    title: s.title,
+    description: s.description ?? "",
+  }));
+}
+
 function contactsFromCompetition(competition: Competition): ContactForm[] {
   if (!Array.isArray(competition.whatsapp_cp)) return [];
   return competition.whatsapp_cp.map((c) => ({
@@ -906,6 +1131,7 @@ export function AdminCompetitionsPage() {
       main_theme: competition.main_theme ?? "",
       subthemes: (competition.subthemes ?? []).join("\n"),
       timelines: timelinesFromCompetition(competition),
+      stages: stagesFromCompetition(competition),
     });
     setFormError("");
     setIsFormOpen(true);
@@ -937,6 +1163,12 @@ export function AdminCompetitionsPage() {
       setFormError(
         "Setiap item timeline wajib memiliki judul dan tanggal mulai.",
       );
+      return;
+    }
+
+    const invalidStage = form.stages.find((s) => !s.title.trim());
+    if (invalidStage) {
+      setFormError("Setiap tahapan kompetisi wajib memiliki judul.");
       return;
     }
 
@@ -1020,6 +1252,24 @@ export function AdminCompetitionsPage() {
         setSaving(false);
         setFormError(
           `Lomba tersimpan, tapi gagal menyimpan timeline: ${timelineError.message}`,
+        );
+        reload();
+        return;
+      }
+
+      const { error: stageError } = await replaceAdminCompetitionStages(
+        competitionId,
+        form.stages.map((s, index) => ({
+          title: s.title.trim(),
+          description: s.description.trim() || null,
+          sort_order: index,
+          is_active: true,
+        })),
+      );
+      if (stageError) {
+        setSaving(false);
+        setFormError(
+          `Lomba tersimpan, tapi gagal menyimpan tahapan: ${stageError.message}`,
         );
         reload();
         return;

@@ -10,10 +10,13 @@ export async function getAdminCompetitions() {
       `*, timelines (
         id, competition_id, title, description,
         start_date, end_date, is_active, sort_order
+      ), stages:competition_stages (
+        id, competition_id, title, description, is_active, sort_order
       )`,
     )
     .order("name")
-    .order("sort_order", { referencedTable: "timelines", ascending: true });
+    .order("sort_order", { referencedTable: "timelines", ascending: true })
+    .order("sort_order", { referencedTable: "stages", ascending: true });
 
   return { data: (data ?? []) as Competition[], error };
 }

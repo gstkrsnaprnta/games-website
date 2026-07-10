@@ -1,0 +1,34 @@
+-- FILE: supabase/migrations/007_competition_stages.sql
+-- Perbaikan mekanisme "Tahapan Kompetisi" di halaman detail lomba.
+--
+-- Bug: section "Tahapan Kompetisi" pada CompetitionDetailPage.tsx selama ini
+-- SELALU membaca `detail.stages`, yaitu data statis hardcode dari
+-- src/data/competitionDetails.ts. Berbeda dengan section "Timeline Kompetisi"
+-- yang sudah dinamis (dari tabel `timelines` + bisa diedit admin), tahapan
+-- lomba tidak pernah bisa diubah tanpa deploy ulang kode, dan lomba baru yang
+-- ditambahkan lewat panel admin otomatis memakai 4 tahapan generik/fallback
+-- yang belum tentu sesuai.
+--
+-- Migration ini membuat tabel `competition_stages` supaya tahapan lomba bisa
+-- dikelola dari Admin Panel, persis seperti mekanisme timeline.
+
+create table if not exists public.competition_stages (
+  id uuid primary key default gen_random_uuid(),
+  competition_id uuid not null references public.competitions(id) on delete cascade,
+  title text not null,
+  description text,
+  sort_order integer default 0,
+  is_active boolean default true,
+  created_at timestamptz default now()
+);
+
+create index if not exists idx_competition_stages_competition
+  on public.competition_stages (competition_id, sort_order);
+
+alter table public.competition_stages enable row level security;
+
+create policy "Public read active competition stages" on public.competition_stages
+  for select using (is_active = true or public.is_admin());
+
+create policy "Admin all competition stages" on public.competition_stages
+  for all using (public.is_admin()) with check (public.is_admin());

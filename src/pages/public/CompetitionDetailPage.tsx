@@ -127,6 +127,14 @@ export function CompetitionDetailPage() {
       ? toDetailTimelines(competition.timelines)
       : undefined;
 
+  const resolvedStages =
+    Array.isArray(competition.stages) && competition.stages.length > 0
+      ? competition.stages.map((s) => ({
+          title: s.title,
+          description: s.description ?? "",
+        }))
+      : undefined;
+
   let detail = COMPETITION_DETAILS[competition.slug];
 
   if (!detail) {
@@ -215,6 +223,7 @@ export function CompetitionDetailPage() {
   }
 
   const finalTimelines = resolvedTimelines || detail.timelines;
+  const finalStages = resolvedStages || detail.stages;
   const isOpen = competition.registration_status === "open";
   const priceLabel = formatCurrency(
     competition.registration_fee,
@@ -435,9 +444,9 @@ export function CompetitionDetailPage() {
         {/* Tahapan */}
         <DetailSection icon={<CircleDot size={21} />} title="Tahapan Kompetisi">
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            {detail.stages.map((stage, index) => (
+            {finalStages.map((stage, index) => (
               <div
-                key={stage.title}
+                key={`${stage.title}-${index}`}
                 className="flex gap-4 rounded-2xl border border-white/75 bg-white/52 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
               >
                 <div className="grid size-9 shrink-0 place-items-center rounded-full bg-[#c2e1df]/70 text-sm font-black text-[#064452]">

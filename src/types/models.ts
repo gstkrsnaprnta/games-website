@@ -56,6 +56,17 @@ export type Timeline = {
   sort_order: number;
 };
 
+// Tahapan Kompetisi (mis. Pendaftaran → Verifikasi → Pelaksanaan → Pengumuman),
+// tampil di section "Tahapan Kompetisi" halaman detail lomba, dikelola admin.
+export type CompetitionStage = {
+  id: string;
+  competition_id: string;
+  title: string;
+  description: string | null;
+  is_active: boolean;
+  sort_order: number;
+};
+
 // Kontak WhatsApp panitia (CP) untuk konfirmasi otomatis pendaftaran.
 // `level` null/kosong = berlaku untuk semua jenjang (dipakai sebagai fallback
 // kalau tidak ada kontak yang cocok dengan jenjang yang dipilih peserta).
@@ -87,6 +98,7 @@ export type Competition = {
   whatsapp_cp: WhatsappContact[] | null;
   is_active: boolean;
   timelines?: Timeline[];
+  stages?: CompetitionStage[];
 
   // Kolom baru
   max_teams_per_school?: number | null;
