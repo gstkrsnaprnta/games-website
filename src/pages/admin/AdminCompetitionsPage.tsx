@@ -10,7 +10,7 @@ import {
   getAdminCompetitions,
   saveAdminCompetition,
 } from "../../services/adminCompetitions";
-import { replaceAdminCompetitionStages } from "../../services/adminCompetitionStages";
+import { replaceAdminCompetitionStages } from "../../services/admincompetitionstages";
 import { replaceAdminTimelines } from "../../services/adminTimelines";
 import type { Competition } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";

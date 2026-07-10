@@ -1,4 +1,3 @@
-// FILE: src/services/adminCompetitionStages.ts
 import { supabase } from "../lib/supabase";
 
 // ─── Bulk replace (untuk form competition) ────────────────────────────────────
