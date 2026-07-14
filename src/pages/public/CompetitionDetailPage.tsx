@@ -543,8 +543,8 @@ export function CompetitionDetailPage() {
               >
                 <h3 className="font-black text-[#064452]">{mechanism.title}</h3>
                 <ul className="mt-3 grid gap-2 text-sm font-semibold leading-6 text-[#064452]/72">
-                  {mechanism.items.map((item) => (
-                    <li key={item} className="flex gap-3">
+                  {mechanism.items.map((item, idx) => (
+                    <li key={`${item}-${idx}`} className="flex gap-3">
                       <Check
                         size={16}
                         className="mt-1 shrink-0 text-[#0b5a63]"
