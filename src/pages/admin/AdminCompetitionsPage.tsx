@@ -330,9 +330,16 @@ function ContactEditor({ contacts, onChange }: ContactEditorProps) {
 type TimelineEditorProps = {
   timelines: TimelineForm[];
   onChange: (timelines: TimelineForm[]) => void;
+  showSection: boolean;
+  onShowSectionChange: (show: boolean) => void;
 };
 
-function TimelineEditor({ timelines, onChange }: TimelineEditorProps) {
+function TimelineEditor({
+  timelines,
+  onChange,
+  showSection,
+  onShowSectionChange,
+}: TimelineEditorProps) {
   function addItem() {
     onChange([...timelines, { ...emptyTimelineItem }]);
   }
@@ -356,10 +363,21 @@ function TimelineEditor({ timelines, onChange }: TimelineEditorProps) {
     <div className="md:col-span-2 space-y-3">
       <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
         <div>
-          <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
-            <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
-            Timeline Kompetisi
-          </h3>
+          <div className="flex items-center gap-3">
+            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+              <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
+              Timeline Kompetisi
+            </h3>
+            <label className="flex items-center gap-1.5 text-xs font-black text-cyan-600 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={showSection}
+                onChange={(e) => onShowSectionChange(e.target.checked)}
+                className="h-4 w-4 rounded border-slate-300 accent-cyan-600"
+              />
+              Tampilkan Timeline di Website
+            </label>
+          </div>
           <p className="text-xs text-slate-400 mt-1">
             Jadwal tahapan yang tampil di halaman detail lomba.
           </p>
@@ -387,161 +405,163 @@ function TimelineEditor({ timelines, onChange }: TimelineEditorProps) {
         </button>
       </div>
 
-      {timelines.length === 0 ? (
-        <div className="rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/60 px-4 py-6 text-center">
-          <p className="text-xs font-semibold text-slate-400">
-            Belum ada timeline —{" "}
-            <span className="font-bold text-slate-500">Tambah Item</span> untuk
-            mulai mengisi.
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {timelines.map((item, index) => (
-            <div
-              key={index}
-              className="rounded-xl border border-slate-200 bg-slate-50/70 p-4"
-            >
-              <div className="mb-3 flex items-center gap-2">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cyan-100 text-[11px] font-black text-cyan-700">
-                  {index + 1}
-                </span>
-                <span className="flex-1 truncate text-xs font-bold text-slate-500">
-                  {item.title || (
-                    <span className="italic text-slate-400">
-                      Belum ada judul
-                    </span>
-                  )}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => moveItem(index, -1)}
-                  disabled={index === 0}
-                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:opacity-30"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2.5}
-                    stroke="currentColor"
-                    className="h-3.5 w-3.5"
+      <div className={!showSection ? "opacity-50 pointer-events-none" : ""}>
+        {timelines.length === 0 ? (
+          <div className="rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/60 px-4 py-6 text-center">
+            <p className="text-xs font-semibold text-slate-400">
+              Belum ada timeline —{" "}
+              <span className="font-bold text-slate-500">Tambah Item</span> untuk
+              mulai mengisi.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {timelines.map((item, index) => (
+              <div
+                key={index}
+                className="rounded-xl border border-slate-200 bg-slate-50/70 p-4"
+              >
+                <div className="mb-3 flex items-center gap-2">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cyan-100 text-[11px] font-black text-cyan-700">
+                    {index + 1}
+                  </span>
+                  <span className="flex-1 truncate text-xs font-bold text-slate-500">
+                    {item.title || (
+                      <span className="italic text-slate-400">
+                        Belum ada judul
+                      </span>
+                    )}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => moveItem(index, -1)}
+                    disabled={index === 0}
+                    className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:opacity-30"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4.5 15.75l7.5-7.5 7.5 7.5"
-                    />
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => moveItem(index, 1)}
-                  disabled={index === timelines.length - 1}
-                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:opacity-30"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2.5}
-                    stroke="currentColor"
-                    className="h-3.5 w-3.5"
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2.5}
+                      stroke="currentColor"
+                      className="h-3.5 w-3.5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => moveItem(index, 1)}
+                    disabled={index === timelines.length - 1}
+                    className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:opacity-30"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                    />
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => removeItem(index)}
-                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-rose-200 text-rose-400 transition hover:bg-rose-50 hover:text-rose-600"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2.5}
-                    stroke="currentColor"
-                    className="h-3.5 w-3.5"
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2.5}
+                      stroke="currentColor"
+                      className="h-3.5 w-3.5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => removeItem(index)}
+                    className="flex h-7 w-7 items-center justify-center rounded-lg border border-rose-200 text-rose-400 transition hover:bg-rose-50 hover:text-rose-600"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M6 18L18 6M6 6l12 12"
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2.5}
+                      stroke="currentColor"
+                      className="h-3.5 w-3.5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="sm:col-span-2">
+                    <label className="mb-1 block text-xs font-bold text-slate-600">
+                      Judul <span className="text-rose-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="cth. Pembukaan Pendaftaran"
+                      value={item.title}
+                      onChange={(e) =>
+                        updateItem(index, { title: e.target.value })
+                      }
+                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
                     />
-                  </svg>
-                </button>
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs font-bold text-slate-600">
+                      Tanggal Mulai <span className="text-rose-500">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      value={item.start_date}
+                      onChange={(e) =>
+                        updateItem(index, { start_date: e.target.value })
+                      }
+                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs font-bold text-slate-600">
+                      Tanggal Selesai{" "}
+                      <span className="font-normal text-slate-400">
+                        (opsional)
+                      </span>
+                    </label>
+                    <input
+                      type="date"
+                      value={item.end_date}
+                      min={item.start_date || undefined}
+                      onChange={(e) =>
+                        updateItem(index, { end_date: e.target.value })
+                      }
+                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="mb-1 block text-xs font-bold text-slate-600">
+                      Deskripsi{" "}
+                      <span className="font-normal text-slate-400">
+                        (opsional)
+                      </span>
+                    </label>
+                    <input
+                      type="text"
+                      value={item.description}
+                      onChange={(e) =>
+                        updateItem(index, { description: e.target.value })
+                      }
+                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+                    />
+                  </div>
+                </div>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="sm:col-span-2">
-                  <label className="mb-1 block text-xs font-bold text-slate-600">
-                    Judul <span className="text-rose-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="cth. Pembukaan Pendaftaran"
-                    value={item.title}
-                    onChange={(e) =>
-                      updateItem(index, { title: e.target.value })
-                    }
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-xs font-bold text-slate-600">
-                    Tanggal Mulai <span className="text-rose-500">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    value={item.start_date}
-                    onChange={(e) =>
-                      updateItem(index, { start_date: e.target.value })
-                    }
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-xs font-bold text-slate-600">
-                    Tanggal Selesai{" "}
-                    <span className="font-normal text-slate-400">
-                      (opsional)
-                    </span>
-                  </label>
-                  <input
-                    type="date"
-                    value={item.end_date}
-                    min={item.start_date || undefined}
-                    onChange={(e) =>
-                      updateItem(index, { end_date: e.target.value })
-                    }
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
-                  />
-                </div>
-                <div className="sm:col-span-2">
-                  <label className="mb-1 block text-xs font-bold text-slate-600">
-                    Deskripsi{" "}
-                    <span className="font-normal text-slate-400">
-                      (opsional)
-                    </span>
-                  </label>
-                  <input
-                    type="text"
-                    value={item.description}
-                    onChange={(e) =>
-                      updateItem(index, { description: e.target.value })
-                    }
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -551,9 +571,16 @@ function TimelineEditor({ timelines, onChange }: TimelineEditorProps) {
 type StageEditorProps = {
   stages: StageForm[];
   onChange: (stages: StageForm[]) => void;
+  showSection: boolean;
+  onShowSectionChange: (show: boolean) => void;
 };
 
-function StageEditor({ stages, onChange }: StageEditorProps) {
+function StageEditor({
+  stages,
+  onChange,
+  showSection,
+  onShowSectionChange,
+}: StageEditorProps) {
   function addItem() {
     onChange([...stages, { ...emptyStageItem }]);
   }
@@ -575,10 +602,21 @@ function StageEditor({ stages, onChange }: StageEditorProps) {
     <div className="md:col-span-2 space-y-3">
       <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
         <div>
-          <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
-            <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
-            Tahapan Kompetisi
-          </h3>
+          <div className="flex items-center gap-3">
+            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+              <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
+              Tahapan Kompetisi
+            </h3>
+            <label className="flex items-center gap-1.5 text-xs font-black text-cyan-600 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={showSection}
+                onChange={(e) => onShowSectionChange(e.target.checked)}
+                className="h-4 w-4 rounded border-slate-300 accent-cyan-600"
+              />
+              Tampilkan Tahapan di Website
+            </label>
+          </div>
           <p className="text-xs text-slate-400 mt-1">
             Langkah-langkah (mis. Pendaftaran → Verifikasi → Pelaksanaan →
             Pengumuman) yang tampil di section "Tahapan Kompetisi" halaman
@@ -608,132 +646,134 @@ function StageEditor({ stages, onChange }: StageEditorProps) {
         </button>
       </div>
 
-      {stages.length === 0 ? (
-        <div className="rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/60 px-4 py-6 text-center">
-          <p className="text-xs font-semibold text-slate-400">
-            Belum ada tahapan —{" "}
-            <span className="font-bold text-slate-500">Tambah Tahapan</span>{" "}
-            untuk mulai mengisi.
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {stages.map((item, index) => (
-            <div
-              key={index}
-              className="rounded-xl border border-slate-200 bg-slate-50/70 p-4"
-            >
-              <div className="mb-3 flex items-center gap-2">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cyan-100 text-[11px] font-black text-cyan-700">
-                  {index + 1}
-                </span>
-                <span className="flex-1 truncate text-xs font-bold text-slate-500">
-                  {item.title || (
-                    <span className="italic text-slate-400">
-                      Belum ada judul
-                    </span>
-                  )}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => moveItem(index, -1)}
-                  disabled={index === 0}
-                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:opacity-30"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2.5}
-                    stroke="currentColor"
-                    className="h-3.5 w-3.5"
+      <div className={!showSection ? "opacity-50 pointer-events-none" : ""}>
+        {stages.length === 0 ? (
+          <div className="rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/60 px-4 py-6 text-center">
+            <p className="text-xs font-semibold text-slate-400">
+              Belum ada tahapan —{" "}
+              <span className="font-bold text-slate-500">Tambah Tahapan</span>{" "}
+              untuk mulai mengisi.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {stages.map((item, index) => (
+              <div
+                key={index}
+                className="rounded-xl border border-slate-200 bg-slate-50/70 p-4"
+              >
+                <div className="mb-3 flex items-center gap-2">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cyan-100 text-[11px] font-black text-cyan-700">
+                    {index + 1}
+                  </span>
+                  <span className="flex-1 truncate text-xs font-bold text-slate-500">
+                    {item.title || (
+                      <span className="italic text-slate-400">
+                        Belum ada judul
+                      </span>
+                    )}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => moveItem(index, -1)}
+                    disabled={index === 0}
+                    className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:opacity-30"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4.5 15.75l7.5-7.5 7.5 7.5"
-                    />
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => moveItem(index, 1)}
-                  disabled={index === stages.length - 1}
-                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:opacity-30"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2.5}
-                    stroke="currentColor"
-                    className="h-3.5 w-3.5"
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2.5}
+                      stroke="currentColor"
+                      className="h-3.5 w-3.5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => moveItem(index, 1)}
+                    disabled={index === stages.length - 1}
+                    className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:opacity-30"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                    />
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => removeItem(index)}
-                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-rose-200 text-rose-400 transition hover:bg-rose-50 hover:text-rose-600"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2.5}
-                    stroke="currentColor"
-                    className="h-3.5 w-3.5"
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2.5}
+                      stroke="currentColor"
+                      className="h-3.5 w-3.5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => removeItem(index)}
+                    className="flex h-7 w-7 items-center justify-center rounded-lg border border-rose-200 text-rose-400 transition hover:bg-rose-50 hover:text-rose-600"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="sm:col-span-2">
-                  <label className="mb-1 block text-xs font-bold text-slate-600">
-                    Judul <span className="text-rose-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="cth. Verifikasi Berkas"
-                    value={item.title}
-                    onChange={(e) =>
-                      updateItem(index, { title: e.target.value })
-                    }
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
-                  />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2.5}
+                      stroke="currentColor"
+                      className="h-3.5 w-3.5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
                 </div>
-                <div className="sm:col-span-2">
-                  <label className="mb-1 block text-xs font-bold text-slate-600">
-                    Deskripsi{" "}
-                    <span className="font-normal text-slate-400">
-                      (opsional)
-                    </span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="cth. Panitia memeriksa data peserta dan bukti pembayaran."
-                    value={item.description}
-                    onChange={(e) =>
-                      updateItem(index, { description: e.target.value })
-                    }
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
-                  />
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="sm:col-span-2">
+                    <label className="mb-1 block text-xs font-bold text-slate-600">
+                      Judul <span className="text-rose-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="cth. Verifikasi Berkas"
+                      value={item.title}
+                      onChange={(e) =>
+                        updateItem(index, { title: e.target.value })
+                      }
+                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="mb-1 block text-xs font-bold text-slate-600">
+                      Deskripsi{" "}
+                      <span className="font-normal text-slate-400">
+                        (opsional)
+                      </span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="cth. Panitia memeriksa data peserta dan bukti pembayaran."
+                      value={item.description}
+                      onChange={(e) =>
+                        updateItem(index, { description: e.target.value })
+                      }
+                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -743,9 +783,16 @@ function StageEditor({ stages, onChange }: StageEditorProps) {
 type MechanismEditorProps = {
   mechanisms: MechanismForm[];
   onChange: (mechanisms: MechanismForm[]) => void;
+  showSection: boolean;
+  onShowSectionChange: (show: boolean) => void;
 };
 
-function MechanismEditor({ mechanisms, onChange }: MechanismEditorProps) {
+function MechanismEditor({
+  mechanisms,
+  onChange,
+  showSection,
+  onShowSectionChange,
+}: MechanismEditorProps) {
   function addItem() {
     onChange([...mechanisms, { ...emptyMechanismItem }]);
   }
@@ -767,10 +814,21 @@ function MechanismEditor({ mechanisms, onChange }: MechanismEditorProps) {
     <div className="md:col-span-2 space-y-3">
       <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
         <div>
-          <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
-            <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
-            Mekanisme Lomba
-          </h3>
+          <div className="flex items-center gap-3">
+            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+              <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
+              Mekanisme Lomba
+            </h3>
+            <label className="flex items-center gap-1.5 text-xs font-black text-cyan-600 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={showSection}
+                onChange={(e) => onShowSectionChange(e.target.checked)}
+                className="h-4 w-4 rounded border-slate-300 accent-cyan-600"
+              />
+              Tampilkan Mekanisme di Website
+            </label>
+          </div>
           <p className="text-xs text-slate-400 mt-1">
             Mekanisme, kriteria penilaian, atau sistem poin untuk cabang lomba ini.
             Tuliskan butir-butir mekanisme pada kolom "Isi Mekanisme" (satu baris per ketentuan/poin).
@@ -799,131 +857,133 @@ function MechanismEditor({ mechanisms, onChange }: MechanismEditorProps) {
         </button>
       </div>
 
-      {mechanisms.length === 0 ? (
-        <div className="rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/60 px-4 py-6 text-center">
-          <p className="text-xs font-semibold text-slate-400">
-            Belum ada mekanisme —{" "}
-            <span className="font-bold text-slate-500">Tambah Mekanisme</span>{" "}
-            untuk mulai mengisi.
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {mechanisms.map((item, index) => (
-            <div
-              key={index}
-              className="rounded-xl border border-slate-200 bg-slate-50/70 p-4"
-            >
-              <div className="mb-3 flex items-center gap-2">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cyan-100 text-[11px] font-black text-cyan-700">
-                  {index + 1}
-                </span>
-                <span className="flex-1 truncate text-xs font-bold text-slate-500">
-                  {item.title || (
-                    <span className="italic text-slate-400">
-                      Belum ada judul
-                    </span>
-                  )}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => moveItem(index, -1)}
-                  disabled={index === 0}
-                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:opacity-30"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2.5}
-                    stroke="currentColor"
-                    className="h-3.5 w-3.5"
+      <div className={!showSection ? "opacity-50 pointer-events-none" : ""}>
+        {mechanisms.length === 0 ? (
+          <div className="rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/60 px-4 py-6 text-center">
+            <p className="text-xs font-semibold text-slate-400">
+              Belum ada mekanisme —{" "}
+              <span className="font-bold text-slate-500">Tambah Mekanisme</span>{" "}
+              untuk mulai mengisi.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {mechanisms.map((item, index) => (
+              <div
+                key={index}
+                className="rounded-xl border border-slate-200 bg-slate-50/70 p-4"
+              >
+                <div className="mb-3 flex items-center gap-2">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cyan-100 text-[11px] font-black text-cyan-700">
+                    {index + 1}
+                  </span>
+                  <span className="flex-1 truncate text-xs font-bold text-slate-500">
+                    {item.title || (
+                      <span className="italic text-slate-400">
+                        Belum ada judul
+                      </span>
+                    )}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => moveItem(index, -1)}
+                    disabled={index === 0}
+                    className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:opacity-30"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4.5 15.75l7.5-7.5 7.5 7.5"
-                    />
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => moveItem(index, 1)}
-                  disabled={index === mechanisms.length - 1}
-                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:opacity-30"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2.5}
-                    stroke="currentColor"
-                    className="h-3.5 w-3.5"
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2.5}
+                      stroke="currentColor"
+                      className="h-3.5 w-3.5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => moveItem(index, 1)}
+                    disabled={index === mechanisms.length - 1}
+                    className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:opacity-30"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                    />
-                  </svg>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => removeItem(index)}
-                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-rose-200 text-rose-400 transition hover:bg-rose-50 hover:text-rose-600"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2.5}
-                    stroke="currentColor"
-                    className="h-3.5 w-3.5"
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2.5}
+                      stroke="currentColor"
+                      className="h-3.5 w-3.5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => removeItem(index)}
+                    className="flex h-7 w-7 items-center justify-center rounded-lg border border-rose-200 text-rose-400 transition hover:bg-rose-50 hover:text-rose-600"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-              <div className="grid gap-3">
-                <div>
-                  <label className="mb-1 block text-xs font-bold text-slate-600">
-                    Judul Mekanisme <span className="text-rose-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="cth. Sistem Pelaksanaan Ujian"
-                    value={item.title}
-                    onChange={(e) =>
-                      updateItem(index, { title: e.target.value })
-                    }
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
-                    required
-                  />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2.5}
+                      stroke="currentColor"
+                      className="h-3.5 w-3.5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
                 </div>
-                <div>
-                  <label className="mb-1 block text-xs font-bold text-slate-600">
-                    Isi Mekanisme (satu baris per ketentuan/poin) <span className="text-rose-500">*</span>
-                  </label>
-                  <textarea
-                    placeholder="Penyisihan: Dikerjakan secara online...&#10;Final: Dikerjakan secara tertulis..."
-                    value={item.items}
-                    onChange={(e) =>
-                      updateItem(index, { items: e.target.value })
-                    }
-                    rows={4}
-                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 font-sans"
-                    required
-                  />
+                <div className="grid gap-3">
+                  <div>
+                    <label className="mb-1 block text-xs font-bold text-slate-600">
+                      Judul Mekanisme <span className="text-rose-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="cth. Sistem Pelaksanaan Ujian"
+                      value={item.title}
+                      onChange={(e) =>
+                        updateItem(index, { title: e.target.value })
+                      }
+                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs font-bold text-slate-600">
+                      Isi Mekanisme (satu baris per ketentuan/poin) <span className="text-rose-500">*</span>
+                    </label>
+                    <textarea
+                      placeholder="Penyisihan: Dikerjakan secara online...&#10;Final: Dikerjakan secara tertulis..."
+                      value={item.items}
+                      onChange={(e) =>
+                        updateItem(index, { items: e.target.value })
+                      }
+                      rows={4}
+                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 font-sans"
+                      required
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -1190,12 +1250,12 @@ function FormModal({
         </div>
 
         {/* Form Body */}
-        <form onSubmit={onSubmit} className="grid gap-4 p-6 md:grid-cols-2">
-          {/* ── Bagian 1: Info Dasar ── */}
+        <form onSubmit={onSubmit} className="grid gap-6 p-6 md:grid-cols-2">
+          {/* ── 1. Info Dasar Lomba ── */}
           <div className="md:col-span-2 border-b border-slate-100 pb-2 mb-2">
             <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
               <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
-              Info Dasar
+              Info Dasar Lomba
             </h3>
           </div>
 
@@ -1212,75 +1272,6 @@ function FormModal({
             onChange={(e) => onChange({ code: e.target.value })}
             required
           />
-          <FormInput
-            label="Jenjang peserta (pisahkan koma)"
-            placeholder="SD, SMP, SMA, Mahasiswa"
-            value={form.participant_levels}
-            onChange={(e) => onChange({ participant_levels: e.target.value })}
-          />
-          <FormInput
-            label="Biaya pendaftaran (Rp)"
-            type="number"
-            value={form.registration_fee}
-            onChange={(e) => onChange({ registration_fee: e.target.value })}
-          />
-
-          {/* ── Bagian 1.3: Gelombang Biaya Pendaftaran ── */}
-          <div className="md:col-span-2 border-b border-slate-100 pb-2 mb-2 mt-4">
-            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
-              <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
-              Gelombang & Biaya Pendaftaran (Halaman Detail)
-            </h3>
-            <p className="mt-1 text-xs text-slate-400">
-              Digunakan untuk menampilkan periode dan nominal biaya pendaftaran di halaman informasi publik. Kosongkan Gelombang II jika lomba ini hanya memiliki satu periode biaya.
-            </p>
-          </div>
-
-          <div className="md:col-span-1 p-4 rounded-xl border border-slate-100 bg-slate-50/50 space-y-3">
-            <h4 className="text-xs font-bold text-cyan-700">Gelombang I / Biaya Registrasi</h4>
-            <FormInput
-              label="Label Gelombang I"
-              placeholder="cth. Pendaftaran Gelombang I / Biaya Registrasi"
-              value={form.fee_wave_1_label}
-              onChange={(e) => onChange({ fee_wave_1_label: e.target.value })}
-            />
-            <FormInput
-              label="Periode Gelombang I"
-              placeholder="cth. 13 Juli – 09 Oktober 2026"
-              value={form.fee_wave_1_period}
-              onChange={(e) => onChange({ fee_wave_1_period: e.target.value })}
-            />
-            <FormInput
-              label="Nominal Gelombang I (Rp)"
-              type="number"
-              placeholder="cth. 75000"
-              value={form.fee_wave_1_price}
-              onChange={(e) => onChange({ fee_wave_1_price: e.target.value })}
-            />
-          </div>
-
-          <div className="md:col-span-1 p-4 rounded-xl border border-slate-100 bg-slate-50/50 space-y-3">
-            <h4 className="text-xs font-bold text-cyan-700">Gelombang II (Opsional)</h4>
-            <FormInput
-              label="Label Gelombang II"
-              placeholder="cth. Pendaftaran Gelombang II"
-              value={form.fee_wave_2_label}
-              onChange={(e) => onChange({ fee_wave_2_label: e.target.value })}
-            />
-            <FormInput
-              label="Periode Gelombang II"
-              placeholder="cth. 17 Agustus – 11 September 2026"
-              value={form.fee_wave_2_period}
-              onChange={(e) => onChange({ fee_wave_2_period: e.target.value })}
-            />
-            <FormInput
-              label="Nominal Gelombang II (Rp)"
-              type="number"
-              placeholder="cth. 90000"
-              value={form.fee_wave_2_price}
-              onChange={(e) => onChange({ fee_wave_2_price: e.target.value })}
-            />
-          </div>
           <FormSelect
             label="Tipe lomba"
             value={form.competition_type}
@@ -1310,64 +1301,17 @@ function FormModal({
             ]}
           />
           <FormInput
-            label="Min. anggota"
+            label="Min. anggota per tim"
             type="number"
             value={form.min_members}
             onChange={(e) => onChange({ min_members: e.target.value })}
           />
           <FormInput
-            label="Maks. anggota"
+            label="Maks. anggota per tim"
             type="number"
             value={form.max_members}
             onChange={(e) => onChange({ max_members: e.target.value })}
           />
-
-          {/* ── Bagian 1.5: Kontak WhatsApp CP ── */}
-          <div className="md:col-span-2 border-t border-slate-200 pt-4 mt-2" />
-          <ContactEditor
-            contacts={form.whatsapp_contacts}
-            onChange={(whatsapp_contacts) => onChange({ whatsapp_contacts })}
-          />
-
-          {/* ── Bagian 1.7: Persyaratan & Berkas Wajib ── */}
-          <div className="md:col-span-2 border-b border-slate-100 pb-2 mb-2 mt-4">
-            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
-              <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
-              Persyaratan & Berkas Wajib
-            </h3>
-            <p className="mt-1 text-xs text-slate-400">
-              Tuliskan butir-butir persyaratan dan berkas (satu baris per poin).
-            </p>
-          </div>
-
-          <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormTextarea
-              label="Ketentuan Peserta (Persyaratan)"
-              placeholder={"Peserta merupakan mahasiswa aktif...\nPendaftaran bersifat individu..."}
-              value={form.requirements}
-              onChange={(e) => onChange({ requirements: e.target.value })}
-              rows={5}
-            />
-            <FormTextarea
-              label="Berkas yang Wajib Diunggah"
-              placeholder={"Scan Kartu Tanda Mahasiswa (KTM) aktif...\nBukti Pembayaran Pendaftaran"}
-              value={form.required_uploads}
-              onChange={(e) => onChange({ required_uploads: e.target.value })}
-              rows={5}
-            />
-          </div>
-
-          {/* ── Bagian 2: Kuota ── */}
-          <div className="md:col-span-2 border-b border-slate-100 pb-2 mb-2 mt-4">
-            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
-              <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
-              Kuota & Batasan
-            </h3>
-            <p className="mt-1 text-xs text-slate-400">
-              Kosongkan jika tidak ada batasan.
-            </p>
-          </div>
-
           <FormInput
             label="Maks. tim per sekolah"
             type="number"
@@ -1382,12 +1326,87 @@ function FormModal({
             value={form.total_quota}
             onChange={(e) => onChange({ total_quota: e.target.value })}
           />
+          <FormInput
+            label="Jenjang peserta (pisahkan koma)"
+            placeholder="SD, SMP, SMA, Mahasiswa"
+            value={form.participant_levels}
+            onChange={(e) => onChange({ participant_levels: e.target.value })}
+          />
+          <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+            <label className="flex items-center gap-2 cursor-pointer md:mt-7">
+              <input
+                type="checkbox"
+                checked={form.is_active}
+                onChange={(e) => onChange({ is_active: e.target.checked })}
+                className="h-4 w-4 rounded border-slate-300 accent-cyan-600"
+              />
+              Tampilkan lomba di daftar lomba publik (Aktif)
+            </label>
+          </div>
 
-          {/* ── Bagian 3: Karya Tulis ── */}
+          {/* ── 2. Deskripsi Lomba ── */}
           <div className="md:col-span-2 border-b border-slate-100 pb-2 mb-2 mt-4">
             <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
               <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
-              Karya Tulis
+              Deskripsi Lomba
+            </h3>
+          </div>
+          <div className="md:col-span-2 space-y-4">
+            <FormTextarea
+              label="Deskripsi singkat"
+              placeholder="Deskripsi satu kalimat yang muncul di kartu daftar lomba..."
+              value={form.short_description}
+              onChange={(e) => onChange({ short_description: e.target.value })}
+              rows={2}
+            />
+            <FormTextarea
+              label="Deskripsi lengkap"
+              placeholder="Deskripsi lengkap lomba..."
+              value={form.description}
+              onChange={(e) => onChange({ description: e.target.value })}
+              rows={5}
+            />
+          </div>
+
+          {/* ── 3. Timeline Lomba ── */}
+          <div className="md:col-span-2 border-t border-slate-200 pt-6 mt-4" />
+          <TimelineEditor
+            timelines={form.timelines}
+            onChange={(timelines) => onChange({ timelines })}
+            showSection={form.show_timeline}
+            onShowSectionChange={(show_timeline) => onChange({ show_timeline })}
+          />
+
+          {/* ── 4. Tahapan Kompetisi ── */}
+          <div className="md:col-span-2 border-t border-slate-200 pt-6 mt-4" />
+          <StageEditor
+            stages={form.stages}
+            onChange={(stages) => onChange({ stages })}
+            showSection={form.show_stages}
+            onShowSectionChange={(show_stages) => onChange({ show_stages })}
+          />
+
+          {/* ── 5. Materi / Silabus Lomba ── */}
+          <div className="md:col-span-2 border-t border-slate-200 pt-6 mt-4" />
+          <SyllabusEditor
+            syllabus={form.syllabus}
+            onChange={(syllabus) => onChange({ syllabus })}
+          />
+
+          {/* ── 6. Mekanisme Lomba ── */}
+          <div className="md:col-span-2 border-t border-slate-200 pt-6 mt-4" />
+          <MechanismEditor
+            mechanisms={form.mechanisms}
+            onChange={(mechanisms) => onChange({ mechanisms })}
+            showSection={form.show_mechanisms}
+            onShowSectionChange={(show_mechanisms) => onChange({ show_mechanisms })}
+          />
+
+          {/* ── 7. Karya & Sistematika Penulisan ── */}
+          <div className="md:col-span-2 border-b border-slate-100 pb-2 mb-2 mt-4">
+            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+              <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
+              Karya Tulis / Naskah
             </h3>
           </div>
 
@@ -1400,7 +1419,7 @@ function FormModal({
               }
               className="h-4 w-4 rounded border-slate-300 accent-cyan-600"
             />
-            Lomba ini memerlukan pengumpulan karya tulis
+            Lomba ini memerlukan pengumpulan karya tulis (abstrak, esai, naskah, dll.)
           </label>
 
           {form.has_work_submission && (
@@ -1488,105 +1507,105 @@ function FormModal({
             </>
           )}
 
-          {/* ── Bagian 4: Deskripsi ── */}
+          {/* ── 8. Persyaratan & Berkas Wajib ── */}
           <div className="md:col-span-2 border-b border-slate-100 pb-2 mb-2 mt-4">
             <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
               <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
-              Deskripsi
+              Persyaratan & Berkas Wajib
             </h3>
-          </div>
-
-          <FormTextarea
-            label="Deskripsi singkat"
-            value={form.short_description}
-            onChange={(e) => onChange({ short_description: e.target.value })}
-          />
-          <FormTextarea
-            label="Deskripsi lengkap"
-            value={form.description}
-            onChange={(e) => onChange({ description: e.target.value })}
-          />
-
-          <div className="flex flex-wrap items-center gap-6">
-            <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-              <input
-                type="checkbox"
-                checked={form.is_active}
-                onChange={(e) => onChange({ is_active: e.target.checked })}
-                className="h-4 w-4 rounded border-slate-300 accent-cyan-600"
-              />
-              Aktif
-            </label>
-          </div>
-
-          {/* ── Pengaturan Tampilan Halaman ── */}
-          <div className="md:col-span-2 border-b border-slate-100 pb-2 mb-2 mt-4">
-            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
-              <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
-              Tampilan Halaman Lomba (Visibilitas)
-            </h3>
-            <p className="text-xs text-slate-400">
-              Aktifkan atau nonaktifkan tampilan section berikut pada halaman detail lomba publik.
+            <p className="mt-1 text-xs text-slate-400">
+              Tuliskan butir-butir persyaratan dan berkas (satu baris per poin).
             </p>
-            <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2">
-              <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                <input
-                  type="checkbox"
-                  checked={form.show_timeline}
-                  onChange={(e) => onChange({ show_timeline: e.target.checked })}
-                  className="h-4 w-4 rounded border-slate-300 accent-cyan-600"
-                />
-                Tampilkan Timeline
-              </label>
-
-              <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                <input
-                  type="checkbox"
-                  checked={form.show_stages}
-                  onChange={(e) => onChange({ show_stages: e.target.checked })}
-                  className="h-4 w-4 rounded border-slate-300 accent-cyan-600"
-                />
-                Tampilkan Tahapan Kompetisi
-              </label>
-
-              <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                <input
-                  type="checkbox"
-                  checked={form.show_mechanisms}
-                  onChange={(e) => onChange({ show_mechanisms: e.target.checked })}
-                  className="h-4 w-4 rounded border-slate-300 accent-cyan-600"
-                />
-                Tampilkan Mekanisme Lomba
-              </label>
-            </div>
           </div>
 
-          {/* ── Bagian 5: Timeline ── */}
-          <div className="md:col-span-2 border-t border-slate-200 pt-4 mt-2" />
-          <TimelineEditor
-            timelines={form.timelines}
-            onChange={(timelines) => onChange({ timelines })}
-          />
+          <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormTextarea
+              label="Ketentuan Peserta (Persyaratan)"
+              placeholder={"Peserta merupakan mahasiswa aktif...\nPendaftaran bersifat individu..."}
+              value={form.requirements}
+              onChange={(e) => onChange({ requirements: e.target.value })}
+              rows={5}
+            />
+            <FormTextarea
+              label="Berkas yang Wajib Diunggah"
+              placeholder={"Scan Kartu Tanda Mahasiswa (KTM) aktif...\nBukti Pembayaran Pendaftaran"}
+              value={form.required_uploads}
+              onChange={(e) => onChange({ required_uploads: e.target.value })}
+              rows={5}
+            />
+          </div>
 
-          {/* ── Bagian 6: Tahapan Kompetisi ── */}
-          <div className="md:col-span-2 border-t border-slate-200 pt-4 mt-2" />
-          <StageEditor
-            stages={form.stages}
-            onChange={(stages) => onChange({ stages })}
-          />
+          {/* ── 9. Biaya Pendaftaran & Gelombang ── */}
+          <div className="md:col-span-2 border-b border-slate-100 pb-2 mb-2 mt-4">
+            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+              <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
+              Gelombang & Biaya Pendaftaran (Halaman Detail)
+            </h3>
+            <p className="mt-1 text-xs text-slate-400">
+              Digunakan untuk menampilkan periode dan nominal biaya pendaftaran di halaman informasi publik. Kosongkan Gelombang II jika lomba ini hanya memiliki satu periode biaya.
+            </p>
+          </div>
 
-          {/* ── Bagian 7: Mekanisme Lomba ── */}
-          <div className="md:col-span-2 border-t border-slate-200 pt-4 mt-2" />
-          <MechanismEditor
-            mechanisms={form.mechanisms}
-            onChange={(mechanisms) => onChange({ mechanisms })}
-          />
+          <div className="md:col-span-2">
+            <FormInput
+              label="Biaya pendaftaran aktif saat pendaftaran (Rp)"
+              type="number"
+              value={form.registration_fee}
+              onChange={(e) => onChange({ registration_fee: e.target.value })}
+            />
+          </div>
 
-          {/* ── Bagian 8: Materi / Silabus Lomba ── */}
-          <div className="md:col-span-2 border-t border-slate-200 pt-4 mt-2" />
-          <SyllabusEditor
-            syllabus={form.syllabus}
-            onChange={(syllabus) => onChange({ syllabus })}
+          <div className="md:col-span-1 p-4 rounded-xl border border-slate-100 bg-slate-50/50 space-y-3">
+            <h4 className="text-xs font-bold text-cyan-700">Gelombang I / Biaya Registrasi</h4>
+            <FormInput
+              label="Label Gelombang I"
+              placeholder="cth. Pendaftaran Gelombang I / Biaya Registrasi"
+              value={form.fee_wave_1_label}
+              onChange={(e) => onChange({ fee_wave_1_label: e.target.value })}
+            />
+            <FormInput
+              label="Periode Gelombang I"
+              placeholder="cth. 13 Juli – 09 Oktober 2026"
+              value={form.fee_wave_1_period}
+              onChange={(e) => onChange({ fee_wave_1_period: e.target.value })}
+            />
+            <FormInput
+              label="Nominal Gelombang I (Rp)"
+              type="number"
+              placeholder="cth. 75000"
+              value={form.fee_wave_1_price}
+              onChange={(e) => onChange({ fee_wave_1_price: e.target.value })}
+            />
+          </div>
+
+          <div className="md:col-span-1 p-4 rounded-xl border border-slate-100 bg-slate-50/50 space-y-3">
+            <h4 className="text-xs font-bold text-cyan-700">Gelombang II (Opsional)</h4>
+            <FormInput
+              label="Label Gelombang II"
+              placeholder="cth. Pendaftaran Gelombang II"
+              value={form.fee_wave_2_label}
+              onChange={(e) => onChange({ fee_wave_2_label: e.target.value })}
+            />
+            <FormInput
+              label="Periode Gelombang II"
+              placeholder="cth. 17 Agustus – 11 September 2026"
+              value={form.fee_wave_2_period}
+              onChange={(e) => onChange({ fee_wave_2_period: e.target.value })}
+            />
+            <FormInput
+              label="Nominal Gelombang II (Rp)"
+              type="number"
+              placeholder="cth. 90000"
+              value={form.fee_wave_2_price}
+              onChange={(e) => onChange({ fee_wave_2_price: e.target.value })}
+            />
+          </div>
+
+          {/* ── 10. Kontak WhatsApp CP ── */}
+          <div className="md:col-span-2 border-t border-slate-200 pt-6 mt-4" />
+          <ContactEditor
+            contacts={form.whatsapp_contacts}
+            onChange={(whatsapp_contacts) => onChange({ whatsapp_contacts })}
           />
 
           {formError ? (
