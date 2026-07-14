@@ -83,6 +83,9 @@ type CompetitionForm = {
   timelines: TimelineForm[];
   stages: StageForm[];
   mechanisms: MechanismForm[];
+  show_timeline: boolean;
+  show_stages: boolean;
+  show_mechanisms: boolean;
 };
 
 const emptyTimelineItem: TimelineForm = {
@@ -127,6 +130,9 @@ const emptyForm: CompetitionForm = {
   timelines: [],
   stages: [],
   mechanisms: [],
+  show_timeline: true,
+  show_stages: true,
+  show_mechanisms: true,
 };
 
 // ─── Contact Editor (Kontak WhatsApp CP per jenjang) ──────────────────────────
@@ -1123,15 +1129,59 @@ function FormModal({
             onChange={(e) => onChange({ description: e.target.value })}
           />
 
-          <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-            <input
-              type="checkbox"
-              checked={form.is_active}
-              onChange={(e) => onChange({ is_active: e.target.checked })}
-              className="h-4 w-4 rounded border-slate-300 accent-cyan-600"
-            />
-            Aktif
-          </label>
+          <div className="flex flex-wrap items-center gap-6">
+            <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+              <input
+                type="checkbox"
+                checked={form.is_active}
+                onChange={(e) => onChange({ is_active: e.target.checked })}
+                className="h-4 w-4 rounded border-slate-300 accent-cyan-600"
+              />
+              Aktif
+            </label>
+          </div>
+
+          {/* ── Pengaturan Tampilan Halaman ── */}
+          <div className="md:col-span-2 border-t border-slate-100 pt-2" />
+          <div className="md:col-span-2 space-y-2">
+            <p className="text-sm font-black text-slate-800">
+              Pengaturan Tampilan Halaman Lomba
+            </p>
+            <p className="text-xs text-slate-400">
+              Aktifkan atau nonaktifkan tampilan section berikut pada halaman detail lomba publik.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2">
+              <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                <input
+                  type="checkbox"
+                  checked={form.show_timeline}
+                  onChange={(e) => onChange({ show_timeline: e.target.checked })}
+                  className="h-4 w-4 rounded border-slate-300 accent-cyan-600"
+                />
+                Tampilkan Timeline
+              </label>
+
+              <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                <input
+                  type="checkbox"
+                  checked={form.show_stages}
+                  onChange={(e) => onChange({ show_stages: e.target.checked })}
+                  className="h-4 w-4 rounded border-slate-300 accent-cyan-600"
+                />
+                Tampilkan Tahapan Kompetisi
+              </label>
+
+              <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                <input
+                  type="checkbox"
+                  checked={form.show_mechanisms}
+                  onChange={(e) => onChange({ show_mechanisms: e.target.checked })}
+                  className="h-4 w-4 rounded border-slate-300 accent-cyan-600"
+                />
+                Tampilkan Mekanisme Lomba
+              </label>
+            </div>
+          </div>
 
           {/* ── Bagian 5: Timeline ── */}
           <div className="md:col-span-2 border-t border-slate-100 pt-2" />
@@ -1355,6 +1405,9 @@ export function AdminCompetitionsPage() {
       timelines: timelinesFromCompetition(competition),
       stages: stagesFromCompetition(competition),
       mechanisms: mechanismsFromCompetition(competition),
+      show_timeline: competition.show_timeline ?? true,
+      show_stages: competition.show_stages ?? true,
+      show_mechanisms: competition.show_mechanisms ?? true,
     });
     setFormError("");
     setIsFormOpen(true);
@@ -1458,6 +1511,9 @@ export function AdminCompetitionsPage() {
               .map((s) => s.trim())
               .filter(Boolean)
           : [],
+        show_timeline: form.show_timeline,
+        show_stages: form.show_stages,
+        show_mechanisms: form.show_mechanisms,
       },
       form.id,
     );

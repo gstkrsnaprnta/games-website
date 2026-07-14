@@ -116,6 +116,9 @@ export type Competition = {
   has_work_submission?: boolean;
   main_theme?: string | null;
   subthemes?: string[];
+  show_timeline?: boolean;
+  show_stages?: boolean;
+  show_mechanisms?: boolean;
 };
 
 export type PaymentMethod = {

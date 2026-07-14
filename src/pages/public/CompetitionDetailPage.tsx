@@ -358,61 +358,65 @@ export function CompetitionDetailPage() {
       {/* Content sections */}
       <div className="mt-7 grid gap-6">
         {/* Timeline */}
-        <DetailSection
-          icon={<CalendarDays size={21} />}
-          title="Timeline Kompetisi"
-        >
-          <div className="relative mt-5 space-y-4">
-            <div className="absolute bottom-5 left-[1.03rem] top-5 w-px rounded-full bg-gradient-to-b from-[#c2e1df] via-[#9fd8d4] to-[#7E032F]/55" />
-            {finalTimelines.map((item, index) => (
-              <div
-                key={`${item.title}-${index}`}
-                className="relative flex gap-4"
-              >
-                <div className="relative z-10 grid size-9 shrink-0 place-items-center rounded-full border border-white/85 bg-white/75 shadow-sm">
-                  <div className="size-2.5 rounded-full bg-[#0b5a63]" />
-                </div>
-                <div className="min-w-0 pb-2">
-                  <h3 className="text-sm font-black text-[#064452]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-1 text-xs font-bold text-[#064452]/55">
-                    {item.dateLabel}
-                  </p>
-                  {item.description ? (
-                    <p className="mt-2 text-sm font-semibold leading-6 text-[#064452]/72">
-                      {item.description}
+        {competition.show_timeline !== false && (
+          <DetailSection
+            icon={<CalendarDays size={21} />}
+            title="Timeline Kompetisi"
+          >
+            <div className="relative mt-5 space-y-4">
+              <div className="absolute bottom-5 left-[1.03rem] top-5 w-px rounded-full bg-gradient-to-b from-[#c2e1df] via-[#9fd8d4] to-[#7E032F]/55" />
+              {finalTimelines.map((item, index) => (
+                <div
+                  key={`${item.title}-${index}`}
+                  className="relative flex gap-4"
+                >
+                  <div className="relative z-10 grid size-9 shrink-0 place-items-center rounded-full border border-white/85 bg-white/75 shadow-sm">
+                    <div className="size-2.5 rounded-full bg-[#0b5a63]" />
+                  </div>
+                  <div className="min-w-0 pb-2">
+                    <h3 className="text-sm font-black text-[#064452]">
+                      {item.title}
+                    </h3>
+                    <p className="mt-1 text-xs font-bold text-[#064452]/55">
+                      {item.dateLabel}
                     </p>
-                  ) : null}
+                    {item.description ? (
+                      <p className="mt-2 text-sm font-semibold leading-6 text-[#064452]/72">
+                        {item.description}
+                      </p>
+                    ) : null}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </DetailSection>
+              ))}
+            </div>
+          </DetailSection>
+        )}
 
         {/* Tahapan */}
-        <DetailSection icon={<CircleDot size={21} />} title="Tahapan Kompetisi">
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            {finalStages.map((stage, index) => (
-              <div
-                key={`${stage.title}-${index}`}
-                className="flex gap-4 rounded-2xl border border-white/75 bg-white/52 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
-              >
-                <div className="grid size-9 shrink-0 place-items-center rounded-full bg-[#c2e1df]/70 text-sm font-black text-[#064452]">
-                  {index + 1}
+        {competition.show_stages !== false && (
+          <DetailSection icon={<CircleDot size={21} />} title="Tahapan Kompetisi">
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {finalStages.map((stage, index) => (
+                <div
+                  key={`${stage.title}-${index}`}
+                  className="flex gap-4 rounded-2xl border border-white/75 bg-white/52 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
+                >
+                  <div className="grid size-9 shrink-0 place-items-center rounded-full bg-[#c2e1df]/70 text-sm font-black text-[#064452]">
+                    {index + 1}
+                  </div>
+                  <div>
+                    <h3 className="font-black text-[#064452]">{stage.title}</h3>
+                    {stage.description ? (
+                      <p className="mt-1 text-sm font-semibold leading-6 text-[#064452]/68">
+                        {stage.description}
+                      </p>
+                    ) : null}
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-black text-[#064452]">{stage.title}</h3>
-                  {stage.description ? (
-                    <p className="mt-1 text-sm font-semibold leading-6 text-[#064452]/68">
-                      {stage.description}
-                    </p>
-                  ) : null}
-                </div>
-              </div>
-            ))}
-          </div>
-        </DetailSection>
+              ))}
+            </div>
+          </DetailSection>
+        )}
 
         {/* Silabus / Subtema */}
         {detail.syllabus && detail.syllabus.length > 0 ? (
@@ -464,29 +468,31 @@ export function CompetitionDetailPage() {
         )}
 
         {/* Mekanisme */}
-        <DetailSection icon={<Trophy size={21} />} title="Mekanisme Lomba">
-          <div className="mt-5 grid gap-4">
-            {finalMechanisms.map((mechanism) => (
-              <article
-                key={mechanism.title}
-                className="rounded-2xl border border-white/75 bg-white/48 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
-              >
-                <h3 className="font-black text-[#064452]">{mechanism.title}</h3>
-                <ul className="mt-3 grid gap-2 text-sm font-semibold leading-6 text-[#064452]/72">
-                  {mechanism.items.map((item, idx) => (
-                    <li key={`${item}-${idx}`} className="flex gap-3">
-                      <Check
-                        size={16}
-                        className="mt-1 shrink-0 text-[#0b5a63]"
-                      />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </article>
-            ))}
-          </div>
-        </DetailSection>
+        {competition.show_mechanisms !== false && (
+          <DetailSection icon={<Trophy size={21} />} title="Mekanisme Lomba">
+            <div className="mt-5 grid gap-4">
+              {finalMechanisms.map((mechanism) => (
+                <article
+                  key={mechanism.title}
+                  className="rounded-2xl border border-white/75 bg-white/48 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
+                >
+                  <h3 className="font-black text-[#064452]">{mechanism.title}</h3>
+                  <ul className="mt-3 grid gap-2 text-sm font-semibold leading-6 text-[#064452]/72">
+                    {mechanism.items.map((item, idx) => (
+                      <li key={`${item}-${idx}`} className="flex gap-3">
+                        <Check
+                          size={16}
+                          className="mt-1 shrink-0 text-[#0b5a63]"
+                        />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </div>
+          </DetailSection>
+        )}
 
         {/* Ketentuan Hasil Karya */}
         {detail.rules && detail.rules.length > 0 && (
