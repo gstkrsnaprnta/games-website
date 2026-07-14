@@ -157,12 +157,13 @@ function ContactEditor({ contacts, onChange }: ContactEditorProps) {
 
   return (
     <div className="md:col-span-2 space-y-3">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
         <div>
-          <p className="text-sm font-black text-slate-800">
+          <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+            <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
             Kontak WhatsApp CP
-          </p>
-          <p className="text-xs text-slate-400 mt-0.5">
+          </h3>
+          <p className="text-xs text-slate-400 mt-1">
             Tujuan tombol "Konfirmasi via WhatsApp" di halaman sukses peserta.
             Bisa beda nomor per jenjang, atau satu nomor untuk semua jenjang
             lewat opsi "Semua jenjang (default)".
@@ -313,12 +314,13 @@ function TimelineEditor({ timelines, onChange }: TimelineEditorProps) {
 
   return (
     <div className="md:col-span-2 space-y-3">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
         <div>
-          <p className="text-sm font-black text-slate-800">
+          <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+            <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
             Timeline Kompetisi
-          </p>
-          <p className="text-xs text-slate-400 mt-0.5">
+          </h3>
+          <p className="text-xs text-slate-400 mt-1">
             Jadwal tahapan yang tampil di halaman detail lomba.
           </p>
         </div>
@@ -531,12 +533,13 @@ function StageEditor({ stages, onChange }: StageEditorProps) {
 
   return (
     <div className="md:col-span-2 space-y-3">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
         <div>
-          <p className="text-sm font-black text-slate-800">
+          <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+            <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
             Tahapan Kompetisi
-          </p>
-          <p className="text-xs text-slate-400 mt-0.5">
+          </h3>
+          <p className="text-xs text-slate-400 mt-1">
             Langkah-langkah (mis. Pendaftaran → Verifikasi → Pelaksanaan →
             Pengumuman) yang tampil di section "Tahapan Kompetisi" halaman
             detail lomba.
@@ -722,12 +725,13 @@ function MechanismEditor({ mechanisms, onChange }: MechanismEditorProps) {
 
   return (
     <div className="md:col-span-2 space-y-3">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
         <div>
-          <p className="text-sm font-black text-slate-800">
+          <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+            <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
             Mekanisme Lomba
-          </p>
-          <p className="text-xs text-slate-400 mt-0.5">
+          </h3>
+          <p className="text-xs text-slate-400 mt-1">
             Mekanisme, kriteria penilaian, atau sistem poin untuk cabang lomba ini.
             Tuliskan butir-butir mekanisme pada kolom "Isi Mekanisme" (satu baris per ketentuan/poin).
           </p>
@@ -919,7 +923,7 @@ function FormModal({
         onClick={onClose}
       />
       <div
-        className="relative z-10 w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl ring-1 ring-slate-200"
+        className="relative z-10 w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl ring-1 ring-slate-200"
         style={{ animation: "scaleUp 0.2s ease-out" }}
       >
         {/* Header */}
@@ -959,10 +963,11 @@ function FormModal({
         {/* Form Body */}
         <form onSubmit={onSubmit} className="grid gap-4 p-6 md:grid-cols-2">
           {/* ── Bagian 1: Info Dasar ── */}
-          <div className="md:col-span-2">
-            <p className="text-xs font-black uppercase tracking-wider text-slate-400">
+          <div className="md:col-span-2 border-b border-slate-100 pb-2 mb-2">
+            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+              <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
               Info Dasar
-            </p>
+            </h3>
           </div>
 
           <FormInput
@@ -1032,18 +1037,19 @@ function FormModal({
           />
 
           {/* ── Bagian 1.5: Kontak WhatsApp CP ── */}
-          <div className="md:col-span-2 border-t border-slate-100 pt-2" />
+          <div className="md:col-span-2 border-t border-slate-200 pt-4 mt-2" />
           <ContactEditor
             contacts={form.whatsapp_contacts}
             onChange={(whatsapp_contacts) => onChange({ whatsapp_contacts })}
           />
 
           {/* ── Bagian 2: Kuota ── */}
-          <div className="md:col-span-2 border-t border-slate-100 pt-2">
-            <p className="text-xs font-black uppercase tracking-wider text-slate-400">
+          <div className="md:col-span-2 border-b border-slate-100 pb-2 mb-2 mt-4">
+            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+              <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
               Kuota & Batasan
-            </p>
-            <p className="mt-0.5 text-xs text-slate-400">
+            </h3>
+            <p className="mt-1 text-xs text-slate-400">
               Kosongkan jika tidak ada batasan.
             </p>
           </div>
@@ -1064,10 +1070,11 @@ function FormModal({
           />
 
           {/* ── Bagian 3: Karya Tulis ── */}
-          <div className="md:col-span-2 border-t border-slate-100 pt-2">
-            <p className="text-xs font-black uppercase tracking-wider text-slate-400">
+          <div className="md:col-span-2 border-b border-slate-100 pb-2 mb-2 mt-4">
+            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+              <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
               Karya Tulis
-            </p>
+            </h3>
           </div>
 
           <label className="md:col-span-2 flex items-center gap-2 text-sm font-semibold text-slate-700">
@@ -1112,10 +1119,11 @@ function FormModal({
           )}
 
           {/* ── Bagian 4: Deskripsi ── */}
-          <div className="md:col-span-2 border-t border-slate-100 pt-2">
-            <p className="text-xs font-black uppercase tracking-wider text-slate-400">
+          <div className="md:col-span-2 border-b border-slate-100 pb-2 mb-2 mt-4">
+            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+              <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
               Deskripsi
-            </p>
+            </h3>
           </div>
 
           <FormTextarea
@@ -1142,11 +1150,11 @@ function FormModal({
           </div>
 
           {/* ── Pengaturan Tampilan Halaman ── */}
-          <div className="md:col-span-2 border-t border-slate-100 pt-2" />
-          <div className="md:col-span-2 space-y-2">
-            <p className="text-sm font-black text-slate-800">
-              Pengaturan Tampilan Halaman Lomba
-            </p>
+          <div className="md:col-span-2 border-b border-slate-100 pb-2 mb-2 mt-4">
+            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+              <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
+              Tampilan Halaman Lomba (Visibilitas)
+            </h3>
             <p className="text-xs text-slate-400">
               Aktifkan atau nonaktifkan tampilan section berikut pada halaman detail lomba publik.
             </p>
@@ -1184,21 +1192,21 @@ function FormModal({
           </div>
 
           {/* ── Bagian 5: Timeline ── */}
-          <div className="md:col-span-2 border-t border-slate-100 pt-2" />
+          <div className="md:col-span-2 border-t border-slate-200 pt-4 mt-2" />
           <TimelineEditor
             timelines={form.timelines}
             onChange={(timelines) => onChange({ timelines })}
           />
 
           {/* ── Bagian 6: Tahapan Kompetisi ── */}
-          <div className="md:col-span-2 border-t border-slate-100 pt-2" />
+          <div className="md:col-span-2 border-t border-slate-200 pt-4 mt-2" />
           <StageEditor
             stages={form.stages}
             onChange={(stages) => onChange({ stages })}
           />
 
           {/* ── Bagian 7: Mekanisme Lomba ── */}
-          <div className="md:col-span-2 border-t border-slate-100 pt-2" />
+          <div className="md:col-span-2 border-t border-slate-200 pt-4 mt-2" />
           <MechanismEditor
             mechanisms={form.mechanisms}
             onChange={(mechanisms) => onChange({ mechanisms })}
