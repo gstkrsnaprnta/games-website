@@ -222,27 +222,15 @@ export function CompetitionDetailPage() {
     };
   }
 
-  const finalTimelines = resolvedTimelines || detail.timelines;
-  const finalStages = resolvedStages || detail.stages;
-
-  const resolvedMechanisms =
+  const finalTimelines = resolvedTimelines;
+  const finalStages = resolvedStages;
+  const finalMechanisms =
     Array.isArray(competition.mechanisms) && competition.mechanisms.length > 0
       ? competition.mechanisms.map((m) => ({
           title: m.title,
           items: m.items,
         }))
       : undefined;
-
-  const fallbackMechanisms = detail.mechanisms && detail.mechanisms.length > 0
-    ? detail.mechanisms
-    : [
-        {
-          title: "Mekanisme Lomba",
-          items: ["Mekanisme belum tersedia."],
-        },
-      ];
-
-  const finalMechanisms = resolvedMechanisms || fallbackMechanisms;
   const isOpen = competition.registration_status === "open";
   const priceLabel = formatCurrency(
     competition.registration_fee,
@@ -358,7 +346,7 @@ export function CompetitionDetailPage() {
       {/* Content sections */}
       <div className="mt-7 grid gap-6">
         {/* Timeline */}
-        {competition.show_timeline !== false && (
+        {competition.show_timeline !== false && finalTimelines && finalTimelines.length > 0 && (
           <DetailSection
             icon={<CalendarDays size={21} />}
             title="Timeline Kompetisi"
@@ -393,7 +381,7 @@ export function CompetitionDetailPage() {
         )}
 
         {/* Tahapan */}
-        {competition.show_stages !== false && (
+        {competition.show_stages !== false && finalStages && finalStages.length > 0 && (
           <DetailSection icon={<CircleDot size={21} />} title="Tahapan Kompetisi">
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               {finalStages.map((stage, index) => (
@@ -468,7 +456,7 @@ export function CompetitionDetailPage() {
         )}
 
         {/* Mekanisme */}
-        {competition.show_mechanisms !== false && (
+        {competition.show_mechanisms !== false && finalMechanisms && finalMechanisms.length > 0 && (
           <DetailSection icon={<Trophy size={21} />} title="Mekanisme Lomba">
             <div className="mt-5 grid gap-4">
               {finalMechanisms.map((mechanism) => (
