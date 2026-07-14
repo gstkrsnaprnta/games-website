@@ -14,12 +14,15 @@ export async function getAdminCompetitions() {
         id, competition_id, title, description, is_active, sort_order
       ), mechanisms:competition_detail_mechanisms (
         id, competition_id, title, items, sort_order
+      ), syllabus:competition_syllabus (
+        id, competition_id, title, items, sort_order
       )`,
     )
     .order("name")
     .order("sort_order", { referencedTable: "timelines", ascending: true })
     .order("sort_order", { referencedTable: "stages", ascending: true })
-    .order("sort_order", { referencedTable: "mechanisms", ascending: true });
+    .order("sort_order", { referencedTable: "mechanisms", ascending: true })
+    .order("sort_order", { referencedTable: "syllabus", ascending: true });
 
   return { data: (data ?? []) as Competition[], error };
 }
@@ -49,6 +52,19 @@ type CompetitionInput = {
   show_timeline?: boolean;
   show_stages?: boolean;
   show_mechanisms?: boolean;
+  requirements?: string[];
+  required_uploads?: string[];
+  rules?: string[];
+  writing_abstract?: string[];
+  writing_initial?: string[];
+  writing_core?: string[];
+  writing_requirements?: string[];
+  fee_wave_1_label?: string;
+  fee_wave_1_period?: string | null;
+  fee_wave_1_price?: number | null;
+  fee_wave_2_label?: string;
+  fee_wave_2_period?: string | null;
+  fee_wave_2_price?: number | null;
 };
 
 async function getDefaultEventId() {

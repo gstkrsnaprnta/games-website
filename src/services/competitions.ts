@@ -32,6 +32,8 @@ export async function getCompetitionBySlug(slug: string) {
         id, competition_id, title, description, is_active, sort_order
       ), mechanisms:competition_detail_mechanisms (
         id, competition_id, title, items, sort_order
+      ), syllabus:competition_syllabus (
+        id, competition_id, title, items, sort_order
       )`,
     )
     .eq("slug", slug)
@@ -41,6 +43,7 @@ export async function getCompetitionBySlug(slug: string) {
     .order("sort_order", { referencedTable: "timelines", ascending: true })
     .order("sort_order", { referencedTable: "stages", ascending: true })
     .order("sort_order", { referencedTable: "mechanisms", ascending: true })
+    .order("sort_order", { referencedTable: "syllabus", ascending: true })
     .maybeSingle();
 
   return { data: data as Competition | null, error };

@@ -231,6 +231,76 @@ export function CompetitionDetailPage() {
           items: m.items,
         }))
       : undefined;
+
+  const finalSyllabus =
+    Array.isArray(competition.syllabus) && competition.syllabus.length > 0
+      ? competition.syllabus.map((s) => ({
+          title: s.title,
+          items: s.items,
+        }))
+      : undefined;
+
+  const isStructuredSyllabus =
+    finalSyllabus && finalSyllabus.some((s) => s.title && s.title.trim());
+
+  const flatMaterials =
+    finalSyllabus && !isStructuredSyllabus
+      ? finalSyllabus.reduce<string[]>((acc, s) => [...acc, ...s.items], [])
+      : undefined;
+
+  const finalRequirements =
+    competition.requirements && competition.requirements.length > 0
+      ? competition.requirements
+      : undefined;
+
+  const finalRequiredUploads =
+    competition.required_uploads && competition.required_uploads.length > 0
+      ? competition.required_uploads
+      : undefined;
+
+  const finalRules =
+    competition.rules && competition.rules.length > 0
+      ? competition.rules
+      : undefined;
+
+  const hasWritingSystem =
+    (competition.writing_abstract && competition.writing_abstract.length > 0) ||
+    (competition.writing_initial && competition.writing_initial.length > 0) ||
+    (competition.writing_core && competition.writing_core.length > 0) ||
+    (competition.writing_requirements &&
+      competition.writing_requirements.length > 0);
+
+  const finalFees: { label: string; period: string | null; price: string }[] = [];
+  if (competition.fee_wave_1_price != null) {
+    finalFees.push({
+      label: competition.fee_wave_1_label || "Pendaftaran Gelombang I",
+      period: competition.fee_wave_1_period ?? null,
+      price: formatCurrency(
+        Number(competition.fee_wave_1_price),
+        competition.competition_type,
+      ),
+    });
+  }
+  if (competition.fee_wave_2_price != null) {
+    finalFees.push({
+      label: competition.fee_wave_2_label || "Pendaftaran Gelombang II",
+      period: competition.fee_wave_2_period ?? null,
+      price: formatCurrency(
+        Number(competition.fee_wave_2_price),
+        competition.competition_type,
+      ),
+    });
+  }
+  if (finalFees.length === 0) {
+    finalFees.push({
+      label: "Biaya Registrasi",
+      period: "Periode Pendaftaran",
+      price: formatCurrency(
+        competition.registration_fee ?? 0,
+        competition.competition_type,
+      ),
+    });
+  }
   const isOpen = competition.registration_status === "open";
   const priceLabel = formatCurrency(
     competition.registration_fee,
@@ -407,20 +477,22 @@ export function CompetitionDetailPage() {
         )}
 
         {/* Silabus / Subtema */}
-        {detail.syllabus && detail.syllabus.length > 0 ? (
+        {isStructuredSyllabus && finalSyllabus && (
           <DetailSection icon={<BookOpen size={21} />} title="Materi / Silabus Lomba">
             <div className="mt-5 space-y-6">
-              {detail.syllabus.map((category) => (
+              {finalSyllabus.map((category) => (
                 <div
-                  key={category.title}
+                  key={category.title || "Materi"}
                   className="rounded-2xl border border-white/75 bg-white/48 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
                 >
-                  <h3 className="font-black text-[#064452] border-b border-[#0b5a63]/15 pb-2 mb-3">
-                    {category.title}
-                  </h3>
+                  {category.title && (
+                    <h3 className="font-black text-[#064452] border-b border-[#0b5a63]/15 pb-2 mb-3">
+                      {category.title}
+                    </h3>
+                  )}
                   <ul className="grid gap-3 text-sm font-semibold leading-6 text-[#064452]/72 sm:grid-cols-2">
                     {category.items.map((item, idx) => (
-                      <li key={idx} className="flex gap-2.5">
+                      <li key={`${item}-${idx}`} className="flex gap-2.5">
                         <span className="text-[#0b5a63] font-bold shrink-0">•</span>
                         <span>{item}</span>
                       </li>
@@ -430,29 +502,29 @@ export function CompetitionDetailPage() {
               ))}
             </div>
           </DetailSection>
-        ) : (
-          detail.materials && detail.materials.length > 0 && (
-            <DetailSection
-              icon={<BookOpen size={21} />}
-              title={
-                detail.code === "LKTI" || detail.code === "ESAI"
-                  ? "Subtema Lomba"
-                  : "Materi / Silabus Lomba"
-              }
-            >
-              <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {detail.materials.map((material) => (
-                  <div
-                    key={material}
-                    className="flex items-center gap-3 rounded-2xl border border-white/75 bg-white/50 px-4 py-3 text-sm font-black text-[#064452] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
-                  >
-                    <div className="size-2 rounded-full bg-[#0b5a63] shrink-0" />
-                    <span>{material}</span>
-                  </div>
-                ))}
-              </div>
-            </DetailSection>
-          )
+        )}
+
+        {!isStructuredSyllabus && flatMaterials && flatMaterials.length > 0 && (
+          <DetailSection
+            icon={<BookOpen size={21} />}
+            title={
+              competition.code === "LKTI" || competition.code === "ESAI"
+                ? "Subtema Lomba"
+                : "Materi / Silabus Lomba"
+            }
+          >
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {flatMaterials.map((material, idx) => (
+                <div
+                  key={`${material}-${idx}`}
+                  className="flex items-center gap-3 rounded-2xl border border-white/75 bg-white/50 px-4 py-3 text-sm font-black text-[#064452] shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"
+                >
+                  <div className="size-2 rounded-full bg-[#0b5a63] shrink-0" />
+                  <span>{material}</span>
+                </div>
+              ))}
+            </div>
+          </DetailSection>
         )}
 
         {/* Mekanisme */}
@@ -483,10 +555,10 @@ export function CompetitionDetailPage() {
         )}
 
         {/* Ketentuan Hasil Karya */}
-        {detail.rules && detail.rules.length > 0 && (
+        {finalRules && finalRules.length > 0 && (
           <DetailSection icon={<ShieldCheck size={21} />} title="Ketentuan Hasil Karya">
             <ul className="mt-5 grid gap-3 text-sm font-semibold leading-7 text-[#064452]/74">
-              {detail.rules.map((rule, idx) => (
+              {finalRules.map((rule, idx) => (
                 <li key={idx} className="flex gap-3">
                   <Check size={18} className="mt-1 shrink-0 text-[#0b5a63]" />
                   <span>{rule}</span>
@@ -497,46 +569,51 @@ export function CompetitionDetailPage() {
         )}
 
         {/* Persyaratan */}
-        <DetailSection icon={<ShieldCheck size={21} />} title="Persyaratan">
-          <div className="mt-5 space-y-6">
-            <div>
-              <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">Ketentuan Peserta</h3>
-              <ul className="grid gap-3 text-sm font-semibold leading-7 text-[#064452]/74">
-                {detail.requirements.map((rule) => (
-                  <li key={rule} className="flex gap-3">
-                    <Check size={18} className="mt-1 shrink-0 text-[#0b5a63]" />
-                    <span>{rule}</span>
-                  </li>
-                ))}
-              </ul>
+        {((finalRequirements && finalRequirements.length > 0) ||
+          (finalRequiredUploads && finalRequiredUploads.length > 0)) && (
+          <DetailSection icon={<ShieldCheck size={21} />} title="Persyaratan">
+            <div className="mt-5 space-y-6">
+              {finalRequirements && finalRequirements.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">Ketentuan Peserta</h3>
+                  <ul className="grid gap-3 text-sm font-semibold leading-7 text-[#064452]/74">
+                    {finalRequirements.map((rule, idx) => (
+                      <li key={`${rule}-${idx}`} className="flex gap-3">
+                        <Check size={18} className="mt-1 shrink-0 text-[#0b5a63]" />
+                        <span>{rule}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {finalRequiredUploads && finalRequiredUploads.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">Berkas yang Wajib Diunggah</h3>
+                  <ul className="grid gap-3 text-sm font-semibold leading-7 text-[#064452]/74">
+                    {finalRequiredUploads.map((file, idx) => (
+                      <li key={`${file}-${idx}`} className="flex gap-3">
+                        <Check size={18} className="mt-1 shrink-0 text-[#0b5a63]" />
+                        <span>{file}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
-            {detail.requiredUploads && detail.requiredUploads.length > 0 && (
-              <div>
-                <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">Berkas yang Wajib Diunggah</h3>
-                <ul className="grid gap-3 text-sm font-semibold leading-7 text-[#064452]/74">
-                  {detail.requiredUploads.map((file) => (
-                    <li key={file} className="flex gap-3">
-                      <Check size={18} className="mt-1 shrink-0 text-[#0b5a63]" />
-                      <span>{file}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        </DetailSection>
+          </DetailSection>
+        )}
 
         {/* Sistematika Penulisan */}
-        {detail.writingSystem && (
+        {hasWritingSystem && (
           <DetailSection icon={<FileText size={21} />} title="Sistematika Penulisan Naskah">
             <div className="mt-5 space-y-6 text-left">
-              {detail.writingSystem.abstract && detail.writingSystem.abstract.length > 0 && (
+              {competition.writing_abstract && competition.writing_abstract.length > 0 && (
                 <div>
                   <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">
-                    {detail.code === "ESAI" ? "Format Penulisan Naskah Esai" : "Format Penulisan Abstrak"}
+                    {competition.code === "ESAI" ? "Format Penulisan Naskah Esai" : "Format Penulisan Abstrak"}
                   </h3>
                   <ul className="grid gap-2 text-sm font-semibold leading-6 text-[#064452]/74">
-                    {detail.writingSystem.abstract.map((item, idx) => (
+                    {competition.writing_abstract.map((item, idx) => (
                       <li key={idx} className="flex gap-2.5">
                         <span className="text-[#0b5a63] font-bold shrink-0">•</span>
                         <span>{item}</span>
@@ -545,13 +622,13 @@ export function CompetitionDetailPage() {
                   </ul>
                 </div>
               )}
-              {detail.writingSystem.initial && detail.writingSystem.initial.length > 0 && (
+              {competition.writing_initial && competition.writing_initial.length > 0 && (
                 <div>
                   <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">
-                    {detail.code === "ESAI" ? "Format Penulisan Essay Bagian Awal" : "Karya Tulis Ilmiah (Bagian Awal)"}
+                    {competition.code === "ESAI" ? "Format Penulisan Essay Bagian Awal" : "Karya Tulis Ilmiah (Bagian Awal)"}
                   </h3>
                   <ul className="grid gap-2 text-sm font-semibold leading-6 text-[#064452]/74">
-                    {detail.writingSystem.initial.map((item, idx) => (
+                    {competition.writing_initial.map((item, idx) => (
                       <li key={idx} className="flex gap-2.5">
                         <span className="text-[#0b5a63] font-bold shrink-0">•</span>
                         <span>{item}</span>
@@ -560,13 +637,13 @@ export function CompetitionDetailPage() {
                   </ul>
                 </div>
               )}
-              {detail.writingSystem.core && detail.writingSystem.core.length > 0 && (
+              {competition.writing_core && competition.writing_core.length > 0 && (
                 <div>
                   <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">
-                    {detail.code === "ESAI" ? "Format Penulisan Essay Bagian Inti" : "Karya Tulis Ilmiah (Bagian Inti)"}
+                    {competition.code === "ESAI" ? "Format Penulisan Essay Bagian Inti" : "Karya Tulis Ilmiah (Bagian Inti)"}
                   </h3>
                   <ul className="grid gap-2 text-sm font-semibold leading-6 text-[#064452]/74">
-                    {detail.writingSystem.core.map((item, idx) => (
+                    {competition.writing_core.map((item, idx) => (
                       <li key={idx} className="flex gap-2.5">
                         <span className="text-[#0b5a63] font-bold shrink-0">•</span>
                         <span>{item}</span>
@@ -575,11 +652,11 @@ export function CompetitionDetailPage() {
                   </ul>
                 </div>
               )}
-              {detail.writingSystem.requirements && detail.writingSystem.requirements.length > 0 && (
+              {competition.writing_requirements && competition.writing_requirements.length > 0 && (
                 <div>
                   <h3 className="text-sm font-black text-[#064452] uppercase tracking-wider mb-3">Persyaratan Penulisan</h3>
                   <ul className="grid gap-2 text-sm font-semibold leading-6 text-[#064452]/74">
-                    {detail.writingSystem.requirements.map((item, idx) => (
+                    {competition.writing_requirements.map((item, idx) => (
                       <li key={idx} className="flex gap-2.5">
                         <span className="text-[#0b5a63] font-bold shrink-0">•</span>
                         <span>{item}</span>
@@ -598,7 +675,7 @@ export function CompetitionDetailPage() {
           title="Biaya Pendaftaran"
         >
           <div className="mt-5 grid gap-3">
-            {detail.fees.map((fee) => (
+            {finalFees.map((fee) => (
               <div
                 key={fee.label}
                 className="flex items-center justify-between gap-4 rounded-2xl border border-white/75 bg-white/50 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"

@@ -119,6 +119,28 @@ export type Competition = {
   show_timeline?: boolean;
   show_stages?: boolean;
   show_mechanisms?: boolean;
+  requirements?: string[];
+  required_uploads?: string[];
+  rules?: string[];
+  writing_abstract?: string[];
+  writing_initial?: string[];
+  writing_core?: string[];
+  writing_requirements?: string[];
+  fee_wave_1_label?: string;
+  fee_wave_1_period?: string | null;
+  fee_wave_1_price?: number | null;
+  fee_wave_2_label?: string;
+  fee_wave_2_period?: string | null;
+  fee_wave_2_price?: number | null;
+  syllabus?: CompetitionSyllabus[];
+};
+
+export type CompetitionSyllabus = {
+  id: string;
+  competition_id: string;
+  title: string | null;
+  items: string[];
+  sort_order: number;
 };
 
 export type PaymentMethod = {

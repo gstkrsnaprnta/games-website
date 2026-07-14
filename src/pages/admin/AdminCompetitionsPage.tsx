@@ -12,6 +12,7 @@ import {
 } from "../../services/adminCompetitions";
 import { replaceAdminCompetitionStages } from "../../services/admincompetitionstages";
 import { replaceAdminCompetitionMechanisms } from "../../services/adminCompetitionMechanisms";
+import { replaceAdminCompetitionSyllabus } from "../../services/adminCompetitionSyllabus";
 import { replaceAdminTimelines } from "../../services/adminTimelines";
 import type { Competition } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
@@ -86,6 +87,31 @@ type CompetitionForm = {
   show_timeline: boolean;
   show_stages: boolean;
   show_mechanisms: boolean;
+  requirements: string;
+  required_uploads: string;
+  rules: string;
+  writing_abstract: string;
+  writing_initial: string;
+  writing_core: string;
+  writing_requirements: string;
+  fee_wave_1_label: string;
+  fee_wave_1_period: string;
+  fee_wave_1_price: string;
+  fee_wave_2_label: string;
+  fee_wave_2_period: string;
+  fee_wave_2_price: string;
+  syllabus: SyllabusForm[];
+};
+
+type SyllabusForm = {
+  id?: string;
+  title: string;
+  items: string;
+};
+
+const emptySyllabusItem: SyllabusForm = {
+  title: "",
+  items: "",
 };
 
 const emptyTimelineItem: TimelineForm = {
@@ -133,6 +159,20 @@ const emptyForm: CompetitionForm = {
   show_timeline: true,
   show_stages: true,
   show_mechanisms: true,
+  requirements: "",
+  required_uploads: "",
+  rules: "",
+  writing_abstract: "",
+  writing_initial: "",
+  writing_core: "",
+  writing_requirements: "",
+  fee_wave_1_label: "Pendaftaran Gelombang I",
+  fee_wave_1_period: "",
+  fee_wave_1_price: "",
+  fee_wave_2_label: "Pendaftaran Gelombang II",
+  fee_wave_2_period: "",
+  fee_wave_2_price: "",
+  syllabus: [],
 };
 
 // ─── Contact Editor (Kontak WhatsApp CP per jenjang) ──────────────────────────
@@ -888,6 +928,195 @@ function MechanismEditor({ mechanisms, onChange }: MechanismEditorProps) {
   );
 }
 
+// ─── Syllabus Editor (Materi & Silabus Lomba) ────────────────────────────────────────
+
+type SyllabusEditorProps = {
+  syllabus: SyllabusForm[];
+  onChange: (syllabus: SyllabusForm[]) => void;
+};
+
+function SyllabusEditor({ syllabus, onChange }: SyllabusEditorProps) {
+  function addItem() {
+    onChange([...syllabus, { ...emptySyllabusItem }]);
+  }
+  function removeItem(index: number) {
+    onChange(syllabus.filter((_, i) => i !== index));
+  }
+  function updateItem(index: number, patch: Partial<SyllabusForm>) {
+    onChange(syllabus.map((item, i) => (i === index ? { ...item, ...patch } : item)));
+  }
+  function moveItem(index: number, direction: -1 | 1) {
+    const next = [...syllabus];
+    const target = index + direction;
+    if (target < 0 || target >= next.length) return;
+    [next[index], next[target]] = [next[target], next[index]];
+    onChange(next);
+  }
+
+  return (
+    <div className="md:col-span-2 space-y-3">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
+        <div>
+          <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+            <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
+            Materi / Silabus Lomba
+          </h3>
+          <p className="text-xs text-slate-400 mt-1">
+            Materi lomba (flat) atau silabus bertingkat (SD/SMP/SMA). Cukup kosongkan judul jika hanya berupa daftar materi tunggal.
+            Tuliskan butir-butir materi pada kolom "Isi Materi" (satu baris per materi).
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={addItem}
+          className="flex items-center gap-1.5 rounded-lg bg-cyan-50 border border-cyan-200 px-3 py-1.5 text-xs font-bold text-cyan-700 transition hover:bg-cyan-100 shrink-0"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2.5}
+            stroke="currentColor"
+            className="h-3.5 w-3.5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
+          </svg>
+          Tambah Materi/Silabus
+        </button>
+      </div>
+
+      {syllabus.length === 0 ? (
+        <div className="rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/60 px-4 py-6 text-center">
+          <p className="text-xs font-semibold text-slate-400">
+            Belum ada materi/silabus —{" "}
+            <span className="font-bold text-slate-500">Tambah Materi/Silabus</span>{" "}
+            untuk mulai mengisi.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {syllabus.map((item, index) => (
+            <div
+              key={index}
+              className="rounded-xl border border-slate-200 bg-slate-50/70 p-4"
+            >
+              <div className="mb-3 flex items-center gap-2">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cyan-100 text-[11px] font-black text-cyan-700">
+                  {index + 1}
+                </span>
+                <span className="flex-1 truncate text-xs font-bold text-slate-500">
+                  {item.title || (
+                    <span className="italic text-slate-400">
+                      Materi Flat (Tanpa Kategori Judul)
+                    </span>
+                  )}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => moveItem(index, -1)}
+                  disabled={index === 0}
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:opacity-30"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    stroke="currentColor"
+                    className="h-3.5 w-3.5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moveItem(index, 1)}
+                  disabled={index === syllabus.length - 1}
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:opacity-30"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    stroke="currentColor"
+                    className="h-3.5 w-3.5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeItem(index)}
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-rose-200 text-rose-400 transition hover:bg-rose-50 hover:text-rose-600"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    stroke="currentColor"
+                    className="h-3.5 w-3.5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div className="grid gap-3">
+                <div>
+                  <label className="mb-1 block text-xs font-bold text-slate-600">
+                    Judul Kategori (Cth: SILABUS OLIMPIADE SD, kosongkan jika daftar materi tunggal)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="cth. SILABUS OLIMPIADE SD"
+                    value={item.title}
+                    onChange={(e) =>
+                      updateItem(index, { title: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-bold text-slate-600">
+                    Isi Materi (satu baris per ketentuan/poin) <span className="text-rose-500">*</span>
+                  </label>
+                  <textarea
+                    placeholder="Sistem Bilangan Real dan Fungsi&#10;Limit dan Kekontinuan Fungsi..."
+                    value={item.items}
+                    onChange={(e) =>
+                      updateItem(index, { items: e.target.value })
+                    }
+                    rows={4}
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 font-sans"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Modal Form ───────────────────────────────────────────────────────────────
 
 
@@ -995,6 +1224,63 @@ function FormModal({
             value={form.registration_fee}
             onChange={(e) => onChange({ registration_fee: e.target.value })}
           />
+
+          {/* ── Bagian 1.3: Gelombang Biaya Pendaftaran ── */}
+          <div className="md:col-span-2 border-b border-slate-100 pb-2 mb-2 mt-4">
+            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+              <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
+              Gelombang & Biaya Pendaftaran (Halaman Detail)
+            </h3>
+            <p className="mt-1 text-xs text-slate-400">
+              Digunakan untuk menampilkan periode dan nominal biaya pendaftaran di halaman informasi publik. Kosongkan Gelombang II jika lomba ini hanya memiliki satu periode biaya.
+            </p>
+          </div>
+
+          <div className="md:col-span-1 p-4 rounded-xl border border-slate-100 bg-slate-50/50 space-y-3">
+            <h4 className="text-xs font-bold text-cyan-700">Gelombang I / Biaya Registrasi</h4>
+            <FormInput
+              label="Label Gelombang I"
+              placeholder="cth. Pendaftaran Gelombang I / Biaya Registrasi"
+              value={form.fee_wave_1_label}
+              onChange={(e) => onChange({ fee_wave_1_label: e.target.value })}
+            />
+            <FormInput
+              label="Periode Gelombang I"
+              placeholder="cth. 13 Juli – 09 Oktober 2026"
+              value={form.fee_wave_1_period}
+              onChange={(e) => onChange({ fee_wave_1_period: e.target.value })}
+            />
+            <FormInput
+              label="Nominal Gelombang I (Rp)"
+              type="number"
+              placeholder="cth. 75000"
+              value={form.fee_wave_1_price}
+              onChange={(e) => onChange({ fee_wave_1_price: e.target.value })}
+            />
+          </div>
+
+          <div className="md:col-span-1 p-4 rounded-xl border border-slate-100 bg-slate-50/50 space-y-3">
+            <h4 className="text-xs font-bold text-cyan-700">Gelombang II (Opsional)</h4>
+            <FormInput
+              label="Label Gelombang II"
+              placeholder="cth. Pendaftaran Gelombang II"
+              value={form.fee_wave_2_label}
+              onChange={(e) => onChange({ fee_wave_2_label: e.target.value })}
+            />
+            <FormInput
+              label="Periode Gelombang II"
+              placeholder="cth. 17 Agustus – 11 September 2026"
+              value={form.fee_wave_2_period}
+              onChange={(e) => onChange({ fee_wave_2_period: e.target.value })}
+            />
+            <FormInput
+              label="Nominal Gelombang II (Rp)"
+              type="number"
+              placeholder="cth. 90000"
+              value={form.fee_wave_2_price}
+              onChange={(e) => onChange({ fee_wave_2_price: e.target.value })}
+            />
+          </div>
           <FormSelect
             label="Tipe lomba"
             value={form.competition_type}
@@ -1042,6 +1328,34 @@ function FormModal({
             contacts={form.whatsapp_contacts}
             onChange={(whatsapp_contacts) => onChange({ whatsapp_contacts })}
           />
+
+          {/* ── Bagian 1.7: Persyaratan & Berkas Wajib ── */}
+          <div className="md:col-span-2 border-b border-slate-100 pb-2 mb-2 mt-4">
+            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+              <span className="h-4 w-1.5 rounded-full bg-cyan-600 inline-block" />
+              Persyaratan & Berkas Wajib
+            </h3>
+            <p className="mt-1 text-xs text-slate-400">
+              Tuliskan butir-butir persyaratan dan berkas (satu baris per poin).
+            </p>
+          </div>
+
+          <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormTextarea
+              label="Ketentuan Peserta (Persyaratan)"
+              placeholder={"Peserta merupakan mahasiswa aktif...\nPendaftaran bersifat individu..."}
+              value={form.requirements}
+              onChange={(e) => onChange({ requirements: e.target.value })}
+              rows={5}
+            />
+            <FormTextarea
+              label="Berkas yang Wajib Diunggah"
+              placeholder={"Scan Kartu Tanda Mahasiswa (KTM) aktif...\nBukti Pembayaran Pendaftaran"}
+              value={form.required_uploads}
+              onChange={(e) => onChange({ required_uploads: e.target.value })}
+              rows={5}
+            />
+          </div>
 
           {/* ── Bagian 2: Kuota ── */}
           <div className="md:col-span-2 border-b border-slate-100 pb-2 mb-2 mt-4">
@@ -1114,6 +1428,62 @@ function FormModal({
                   Setiap baris akan menjadi satu pilihan subtema di form
                   pendaftaran.
                 </p>
+              </div>
+
+              <div className="md:col-span-2 border-t border-slate-100 pt-4 mt-2" />
+              <div className="md:col-span-2">
+                <FormTextarea
+                  label="Ketentuan Hasil Karya (satu ketentuan per baris)"
+                  placeholder={"Sesuai dengan tema dan subtema...\nIsi naskah LKTI merupakan hasil penelitian..."}
+                  value={form.rules}
+                  onChange={(e) => onChange({ rules: e.target.value })}
+                  rows={4}
+                />
+              </div>
+
+              <div className="md:col-span-2 border-t border-slate-100 pt-4 mt-2" />
+              <div className="md:col-span-2 border-b border-slate-100 pb-2 mb-2">
+                <h4 className="text-xs font-bold text-cyan-700">Sistematika Penulisan Naskah</h4>
+                <p className="mt-1 text-[11px] text-slate-400">
+                  Tuliskan butir-butir sistematika penulisan karya tulis (satu baris per ketentuan/poin).
+                </p>
+              </div>
+
+              <div className="md:col-span-1">
+                <FormTextarea
+                  label="Format Penulisan Abstrak / Esai"
+                  placeholder={"Seluruh bagian naskah/abstrak ditulis Times New Roman...\nJudul Penelitian/Essay kapital font 14..."}
+                  value={form.writing_abstract}
+                  onChange={(e) => onChange({ writing_abstract: e.target.value })}
+                  rows={5}
+                />
+              </div>
+              <div className="md:col-span-1">
+                <FormTextarea
+                  label="Format Bagian Awal Naskah"
+                  placeholder={"Halaman Judul...\nLembar Orisinalitas Karya...\nKata Pengantar"}
+                  value={form.writing_initial}
+                  onChange={(e) => onChange({ writing_initial: e.target.value })}
+                  rows={5}
+                />
+              </div>
+              <div className="md:col-span-1">
+                <FormTextarea
+                  label="Format Bagian Inti Naskah"
+                  placeholder={"BAB I PENDAHULUAN...\nBAB II TINJAUAN PUSTAKA...\nBAB III METODOLOGI"}
+                  value={form.writing_core}
+                  onChange={(e) => onChange({ writing_core: e.target.value })}
+                  rows={5}
+                />
+              </div>
+              <div className="md:col-span-1">
+                <FormTextarea
+                  label="Persyaratan Penulisan (Khusus Esai)"
+                  placeholder={"Panjang naskah ditulis minimal 20 – 25 halaman...\nFormat dokumen font Times New Roman 12 pt..."}
+                  value={form.writing_requirements}
+                  onChange={(e) => onChange({ writing_requirements: e.target.value })}
+                  rows={5}
+                />
               </div>
             </>
           )}
@@ -1210,6 +1580,13 @@ function FormModal({
           <MechanismEditor
             mechanisms={form.mechanisms}
             onChange={(mechanisms) => onChange({ mechanisms })}
+          />
+
+          {/* ── Bagian 8: Materi / Silabus Lomba ── */}
+          <div className="md:col-span-2 border-t border-slate-200 pt-4 mt-2" />
+          <SyllabusEditor
+            syllabus={form.syllabus}
+            onChange={(syllabus) => onChange({ syllabus })}
           />
 
           {formError ? (
@@ -1366,6 +1743,16 @@ function mechanismsFromCompetition(competition: Competition): MechanismForm[] {
   }));
 }
 
+function syllabusFromCompetition(competition: Competition): SyllabusForm[] {
+  if (!Array.isArray(competition.syllabus) || competition.syllabus.length === 0)
+    return [];
+  return competition.syllabus.map((s) => ({
+    id: s.id,
+    title: s.title ?? "",
+    items: s.items.join("\n"),
+  }));
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export function AdminCompetitionsPage() {
@@ -1416,6 +1803,20 @@ export function AdminCompetitionsPage() {
       show_timeline: competition.show_timeline ?? true,
       show_stages: competition.show_stages ?? true,
       show_mechanisms: competition.show_mechanisms ?? true,
+      requirements: (competition.requirements ?? []).join("\n"),
+      required_uploads: (competition.required_uploads ?? []).join("\n"),
+      rules: (competition.rules ?? []).join("\n"),
+      writing_abstract: (competition.writing_abstract ?? []).join("\n"),
+      writing_initial: (competition.writing_initial ?? []).join("\n"),
+      writing_core: (competition.writing_core ?? []).join("\n"),
+      writing_requirements: (competition.writing_requirements ?? []).join("\n"),
+      fee_wave_1_label: competition.fee_wave_1_label ?? "Pendaftaran Gelombang I",
+      fee_wave_1_period: competition.fee_wave_1_period ?? "",
+      fee_wave_1_price: competition.fee_wave_1_price != null ? String(competition.fee_wave_1_price) : "",
+      fee_wave_2_label: competition.fee_wave_2_label ?? "Pendaftaran Gelombang II",
+      fee_wave_2_period: competition.fee_wave_2_period ?? "",
+      fee_wave_2_price: competition.fee_wave_2_price != null ? String(competition.fee_wave_2_price) : "",
+      syllabus: syllabusFromCompetition(competition),
     });
     setFormError("");
     setIsFormOpen(true);
@@ -1522,6 +1923,50 @@ export function AdminCompetitionsPage() {
         show_timeline: form.show_timeline,
         show_stages: form.show_stages,
         show_mechanisms: form.show_mechanisms,
+        requirements: form.requirements
+          .split("\n")
+          .map((s) => s.trim())
+          .filter(Boolean),
+        required_uploads: form.required_uploads
+          .split("\n")
+          .map((s) => s.trim())
+          .filter(Boolean),
+        rules: form.has_work_submission
+          ? form.rules
+              .split("\n")
+              .map((s) => s.trim())
+              .filter(Boolean)
+          : [],
+        writing_abstract: form.has_work_submission
+          ? form.writing_abstract
+              .split("\n")
+              .map((s) => s.trim())
+              .filter(Boolean)
+          : [],
+        writing_initial: form.has_work_submission
+          ? form.writing_initial
+              .split("\n")
+              .map((s) => s.trim())
+              .filter(Boolean)
+          : [],
+        writing_core: form.has_work_submission
+          ? form.writing_core
+              .split("\n")
+              .map((s) => s.trim())
+              .filter(Boolean)
+          : [],
+        writing_requirements: form.has_work_submission
+          ? form.writing_requirements
+              .split("\n")
+              .map((s) => s.trim())
+              .filter(Boolean)
+          : [],
+        fee_wave_1_label: form.fee_wave_1_label.trim() || "Pendaftaran Gelombang I",
+        fee_wave_1_period: form.fee_wave_1_period.trim() || null,
+        fee_wave_1_price: form.fee_wave_1_price.trim() ? Number(form.fee_wave_1_price) : null,
+        fee_wave_2_label: form.fee_wave_2_label.trim() || "Pendaftaran Gelombang II",
+        fee_wave_2_period: form.fee_wave_2_period.trim() || null,
+        fee_wave_2_price: form.fee_wave_2_price.trim() ? Number(form.fee_wave_2_price) : null,
       },
       form.id,
     );
@@ -1587,6 +2032,26 @@ export function AdminCompetitionsPage() {
         setSaving(false);
         setFormError(
           `Lomba tersimpan, tapi gagal menyimpan mekanisme: ${mechanismError.message}`,
+        );
+        reload();
+        return;
+      }
+
+      const { error: syllabusError } = await replaceAdminCompetitionSyllabus(
+        competitionId,
+        form.syllabus.map((s, index) => ({
+          title: s.title.trim() || null,
+          items: s.items
+            .split("\n")
+            .map((item) => item.trim())
+            .filter(Boolean),
+          sort_order: index,
+        })),
+      );
+      if (syllabusError) {
+        setSaving(false);
+        setFormError(
+          `Lomba tersimpan, tapi gagal menyimpan silabus: ${syllabusError.message}`,
         );
         reload();
         return;
