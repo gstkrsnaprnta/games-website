@@ -919,7 +919,7 @@ function FormModal({
         onClick={onClose}
       />
       <div
-        className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl ring-1 ring-slate-200"
+        className="relative z-10 w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl ring-1 ring-slate-200"
         style={{ animation: "scaleUp 0.2s ease-out" }}
       >
         {/* Header */}
