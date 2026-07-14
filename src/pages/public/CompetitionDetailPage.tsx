@@ -224,6 +224,25 @@ export function CompetitionDetailPage() {
 
   const finalTimelines = resolvedTimelines || detail.timelines;
   const finalStages = resolvedStages || detail.stages;
+
+  const resolvedMechanisms =
+    Array.isArray(competition.mechanisms) && competition.mechanisms.length > 0
+      ? competition.mechanisms.map((m) => ({
+          title: m.title,
+          items: m.items,
+        }))
+      : undefined;
+
+  const fallbackMechanisms = detail.mechanisms && detail.mechanisms.length > 0
+    ? detail.mechanisms
+    : [
+        {
+          title: "Mekanisme Lomba",
+          items: ["Mekanisme belum tersedia."],
+        },
+      ];
+
+  const finalMechanisms = resolvedMechanisms || fallbackMechanisms;
   const isOpen = competition.registration_status === "open";
   const priceLabel = formatCurrency(
     competition.registration_fee,
@@ -517,7 +536,7 @@ export function CompetitionDetailPage() {
         {/* Mekanisme */}
         <DetailSection icon={<Trophy size={21} />} title="Mekanisme Lomba">
           <div className="mt-5 grid gap-4">
-            {detail.mechanisms.map((mechanism) => (
+            {finalMechanisms.map((mechanism) => (
               <article
                 key={mechanism.title}
                 className="rounded-2xl border border-white/75 bg-white/48 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]"

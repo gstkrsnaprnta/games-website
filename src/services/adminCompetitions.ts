@@ -12,11 +12,14 @@ export async function getAdminCompetitions() {
         start_date, end_date, is_active, sort_order
       ), stages:competition_stages (
         id, competition_id, title, description, is_active, sort_order
+      ), mechanisms:competition_detail_mechanisms (
+        id, competition_id, title, items, sort_order
       )`,
     )
     .order("name")
     .order("sort_order", { referencedTable: "timelines", ascending: true })
-    .order("sort_order", { referencedTable: "stages", ascending: true });
+    .order("sort_order", { referencedTable: "stages", ascending: true })
+    .order("sort_order", { referencedTable: "mechanisms", ascending: true });
 
   return { data: (data ?? []) as Competition[], error };
 }

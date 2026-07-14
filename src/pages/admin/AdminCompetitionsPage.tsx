@@ -11,6 +11,7 @@ import {
   saveAdminCompetition,
 } from "../../services/adminCompetitions";
 import { replaceAdminCompetitionStages } from "../../services/admincompetitionstages";
+import { replaceAdminCompetitionMechanisms } from "../../services/adminCompetitionMechanisms";
 import { replaceAdminTimelines } from "../../services/adminTimelines";
 import type { Competition } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
@@ -37,6 +38,19 @@ type StageForm = {
 const emptyStageItem: StageForm = {
   title: "",
   description: "",
+};
+
+// Mekanisme Lomba (mis. Sistem Pelaksanaan Ujian, Sistem Penilaian),
+// tampil di section "Mekanisme Lomba" halaman detail lomba.
+type MechanismForm = {
+  id?: string;
+  title: string;
+  items: string; // newline-separated string
+};
+
+const emptyMechanismItem: MechanismForm = {
+  title: "",
+  items: "",
 };
 
 // Representasi form untuk satu kontak WhatsApp CP.
@@ -68,6 +82,7 @@ type CompetitionForm = {
   subthemes: string;
   timelines: TimelineForm[];
   stages: StageForm[];
+  mechanisms: MechanismForm[];
 };
 
 const emptyTimelineItem: TimelineForm = {
@@ -111,6 +126,7 @@ const emptyForm: CompetitionForm = {
   subthemes: "",
   timelines: [],
   stages: [],
+  mechanisms: [],
 };
 
 // ─── Contact Editor (Kontak WhatsApp CP per jenjang) ──────────────────────────
@@ -673,6 +689,195 @@ function StageEditor({ stages, onChange }: StageEditorProps) {
   );
 }
 
+// ─── Mechanism Editor (Mekanisme Lomba) ────────────────────────────────────────
+
+type MechanismEditorProps = {
+  mechanisms: MechanismForm[];
+  onChange: (mechanisms: MechanismForm[]) => void;
+};
+
+function MechanismEditor({ mechanisms, onChange }: MechanismEditorProps) {
+  function addItem() {
+    onChange([...mechanisms, { ...emptyMechanismItem }]);
+  }
+  function removeItem(index: number) {
+    onChange(mechanisms.filter((_, i) => i !== index));
+  }
+  function updateItem(index: number, patch: Partial<MechanismForm>) {
+    onChange(mechanisms.map((item, i) => (i === index ? { ...item, ...patch } : item)));
+  }
+  function moveItem(index: number, direction: -1 | 1) {
+    const next = [...mechanisms];
+    const target = index + direction;
+    if (target < 0 || target >= next.length) return;
+    [next[index], next[target]] = [next[target], next[index]];
+    onChange(next);
+  }
+
+  return (
+    <div className="md:col-span-2 space-y-3">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-black text-slate-800">
+            Mekanisme Lomba
+          </p>
+          <p className="text-xs text-slate-400 mt-0.5">
+            Mekanisme, kriteria penilaian, atau sistem poin untuk cabang lomba ini.
+            Tuliskan butir-butir mekanisme pada kolom "Isi Mekanisme" (satu baris per ketentuan/poin).
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={addItem}
+          className="flex items-center gap-1.5 rounded-lg bg-cyan-50 border border-cyan-200 px-3 py-1.5 text-xs font-bold text-cyan-700 transition hover:bg-cyan-100 shrink-0"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2.5}
+            stroke="currentColor"
+            className="h-3.5 w-3.5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
+          </svg>
+          Tambah Mekanisme
+        </button>
+      </div>
+
+      {mechanisms.length === 0 ? (
+        <div className="rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/60 px-4 py-6 text-center">
+          <p className="text-xs font-semibold text-slate-400">
+            Belum ada mekanisme —{" "}
+            <span className="font-bold text-slate-500">Tambah Mekanisme</span>{" "}
+            untuk mulai mengisi.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {mechanisms.map((item, index) => (
+            <div
+              key={index}
+              className="rounded-xl border border-slate-200 bg-slate-50/70 p-4"
+            >
+              <div className="mb-3 flex items-center gap-2">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cyan-100 text-[11px] font-black text-cyan-700">
+                  {index + 1}
+                </span>
+                <span className="flex-1 truncate text-xs font-bold text-slate-500">
+                  {item.title || (
+                    <span className="italic text-slate-400">
+                      Belum ada judul
+                    </span>
+                  )}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => moveItem(index, -1)}
+                  disabled={index === 0}
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:opacity-30"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    stroke="currentColor"
+                    className="h-3.5 w-3.5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moveItem(index, 1)}
+                  disabled={index === mechanisms.length - 1}
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition hover:bg-white hover:text-slate-600 disabled:opacity-30"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    stroke="currentColor"
+                    className="h-3.5 w-3.5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeItem(index)}
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-rose-200 text-rose-400 transition hover:bg-rose-50 hover:text-rose-600"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    stroke="currentColor"
+                    className="h-3.5 w-3.5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div className="grid gap-3">
+                <div>
+                  <label className="mb-1 block text-xs font-bold text-slate-600">
+                    Judul Mekanisme <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="cth. Sistem Pelaksanaan Ujian"
+                    value={item.title}
+                    onChange={(e) =>
+                      updateItem(index, { title: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-bold text-slate-600">
+                    Isi Mekanisme (satu baris per ketentuan/poin) <span className="text-rose-500">*</span>
+                  </label>
+                  <textarea
+                    placeholder="Penyisihan: Dikerjakan secara online...&#10;Final: Dikerjakan secara tertulis..."
+                    value={item.items}
+                    onChange={(e) =>
+                      updateItem(index, { items: e.target.value })
+                    }
+                    rows={4}
+                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 placeholder-slate-300 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 font-sans"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Modal Form ───────────────────────────────────────────────────────────────
 
 
@@ -942,6 +1147,13 @@ function FormModal({
             onChange={(stages) => onChange({ stages })}
           />
 
+          {/* ── Bagian 7: Mekanisme Lomba ── */}
+          <div className="md:col-span-2 border-t border-slate-100 pt-2" />
+          <MechanismEditor
+            mechanisms={form.mechanisms}
+            onChange={(mechanisms) => onChange({ mechanisms })}
+          />
+
           {formError ? (
             <div className="md:col-span-2">
               <ErrorState message={formError} />
@@ -1086,6 +1298,16 @@ function contactsFromCompetition(competition: Competition): ContactForm[] {
   }));
 }
 
+function mechanismsFromCompetition(competition: Competition): MechanismForm[] {
+  if (!Array.isArray(competition.mechanisms) || competition.mechanisms.length === 0)
+    return [];
+  return competition.mechanisms.map((m) => ({
+    id: m.id,
+    title: m.title,
+    items: m.items.join("\n"),
+  }));
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export function AdminCompetitionsPage() {
@@ -1132,6 +1354,7 @@ export function AdminCompetitionsPage() {
       subthemes: (competition.subthemes ?? []).join("\n"),
       timelines: timelinesFromCompetition(competition),
       stages: stagesFromCompetition(competition),
+      mechanisms: mechanismsFromCompetition(competition),
     });
     setFormError("");
     setIsFormOpen(true);
@@ -1169,6 +1392,16 @@ export function AdminCompetitionsPage() {
     const invalidStage = form.stages.find((s) => !s.title.trim());
     if (invalidStage) {
       setFormError("Setiap tahapan kompetisi wajib memiliki judul.");
+      return;
+    }
+
+    const invalidMechanism = form.mechanisms.find(
+      (m) => !m.title.trim() || !m.items.trim(),
+    );
+    if (invalidMechanism) {
+      setFormError(
+        "Setiap item mekanisme wajib memiliki judul dan ketentuan/butir poin.",
+      );
       return;
     }
 
@@ -1270,6 +1503,26 @@ export function AdminCompetitionsPage() {
         setSaving(false);
         setFormError(
           `Lomba tersimpan, tapi gagal menyimpan tahapan: ${stageError.message}`,
+        );
+        reload();
+        return;
+      }
+
+      const { error: mechanismError } = await replaceAdminCompetitionMechanisms(
+        competitionId,
+        form.mechanisms.map((m, index) => ({
+          title: m.title.trim(),
+          items: m.items
+            .split("\n")
+            .map((item) => item.trim())
+            .filter(Boolean),
+          sort_order: index,
+        })),
+      );
+      if (mechanismError) {
+        setSaving(false);
+        setFormError(
+          `Lomba tersimpan, tapi gagal menyimpan mekanisme: ${mechanismError.message}`,
         );
         reload();
         return;

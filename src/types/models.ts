@@ -67,6 +67,15 @@ export type CompetitionStage = {
   sort_order: number;
 };
 
+// Mekanisme Kompetisi (mis. Sistem Pelaksanaan Ujian, Sistem Penilaian), dikelola admin.
+export type CompetitionMechanism = {
+  id: string;
+  competition_id: string;
+  title: string;
+  items: string[];
+  sort_order: number;
+};
+
 // Kontak WhatsApp panitia (CP) untuk konfirmasi otomatis pendaftaran.
 // `level` null/kosong = berlaku untuk semua jenjang (dipakai sebagai fallback
 // kalau tidak ada kontak yang cocok dengan jenjang yang dipilih peserta).
@@ -99,6 +108,7 @@ export type Competition = {
   is_active: boolean;
   timelines?: Timeline[];
   stages?: CompetitionStage[];
+  mechanisms?: CompetitionMechanism[];
 
   // Kolom baru
   max_teams_per_school?: number | null;

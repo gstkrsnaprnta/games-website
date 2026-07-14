@@ -20,7 +20,7 @@ export async function getOpenCompetitions() {
   return { data: (data ?? []) as Competition[], error };
 }
 
-// Join timelines & stages (aktif saja, diurutkan by sort_order) untuk halaman detail.
+// Join timelines & stages & mechanisms (aktif saja, diurutkan by sort_order) untuk halaman detail.
 export async function getCompetitionBySlug(slug: string) {
   const { data, error } = await supabase
     .from("competitions")
@@ -30,6 +30,8 @@ export async function getCompetitionBySlug(slug: string) {
         start_date, end_date, is_active, sort_order
       ), stages:competition_stages (
         id, competition_id, title, description, is_active, sort_order
+      ), mechanisms:competition_detail_mechanisms (
+        id, competition_id, title, items, sort_order
       )`,
     )
     .eq("slug", slug)
@@ -38,6 +40,7 @@ export async function getCompetitionBySlug(slug: string) {
     .eq("stages.is_active", true)
     .order("sort_order", { referencedTable: "timelines", ascending: true })
     .order("sort_order", { referencedTable: "stages", ascending: true })
+    .order("sort_order", { referencedTable: "mechanisms", ascending: true })
     .maybeSingle();
 
   return { data: data as Competition | null, error };
