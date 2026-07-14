@@ -11,9 +11,9 @@ export function AnnouncementDetailPage() {
   const { slug } = useParams();
   const { data: announcement, error, loading } = useAsyncData(() => getAnnouncementBySlug(slug ?? ""), [slug]);
 
-  if (loading) return <section className="container-page py-28"><LoadingState /></section>;
-  if (error) return <section className="container-page py-28"><ErrorState message={error} /></section>;
-  if (!announcement) return <section className="container-page py-28"><EmptyState title="Pengumuman tidak ditemukan" /></section>;
+  if (loading) return <section className="container-page py-28 min-h-[80vh] flex flex-col justify-center items-center"><LoadingState /></section>;
+  if (error) return <section className="container-page py-28 min-h-[80vh] flex flex-col justify-center items-center"><ErrorState message={error} /></section>;
+  if (!announcement) return <section className="container-page py-28 min-h-[80vh] flex flex-col justify-center items-center"><EmptyState title="Pengumuman tidak ditemukan" /></section>;
 
   return (
     <article className="container-page max-w-4xl pb-20 pt-28 md:pt-32">

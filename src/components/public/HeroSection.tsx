@@ -1,6 +1,6 @@
 import { FileText, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
-import maskot from "../../assets/maskot.png"; // sesuaikan path
+import maskot from "../../assets/maskot.webp"; // sesuaikan path
 
 export function HeroSection() {
   return (

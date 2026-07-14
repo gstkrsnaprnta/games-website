@@ -113,7 +113,7 @@ export function CompetitionsPage() {
         ))}
       </div>
 
-        <div className="mb-8">
+        <div className={`mb-8 ${loading ? "min-h-[400px] flex flex-col justify-center items-center" : ""}`}>
           {loading ? <LoadingState /> : null}
           {error ? <ErrorState message={error} /> : null}
           {!loading && !error && data?.length === 0 ? <EmptyState description="Belum ada lomba aktif." /> : null}

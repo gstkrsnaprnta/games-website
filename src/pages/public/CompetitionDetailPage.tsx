@@ -100,7 +100,7 @@ export function CompetitionDetailPage() {
 
   if (loading) {
     return (
-      <section className="container-hero py-28">
+      <section className="container-hero py-28 min-h-[80vh] flex flex-col justify-center items-center">
         <LoadingState />
       </section>
     );
