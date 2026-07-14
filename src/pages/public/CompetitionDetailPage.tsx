@@ -346,8 +346,8 @@ export function CompetitionDetailPage() {
             {competition.name}
           </h1>
 
-          <p className="mx-auto mt-2 max-w-3xl text-base font-bold leading-7 text-[#064452]/72 md:text-lg">
-            {competition.short_description || detail.shortDescription || detail.description}
+          <p className="mx-auto mt-2 max-w-3xl text-base font-bold leading-7 text-[#064452]/72 md:text-lg whitespace-pre-wrap">
+            {competition.description || detail.description}
           </p>
 
           <div className="mt-5 flex flex-wrap justify-center gap-2">
@@ -415,18 +415,6 @@ export function CompetitionDetailPage() {
 
       {/* Content sections */}
       <div className="mt-7 grid gap-6">
-        {/* Tentang Lomba */}
-        {competition.description && (
-          <DetailSection
-            icon={<FileText size={21} />}
-            title="Tentang Lomba"
-          >
-            <p className="mt-2 text-sm font-semibold leading-relaxed text-[#064452]/72 whitespace-pre-wrap">
-              {competition.description}
-            </p>
-          </DetailSection>
-        )}
-
         {/* Timeline */}
         {competition.show_timeline !== false && finalTimelines && finalTimelines.length > 0 && (
           <DetailSection
