@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabase";
+import { fetchWithCache } from "../utils/publicCache";
 
 export interface Sponsor {
   id: string;
@@ -13,10 +14,12 @@ export interface Sponsor {
 }
 
 export async function getSponsors() {
-  const { data, error } = await supabase
-    .from("sponsors")
-    .select("*")
-    .eq("is_active", true)
-    .order("sort_order", { ascending: true });
-  return { data: (data ?? []) as Sponsor[], error };
+  return fetchWithCache("sponsors_all", 3 * 60 * 1000, async () => {
+    const { data, error } = await supabase
+      .from("sponsors")
+      .select("*")
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true });
+    return { data: (data ?? []) as Sponsor[], error };
+  });
 }

@@ -10,6 +10,7 @@ import {
   type AdminGalleryRow,
 } from "../../services/adminGalleries";
 import { useAsyncData } from "../../utils/useAsyncData";
+import { clearPublicCache } from "../../utils/publicCache";
 import { AdminPageState, BooleanBadge } from "./adminPageUtils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -291,6 +292,7 @@ export function AdminGalleriesPage() {
       return;
     }
     closeFormModal();
+    clearPublicCache();
     reload();
   }
 
@@ -305,6 +307,7 @@ export function AdminGalleriesPage() {
     const { error: updateError } = await deactivateAdminGallery(deleteTargetId);
     setDeleteTargetId(null);
     if (updateError) setFormError(updateError.message);
+    clearPublicCache();
     reload();
   }
 

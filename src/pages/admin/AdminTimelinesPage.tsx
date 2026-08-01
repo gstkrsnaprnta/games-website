@@ -13,6 +13,7 @@ import {
 } from "../../services/adminTimelines";
 import { formatDate } from "../../utils/date";
 import { useAsyncData } from "../../utils/useAsyncData";
+import { clearPublicCache } from "../../utils/publicCache";
 import { AdminPageState, BooleanBadge } from "./adminPageUtils";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -371,6 +372,7 @@ export function AdminTimelinesPage() {
       return;
     }
     closeForm();
+    clearPublicCache();
     reload();
   }
 
@@ -379,6 +381,7 @@ export function AdminTimelinesPage() {
     const { error: deleteError } = await deleteAdminTimeline(deleteTargetId);
     if (deleteError) setFormError(deleteError.message);
     setDeleteTargetId(null);
+    clearPublicCache();
     reload();
   }
 

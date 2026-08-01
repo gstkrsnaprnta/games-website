@@ -16,6 +16,7 @@ import {
   type AdminPartnerRow,
 } from "../../services/adminPartners";
 import { useAsyncData } from "../../utils/useAsyncData";
+import { clearPublicCache } from "../../utils/publicCache";
 import { AdminPageState, BooleanBadge } from "./adminPageUtils";
 
 // ─── Shared Upload Field ──────────────────────────────────────────────────────
@@ -581,6 +582,7 @@ export function AdminSponsorsPage() {
       return;
     }
     closeSponsorModal();
+    clearPublicCache();
     reloadSponsors();
   }
 
@@ -588,6 +590,7 @@ export function AdminSponsorsPage() {
     if (!sponsorDeleteId) return;
     await deactivateAdminSponsor(sponsorDeleteId);
     setSponsorDeleteId(null);
+    clearPublicCache();
     reloadSponsors();
   }
 
@@ -657,6 +660,7 @@ export function AdminSponsorsPage() {
       return;
     }
     closePartnerModal();
+    clearPublicCache();
     reloadPartners();
   }
 
@@ -664,6 +668,7 @@ export function AdminSponsorsPage() {
     if (!partnerDeleteId) return;
     await deactivateAdminPartner(partnerDeleteId);
     setPartnerDeleteId(null);
+    clearPublicCache();
     reloadPartners();
   }
 

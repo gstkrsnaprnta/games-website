@@ -10,6 +10,7 @@ import {
   type AdminFaqRow,
 } from "../../services/adminFaqs";
 import { useAsyncData } from "../../utils/useAsyncData";
+import { clearPublicCache } from "../../utils/publicCache";
 import { AdminPageState, BooleanBadge } from "./adminPageUtils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -340,6 +341,7 @@ export function AdminFaqsPage() {
     }
 
     closeFormModal();
+    clearPublicCache();
     reload();
   }
 
@@ -348,6 +350,7 @@ export function AdminFaqsPage() {
     const { error: deleteError } = await deleteAdminFaq(deleteTargetId);
     if (deleteError) setFormError(deleteError.message);
     setDeleteTargetId(null);
+    clearPublicCache();
     reload();
   }
 

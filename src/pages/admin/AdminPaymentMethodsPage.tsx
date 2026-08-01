@@ -13,6 +13,7 @@ import {
 } from "../../services/adminPaymentMethods";
 import type { PaymentMethod, PaymentMethodType } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
+import { clearPublicCache } from "../../utils/publicCache";
 import { AdminPageState, BooleanBadge } from "./adminPageUtils";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -305,6 +306,7 @@ export function AdminPaymentMethodsPage() {
     }
 
     closeModal();
+    clearPublicCache();
     reload();
   }
 
@@ -317,6 +319,7 @@ export function AdminPaymentMethodsPage() {
       onConfirm: async () => {
         const { error: updateError } = await deactivateAdminPaymentMethod(method.id);
         if (updateError) setFormError(updateError.message);
+        clearPublicCache();
         reload();
       },
     });
@@ -329,6 +332,7 @@ export function AdminPaymentMethodsPage() {
       onConfirm: async () => {
         const { error: deleteError } = await deleteAdminPaymentMethod(method.id);
         if (deleteError) setFormError(deleteError.message);
+        clearPublicCache();
         reload();
       },
     });

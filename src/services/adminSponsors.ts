@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabase";
+import { compressLogoImage } from "../utils/imageCompressor";
 
 export type AdminSponsorRow = {
   id: string;
@@ -57,12 +58,27 @@ export async function uploadLogo(
   file: File,
   folder: "sponsors" | "partners",
 ): Promise<{ url: string | null; error: Error | null }> {
-  const ext = file.name.split(".").pop();
+  // 1. Kompres gambar ke format WebP (~20-40 KB) secara otomatis sebelum diupload
+  const { file: compressedFile, ext } = await compressLogoImage(file);
   const path = `${folder}/${Date.now()}.${ext}`;
+  const contentType =
+    ext === "webp"
+      ? "image/webp"
+      : ext === "svg"
+        ? "image/svg+xml"
+        : compressedFile.type || "image/png";
+
+  // 2. Upload ke Supabase Storage dengan header cacheControl 24 jam (86400 detik)
   const { error } = await supabase.storage
     .from("logos")
-    .upload(path, file, { upsert: true });
+    .upload(path, compressedFile, {
+      upsert: true,
+      cacheControl: "86400",
+      contentType,
+    });
+
   if (error) return { url: null, error };
   const { data } = supabase.storage.from("logos").getPublicUrl(path);
   return { url: data.publicUrl, error: null };
 }
+

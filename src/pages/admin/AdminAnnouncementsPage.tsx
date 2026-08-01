@@ -13,6 +13,7 @@ import {
 import { getAdminCompetitions } from "../../services/adminCompetitions";
 import { formatDate } from "../../utils/date";
 import { useAsyncData } from "../../utils/useAsyncData";
+import { clearPublicCache } from "../../utils/publicCache";
 import { AdminPageState } from "./adminPageUtils";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -372,6 +373,7 @@ export function AdminAnnouncementsPage() {
       return;
     }
     closeFormModal();
+    clearPublicCache();
     reload();
   }
 
@@ -382,6 +384,7 @@ export function AdminAnnouncementsPage() {
     setIsDeleting(false);
     if (deleteError) setFormError(deleteError.message);
     setDeleteTarget(null);
+    clearPublicCache();
     reload();
   }
 
@@ -395,6 +398,7 @@ export function AdminAnnouncementsPage() {
       },
       announcement.id
     );
+    clearPublicCache();
     reload();
   }
 

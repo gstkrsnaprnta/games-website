@@ -16,6 +16,7 @@ import { replaceAdminCompetitionSyllabus } from "../../services/adminCompetition
 import { replaceAdminTimelines } from "../../services/adminTimelines";
 import type { Competition } from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
+import { clearPublicCache } from "../../utils/publicCache";
 import { AdminPageState, BooleanBadge } from "./adminPageUtils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -2079,6 +2080,7 @@ export function AdminCompetitionsPage() {
 
     setSaving(false);
     closeFormModal();
+    clearPublicCache();
     reload();
   }
 
@@ -2087,6 +2089,7 @@ export function AdminCompetitionsPage() {
     const { error: deleteError } = await deleteAdminCompetition(deleteTargetId);
     setDeleteTargetId(null);
     if (deleteError) setFormError(deleteError.message);
+    clearPublicCache();
     reload();
   }
 
