@@ -72,6 +72,7 @@ export function HeroSection() {
               src={maskot}
               alt=""
               className="hero-mobile-mascot"
+              decoding="async"
               draggable={false}
             />
           </div>
@@ -195,6 +196,7 @@ export function HeroSection() {
                 src={maskot}
                 alt="Maskot GAMES 2026"
                 className="hero-mascot-img w-[330px] max-w-none select-none xl:w-[365px]"
+                decoding="async"
                 draggable={false}
               />
             </div>

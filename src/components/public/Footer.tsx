@@ -32,6 +32,8 @@ function LogoCard({
           <img
             src={logo_url}
             alt={name}
+            loading="lazy"
+            decoding="async"
             className="h-full w-full object-contain"
           />
         ) : (
