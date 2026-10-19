@@ -108,6 +108,7 @@ export function AdminRegistrationsPage() {
 
   const [search, setSearch] = useState("");
   const [competitionFilter, setCompetitionFilter] = useState("");
+  const [levelFilter, setLevelFilter] = useState("");
   const [paymentFilter, setPaymentFilter] = useState("");
   const [submissionFilter, setSubmissionFilter] = useState("");
   const [page, setPage] = useState(1);
@@ -120,6 +121,18 @@ export function AdminRegistrationsPage() {
   const [deleteError, setDeleteError] = useState("");
 
   const pageSize = 10;
+
+  const levelOptions = useMemo(() => {
+    const selected = competitions.data?.find((c) => c.id === competitionFilter);
+    const fromCompetition = selected?.participant_levels ?? [];
+    const fromData = (data ?? [])
+      .filter(
+        (r) => !competitionFilter || r.competition_id === competitionFilter,
+      )
+      .map((r) => r.level)
+      .filter((l): l is string => Boolean(l));
+    return Array.from(new Set([...fromCompetition, ...fromData]));
+  }, [competitionFilter, competitions.data, data]);
 
   const rows = useMemo(() => {
     const normalized = search.trim().toLowerCase();
@@ -135,6 +148,9 @@ export function AdminRegistrationsPage() {
       const matchesCompetition = competitionFilter
         ? registration.competition_id === competitionFilter
         : true;
+      const matchesLevel = levelFilter
+        ? registration.level === levelFilter
+        : true;
       const matchesPayment = paymentFilter
         ? registration.payment_status === paymentFilter
         : true;
@@ -144,17 +160,26 @@ export function AdminRegistrationsPage() {
       return (
         matchesSearch &&
         matchesCompetition &&
+        matchesLevel &&
         matchesPayment &&
         matchesSubmission
       );
     });
-  }, [competitionFilter, data, paymentFilter, search, submissionFilter]);
+  }, [
+    competitionFilter,
+    levelFilter,
+    data,
+    paymentFilter,
+    search,
+    submissionFilter,
+  ]);
 
   const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
   const visibleRows = rows.slice((page - 1) * pageSize, page * pageSize);
 
   const activeFilterCount = [
     competitionFilter,
+    levelFilter,
     paymentFilter,
     submissionFilter,
   ].filter(Boolean).length;
@@ -165,11 +190,11 @@ export function AdminRegistrationsPage() {
         "Kode Registrasi": registration.registration_code,
         "Nama Tim / Ketua": registration.team_name || registration.leader_name,
         "Nama Ketua": registration.leader_name,
-        "Email": registration.email,
-        "WhatsApp": registration.whatsapp,
-        "Instansi": registration.institution,
+        Email: registration.email,
+        WhatsApp: registration.whatsapp,
+        Instansi: registration.institution,
         "Tingkat/Jenjang": registration.level || "—",
-        "Lomba": registration.competitions?.name || "—",
+        Lomba: registration.competitions?.name || "—",
         "Kode Lomba": registration.competitions?.code || "—",
         "Status Pendaftaran": registration.registration_status,
         "Status Pembayaran": registration.payment_status,
@@ -205,7 +230,10 @@ export function AdminRegistrationsPage() {
             Daftar peserta yang masuk dari form pendaftaran.
           </p>
         </div>
-        <ExcelExportButton filename="registrations-games.xlsx" data={exportData} />
+        <ExcelExportButton
+          filename="registrations-games.xlsx"
+          data={exportData}
+        />
       </div>
 
       {/* Delete error banner */}
@@ -262,6 +290,7 @@ export function AdminRegistrationsPage() {
             value={competitionFilter}
             onChange={(event) => {
               setCompetitionFilter(event.target.value);
+              setLevelFilter("");
               setPage(1);
             }}
             options={[
@@ -270,6 +299,18 @@ export function AdminRegistrationsPage() {
                 label: competition.name,
                 value: competition.id,
               })) ?? []),
+            ]}
+          />
+          <FormSelect
+            label="Jenjang"
+            value={levelFilter}
+            onChange={(event) => {
+              setLevelFilter(event.target.value);
+              setPage(1);
+            }}
+            options={[
+              { label: "Semua jenjang", value: "" },
+              ...levelOptions.map((level) => ({ label: level, value: level })),
             ]}
           />
           <FormSelect
@@ -310,6 +351,7 @@ export function AdminRegistrationsPage() {
               type="button"
               onClick={() => {
                 setCompetitionFilter("");
+                setLevelFilter("");
                 setPaymentFilter("");
                 setSubmissionFilter("");
                 setPage(1);
