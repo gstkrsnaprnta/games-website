@@ -1,11 +1,8 @@
 import {
-  Calendar,
   Camera,
   Image as ImageIcon,
   Images,
-  Rocket,
 } from "lucide-react";
-import { Link } from "react-router-dom";
 import { GalleryGrid } from "../../components/public/GalleryGrid";
 import { EmptyState } from "../../components/shared/EmptyState";
 import { ErrorState } from "../../components/shared/ErrorState";
