@@ -8,6 +8,7 @@ const links = [
   ["Lomba", "/lomba"],
   ["Timeline", "/timeline"],
   ["Pengumuman", "/pengumuman"],
+  ["Galeri", "/galeri"],
   ["FAQ", "/faq"],
   ["Kontak", "/kontak"],
 ];

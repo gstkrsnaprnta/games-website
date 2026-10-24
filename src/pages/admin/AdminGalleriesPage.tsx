@@ -1,16 +1,19 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DataTable } from "../../components/admin/DataTable";
 import { FormInput } from "../../components/admin/FormInput";
 import { FormTextarea } from "../../components/admin/FormTextarea";
 import { ErrorState } from "../../components/shared/ErrorState";
 import {
   deactivateAdminGallery,
+  deleteAdminGallery,
   getAdminGalleries,
   saveAdminGallery,
+  uploadGalleryImage,
   type AdminGalleryRow,
 } from "../../services/adminGalleries";
 import { useAsyncData } from "../../utils/useAsyncData";
 import { clearPublicCache } from "../../utils/publicCache";
+import { compressLogoImage } from "../../utils/imageCompressor";
 import { AdminPageState, BooleanBadge } from "./adminPageUtils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -39,6 +42,8 @@ type GalleryFormModalProps = {
   form: GalleryForm;
   formError: string;
   saving: boolean;
+  imageFile: File | null;
+  onFileChange: (file: File | null) => void;
   onChange: (updated: Partial<GalleryForm>) => void;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   onClose: () => void;
@@ -49,10 +54,23 @@ function GalleryFormModal({
   form,
   formError,
   saving,
+  imageFile,
+  onFileChange,
   onChange,
   onSubmit,
   onClose,
 }: GalleryFormModalProps) {
+  const preview = useMemo(
+    () => (imageFile ? URL.createObjectURL(imageFile) : form.image_url),
+    [imageFile, form.image_url],
+  );
+
+  useEffect(() => {
+    return () => {
+      if (imageFile) URL.revokeObjectURL(preview);
+    };
+  }, [imageFile, preview]);
+
   if (!isOpen) return null;
 
   const isEdit = Boolean(form.id);
@@ -84,8 +102,18 @@ function GalleryFormModal({
             className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
             aria-label="Tutup modal"
           >
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+            <svg
+              viewBox="0 0 24 24"
+              className="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18 18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -97,12 +125,29 @@ function GalleryFormModal({
             value={form.title}
             onChange={(e) => onChange({ title: e.target.value })}
           />
-          <FormInput
-            label="Image URL"
-            value={form.image_url}
-            onChange={(e) => onChange({ image_url: e.target.value })}
-            required
-          />
+          <div className="md:col-span-2">
+            <label className="mb-1 block text-sm font-semibold text-slate-700">
+              Foto{" "}
+              {isEdit && (
+                <span className="font-normal text-slate-500">
+                  (kosongkan jika tidak diganti)
+                </span>
+              )}
+            </label>
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              onChange={(e) => onFileChange(e.target.files?.[0] ?? null)}
+              className="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-cyan-50 file:px-4 file:py-2 file:text-sm file:font-bold file:text-cyan-700 hover:file:bg-cyan-100"
+            />
+            {preview && (
+              <img
+                src={preview}
+                alt="Preview"
+                className="mt-3 h-40 w-full rounded-lg border border-slate-200 object-cover"
+              />
+            )}
+          </div>
           <FormInput
             label="Urutan"
             type="number"
@@ -146,7 +191,11 @@ function GalleryFormModal({
               disabled={saving}
               className="rounded-lg bg-cyan-600 px-5 py-2 text-sm font-bold text-white transition-colors hover:bg-cyan-700 disabled:bg-slate-400"
             >
-              {saving ? "Menyimpan..." : isEdit ? "Update Galeri" : "Tambah Galeri"}
+              {saving
+                ? "Menyimpan..."
+                : isEdit
+                  ? "Update Galeri"
+                  : "Tambah Galeri"}
             </button>
           </div>
         </form>
@@ -169,7 +218,11 @@ type DeleteConfirmModalProps = {
   onCancel: () => void;
 };
 
-function DeleteConfirmModal({ isOpen, onConfirm, onCancel }: DeleteConfirmModalProps) {
+function DeleteConfirmModal({
+  isOpen,
+  onConfirm,
+  onCancel,
+}: DeleteConfirmModalProps) {
   if (!isOpen) return null;
 
   return (
@@ -190,14 +243,27 @@ function DeleteConfirmModal({ isOpen, onConfirm, onCancel }: DeleteConfirmModalP
       >
         {/* Warning icon */}
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-50">
-          <svg className="h-6 w-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+          <svg
+            className="h-6 w-6 text-amber-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+            />
           </svg>
         </div>
 
-        <h3 className="text-center text-base font-black text-slate-900">Nonaktifkan Galeri?</h3>
+        <h3 className="text-center text-base font-black text-slate-900">
+          Nonaktifkan Galeri?
+        </h3>
         <p className="mt-2 text-center text-sm text-slate-500">
-          Galeri ini akan dinonaktifkan dan tidak akan tampil di halaman publik. Tindakan ini dapat diubah kembali.
+          Galeri ini akan dinonaktifkan dan tidak akan tampil di halaman publik.
+          Tindakan ini dapat diubah kembali.
         </p>
 
         <div className="mt-6 flex gap-3">
@@ -221,6 +287,89 @@ function DeleteConfirmModal({ isOpen, onConfirm, onCancel }: DeleteConfirmModalP
   );
 }
 
+// ─── Permanent Delete Modal ───────────────────────────────────────────────────
+
+type HardDeleteModalProps = {
+  isOpen: boolean;
+  title: string;
+  deleting: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+};
+
+function HardDeleteModal({
+  isOpen,
+  title,
+  deleting,
+  onConfirm,
+  onCancel,
+}: HardDeleteModalProps) {
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ animation: "fadeIn 150ms ease-out" }}
+    >
+      <div
+        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+        onClick={onCancel}
+      />
+
+      <div
+        className="relative z-10 w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-2xl"
+        style={{ animation: "scaleUp 150ms ease-out" }}
+      >
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-rose-100">
+          <svg
+            className="h-6 w-6 text-rose-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+            />
+          </svg>
+        </div>
+
+        <h3 className="text-base font-black text-slate-900">Hapus Foto?</h3>
+        <p className="mt-2 text-sm text-slate-500">
+          Foto <span className="font-bold text-slate-700">{title}</span> akan
+          dihapus permanen beserta file-nya dan tidak dapat dikembalikan.
+        </p>
+
+        <div className="mt-6 flex gap-3">
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={deleting}
+            className="flex-1 rounded-lg border border-slate-200 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-50 disabled:opacity-50"
+          >
+            Batal
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            disabled={deleting}
+            className="flex-1 rounded-lg bg-rose-600 py-2 text-sm font-bold text-white transition-colors hover:bg-rose-700 disabled:bg-slate-400"
+          >
+            {deleting ? "Menghapus..." : "Ya, Hapus"}
+          </button>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes fadeIn  { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes scaleUp { from { opacity: 0; transform: scale(.95) } to { opacity: 1; transform: scale(1) } }
+      `}</style>
+    </div>
+  );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export function AdminGalleriesPage() {
@@ -231,15 +380,20 @@ export function AdminGalleriesPage() {
   const [formError, setFormError] = useState("");
   const [saving, setSaving] = useState(false);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   // Delete confirmation state
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+  const [hardDeleteTarget, setHardDeleteTarget] =
+    useState<AdminGalleryRow | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   // ── Helpers ────────────────────────────────────────────────────────────────
 
   function openCreateModal() {
     setForm(emptyForm);
     setFormError("");
+    setImageFile(null);
     setIsFormModalOpen(true);
   }
 
@@ -253,10 +407,12 @@ export function AdminGalleriesPage() {
       is_active: gallery.is_active,
     });
     setFormError("");
+    setImageFile(null);
     setIsFormModalOpen(true);
   }
 
   function closeFormModal() {
+    setImageFile(null);
     setIsFormModalOpen(false);
     setForm(emptyForm);
     setFormError("");
@@ -271,15 +427,28 @@ export function AdminGalleriesPage() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFormError("");
-    if (!form.image_url.trim()) {
-      setFormError("Image URL wajib diisi.");
+    if (!imageFile && !form.image_url.trim()) {
+      setFormError("Foto wajib dipilih.");
       return;
     }
     setSaving(true);
+
+    let imageUrl = form.image_url.trim();
+    if (imageFile) {
+      const { file, ext } = await compressLogoImage(imageFile, 1600, 0.8);
+      const upload = await uploadGalleryImage(file, ext);
+      if (upload.error || !upload.url) {
+        setSaving(false);
+        setFormError(upload.error?.message ?? "Gagal mengunggah foto.");
+        return;
+      }
+      imageUrl = upload.url;
+    }
+
     const { error: saveError } = await saveAdminGallery(
       {
         title: form.title.trim() || null,
-        image_url: form.image_url.trim(),
+        image_url: imageUrl,
         description: form.description.trim() || null,
         sort_order: Number(form.sort_order || 0),
         is_active: form.is_active,
@@ -311,6 +480,24 @@ export function AdminGalleriesPage() {
     reload();
   }
 
+  async function handleHardDelete() {
+    if (!hardDeleteTarget) return;
+    setDeleting(true);
+    setFormError("");
+    const { error: deleteError } = await deleteAdminGallery(
+      hardDeleteTarget.id,
+      hardDeleteTarget.image_url,
+    );
+    setDeleting(false);
+    setHardDeleteTarget(null);
+    if (deleteError) {
+      setFormError(`Gagal menghapus foto: ${deleteError.message}`);
+      return;
+    }
+    clearPublicCache();
+    reload();
+  }
+
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
@@ -319,15 +506,27 @@ export function AdminGalleriesPage() {
       <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-950">Galeri</h1>
-          <p className="mt-1 text-sm text-slate-600">Daftar foto atau dokumentasi kegiatan.</p>
+          <p className="mt-1 text-sm text-slate-600">
+            Daftar foto atau dokumentasi kegiatan.
+          </p>
         </div>
         <button
           type="button"
           onClick={openCreateModal}
           className="flex shrink-0 items-center gap-2 rounded-lg bg-cyan-600 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-cyan-700"
         >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          <svg
+            className="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
           </svg>
           Tambah Galeri
         </button>
@@ -354,7 +553,7 @@ export function AdminGalleriesPage() {
             <thead className="bg-slate-50 text-slate-600">
               <tr>
                 <th className="p-3">Judul</th>
-                <th className="p-3">Image URL</th>
+                <th className="p-3">Foto</th>
                 <th className="p-3">Deskripsi</th>
                 <th className="p-3">Aktif</th>
                 <th className="p-3">Urutan</th>
@@ -363,11 +562,26 @@ export function AdminGalleriesPage() {
             </thead>
             <tbody>
               {data?.map((gallery) => (
-                <tr key={gallery.id} className="border-t border-slate-100 align-top">
-                  <td className="p-3 font-semibold text-slate-950">{gallery.title ?? "-"}</td>
-                  <td className="max-w-xs truncate p-3 text-cyan-700">{gallery.image_url}</td>
-                  <td className="max-w-md p-3 text-slate-700">{gallery.description ?? "-"}</td>
-                  <td className="p-3"><BooleanBadge value={gallery.is_active} /></td>
+                <tr
+                  key={gallery.id}
+                  className="border-t border-slate-100 align-top"
+                >
+                  <td className="p-3 font-semibold text-slate-950">
+                    {gallery.title ?? "-"}
+                  </td>
+                  <td className="p-3">
+                    <img
+                      src={gallery.image_url}
+                      alt={gallery.title ?? "Galeri"}
+                      className="h-14 w-20 rounded-md border border-slate-200 object-cover"
+                    />
+                  </td>
+                  <td className="max-w-md p-3 text-slate-700">
+                    {gallery.description ?? "-"}
+                  </td>
+                  <td className="p-3">
+                    <BooleanBadge value={gallery.is_active} />
+                  </td>
                   <td className="p-3">{gallery.sort_order}</td>
                   <td className="p-3">
                     <div className="flex gap-2">
@@ -382,6 +596,12 @@ export function AdminGalleriesPage() {
                         className="rounded-lg border border-amber-300 px-3 py-1 text-xs font-bold text-amber-700 transition-colors hover:bg-amber-50"
                       >
                         Nonaktifkan
+                      </button>
+                      <button
+                        onClick={() => setHardDeleteTarget(gallery)}
+                        className="rounded-lg border border-rose-300 px-3 py-1 text-xs font-bold text-rose-700 transition-colors hover:bg-rose-50"
+                      >
+                        Hapus
                       </button>
                     </div>
                   </td>
@@ -398,6 +618,8 @@ export function AdminGalleriesPage() {
         form={form}
         formError={formError}
         saving={saving}
+        imageFile={imageFile}
+        onFileChange={setImageFile}
         onChange={handleFormChange}
         onSubmit={handleSubmit}
         onClose={closeFormModal}
@@ -407,6 +629,13 @@ export function AdminGalleriesPage() {
         isOpen={Boolean(deleteTargetId)}
         onConfirm={() => void handleDeactivate()}
         onCancel={() => setDeleteTargetId(null)}
+      />
+      <HardDeleteModal
+        isOpen={Boolean(hardDeleteTarget)}
+        title={hardDeleteTarget?.title ?? "ini"}
+        deleting={deleting}
+        onConfirm={() => void handleHardDelete()}
+        onCancel={() => setHardDeleteTarget(null)}
       />
     </section>
   );

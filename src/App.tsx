@@ -22,6 +22,7 @@ import { CompetitionDetailPage } from "./pages/public/CompetitionDetailPage";
 import { CompetitionsPage } from "./pages/public/CompetitionsPage";
 import { ContactPage } from "./pages/public/ContactPage";
 import { FAQPage } from "./pages/public/FAQPage";
+import { GalleriesPage } from "./pages/public/GalleriesPage";
 import { HomePage } from "./pages/public/HomePage";
 import { PublicLayout } from "./pages/public/PublicLayout";
 import { RegisterPage } from "./pages/public/RegisterPage";
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
       { path: "/faq", element: <FAQPage /> },
       { path: "/pengumuman", element: <AnnouncementsPage /> },
       { path: "/pengumuman/:slug", element: <AnnouncementDetailPage /> },
+      { path: "/galeri", element: <GalleriesPage /> },
       { path: "/daftar", element: <RegisterPage /> },
       { path: "/cek-status", element: <CheckStatusPage /> },
       { path: "/kontak", element: <ContactPage /> },
@@ -59,11 +61,17 @@ const router = createBrowserRouter([
           { path: "faqs", element: <AdminFaqsPage /> },
           { path: "announcements", element: <AdminAnnouncementsPage /> },
           { path: "registrations", element: <AdminRegistrationsPage /> },
-          { path: "registrations/:id", element: <AdminRegistrationDetailPage /> },
+          {
+            path: "registrations/:id",
+            element: <AdminRegistrationDetailPage />,
+          },
           { path: "payment-methods", element: <AdminPaymentMethodsPage /> },
           { path: "sponsors", element: <AdminSponsorsPage /> },
           { path: "galleries", element: <AdminGalleriesPage /> },
-          { path: "settings", element: <AdminPlaceholderPage title="Pengaturan" /> },
+          {
+            path: "settings",
+            element: <AdminPlaceholderPage title="Pengaturan" />,
+          },
         ],
       },
     ],

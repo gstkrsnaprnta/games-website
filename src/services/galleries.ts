@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabase";
+import type { Gallery } from "../types/models";
 import { fetchWithCache } from "../utils/publicCache";
 
 export async function getGalleries() {
@@ -8,7 +9,6 @@ export async function getGalleries() {
       .select("*")
       .eq("is_active", true)
       .order("sort_order");
-    return { data: data ?? [], error };
+    return { data: (data ?? []) as Gallery[], error };
   });
 }
-

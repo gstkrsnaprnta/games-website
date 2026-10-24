@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { AnnouncementCard } from "../../components/public/AnnouncementCard";
 import { CTASection } from "../../components/public/CTASection";
+import { GalleryGrid } from "../../components/public/GalleryGrid";
 import { HeroSection } from "../../components/public/HeroSection";
 // import { SectionHeading } from "../../components/public/SectionHeading";
 import { VerticalTimeline } from "../../components/public/TimelineItem";
@@ -25,8 +26,13 @@ import { ErrorState } from "../../components/shared/ErrorState";
 import { LoadingState } from "../../components/shared/LoadingState";
 import { getAnnouncements } from "../../services/announcements";
 import { getCompetitions } from "../../services/competitions";
+import { getGalleries } from "../../services/galleries";
 import { getGeneralTimelines } from "../../services/timelines";
-import type { Competition, GeneralTimelineItem, TimelineScope } from "../../types/models";
+import type {
+  Competition,
+  GeneralTimelineItem,
+  TimelineScope,
+} from "../../types/models";
 import { useAsyncData } from "../../utils/useAsyncData";
 
 const stats = [
@@ -60,11 +66,10 @@ const stats = [
   },
 ];
 
-
-
 export function HomePage() {
   const competitions = useAsyncData(getCompetitions, []);
   const announcements = useAsyncData(getAnnouncements, []);
+  const galleries = useAsyncData(getGalleries, []);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const [timelineData, setTimelineData] = useState<GeneralTimelineItem[]>([]);
@@ -78,12 +83,14 @@ export function HomePage() {
         setTimelineLoading(true);
         setTimelineError(null);
         const EVENT_ID = "916561f8-9237-490f-98f4-3db9a46575a7";
-        const { data: timelinesData, error: dbError } = await getGeneralTimelines(EVENT_ID);
+        const { data: timelinesData, error: dbError } =
+          await getGeneralTimelines(EVENT_ID);
         if (dbError) throw dbError;
         setTimelineData(timelinesData);
       } catch (err: unknown) {
         console.error("Error fetching homepage timelines:", err);
-        const errMsg = err instanceof Error ? err.message : "Gagal memuat timeline.";
+        const errMsg =
+          err instanceof Error ? err.message : "Gagal memuat timeline.";
         setTimelineError(errMsg);
       } finally {
         setTimelineLoading(false);
@@ -92,16 +99,24 @@ export function HomePage() {
     fetchTimeline();
   }, []);
 
-  const regionalTimeline = timelineData.filter((item) => item.timeline_scope === "regional");
-  const nationalTimeline = timelineData.filter((item) => item.timeline_scope === "nasional");
-  const activeTimeline = activeScope === "regional" ? regionalTimeline : nationalTimeline;
+  const regionalTimeline = timelineData.filter(
+    (item) => item.timeline_scope === "regional",
+  );
+  const nationalTimeline = timelineData.filter(
+    (item) => item.timeline_scope === "nasional",
+  );
+  const activeTimeline =
+    activeScope === "regional" ? regionalTimeline : nationalTimeline;
 
   const scroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
       const { scrollLeft, clientWidth } = scrollContainerRef.current;
       const scrollAmount = clientWidth * 0.75;
       scrollContainerRef.current.scrollTo({
-        left: direction === "left" ? scrollLeft - scrollAmount : scrollLeft + scrollAmount,
+        left:
+          direction === "left"
+            ? scrollLeft - scrollAmount
+            : scrollLeft + scrollAmount,
         behavior: "smooth",
       });
     }
@@ -122,7 +137,9 @@ export function HomePage() {
                 className={[
                   "relative flex min-h-[112px] flex-col justify-between rounded-[1.25rem] border border-white/55 bg-white/24 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)] backdrop-blur-md",
                   "lg:min-h-0 lg:flex-row lg:items-center lg:justify-start lg:gap-4 lg:rounded-none lg:border-0 lg:bg-transparent lg:px-6 lg:py-5 lg:shadow-none",
-                  i !== stats.length - 1 ? "lg:border-r lg:border-white/38" : "",
+                  i !== stats.length - 1
+                    ? "lg:border-r lg:border-white/38"
+                    : "",
                 ].join(" ")}
               >
                 <div className="grid size-11 shrink-0 place-items-center rounded-full border border-white/75 bg-white/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.95),0_4px_14px_rgba(6,66,82,0.07)] backdrop-blur-md lg:size-[62px]">
@@ -149,9 +166,10 @@ export function HomePage() {
       </section>
 
       {/* ===== Cabang Lomba ===== */}
-      <section className="container-hero relative pt-4 pb-5 lg:pt-8 lg:pb-8">        <div className="pointer-events-none absolute -left-24 top-24 size-[360px] rounded-full bg-[#faadb6]/10 blur-[100px] -z-10" />
+      <section className="container-hero relative pt-4 pb-5 lg:pt-8 lg:pb-8">
+        {" "}
+        <div className="pointer-events-none absolute -left-24 top-24 size-[360px] rounded-full bg-[#faadb6]/10 blur-[100px] -z-10" />
         <div className="pointer-events-none absolute right-0 top-8 size-[420px] rounded-full bg-[#c2e1df]/16 blur-[120px] -z-10" />
-
         <div className="mb-6 flex items-end justify-between gap-4 md:mb-9">
           <div className="flex min-w-0 items-center gap-3 md:gap-4">
             <div className="h-9 w-1.5 shrink-0 rounded-full bg-[#faadb6] shadow-[0_0_18px_rgba(250,173,182,0.55)] md:h-10" />
@@ -172,7 +190,6 @@ export function HomePage() {
             Lihat Semua Lomba <ArrowRight size={15} />
           </Link>
         </div>
-
         <div className="relative">
           <button
             onClick={() => scroll("left")}
@@ -193,8 +210,12 @@ export function HomePage() {
           </button>
 
           {competitions.loading ? <LoadingState /> : null}
-          {competitions.error ? <ErrorState message={competitions.error} /> : null}
-          {!competitions.loading && !competitions.error && competitions.data?.length === 0 ? (
+          {competitions.error ? (
+            <ErrorState message={competitions.error} />
+          ) : null}
+          {!competitions.loading &&
+          !competitions.error &&
+          competitions.data?.length === 0 ? (
             <EmptyState description="Lomba aktif belum tersedia." />
           ) : null}
 
@@ -205,7 +226,10 @@ export function HomePage() {
                 className="scroll-smooth hide-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto pb-4 pl-1 pr-6"
               >
                 {competitions.data.map((competition) => (
-                  <FeaturedCompetitionCard key={competition.id} competition={competition} />
+                  <FeaturedCompetitionCard
+                    key={competition.id}
+                    competition={competition}
+                  />
                 ))}
               </div>
 
@@ -261,13 +285,24 @@ export function HomePage() {
         </div>
 
         {timelineLoading ? (
-          <div className="py-12"><LoadingState /></div>
+          <div className="py-12">
+            <LoadingState />
+          </div>
         ) : timelineError ? (
-          <div className="py-8"><ErrorState message={timelineError} /></div>
+          <div className="py-8">
+            <ErrorState message={timelineError} />
+          </div>
         ) : activeTimeline.length === 0 ? (
-          <div className="py-12"><EmptyState description={`Timeline ${activeScope === "regional" ? "Regional" : "Nasional"} belum tersedia.`} /></div>
+          <div className="py-12">
+            <EmptyState
+              description={`Timeline ${activeScope === "regional" ? "Regional" : "Nasional"} belum tersedia.`}
+            />
+          </div>
         ) : (
-          <VerticalTimeline items={activeTimeline as unknown as SharedTimelineItem[]} scope={activeScope} />
+          <VerticalTimeline
+            items={activeTimeline as unknown as SharedTimelineItem[]}
+            scope={activeScope}
+          />
         )}
       </section>
 
@@ -300,8 +335,12 @@ export function HomePage() {
 
         <div className="relative">
           {announcements.loading ? <LoadingState /> : null}
-          {announcements.error ? <ErrorState message={announcements.error} /> : null}
-          {!announcements.loading && !announcements.error && announcements.data?.length === 0 ? (
+          {announcements.error ? (
+            <ErrorState message={announcements.error} />
+          ) : null}
+          {!announcements.loading &&
+          !announcements.error &&
+          announcements.data?.length === 0 ? (
             <EmptyState description="Pengumuman belum tersedia." />
           ) : null}
 
@@ -330,6 +369,43 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* ===== Galeri ===== */}
+      {galleries.data && galleries.data.length > 0 ? (
+        <section className="container-hero relative pt-4 pb-10 lg:pt-5 lg:pb-14">
+          <div className="mb-6 flex items-center justify-between gap-4 md:mb-8">
+            <div className="flex min-w-0 items-center gap-4">
+              <div className="h-9 w-1.5 shrink-0 rounded-full bg-[#faadb6] shadow-[0_0_18px_rgba(250,173,182,0.55)] md:h-10" />
+              <div className="min-w-0">
+                <p className="mb-1 hidden text-[10px] font-black uppercase tracking-[0.24em] text-[#7E032F] md:block">
+                  Dokumentasi kegiatan
+                </p>
+                <h2 className="games-display text-[1.85rem] font-black leading-tight tracking-[-0.04em] text-[#064252] min-[390px]:text-[2.05rem] md:text-4xl">
+                  Galeri GAMES
+                </h2>
+              </div>
+            </div>
+
+            <Link
+              to="/galeri"
+              className="hidden shrink-0 items-center gap-2 rounded-full border border-white/55 bg-white/24 px-5 py-2.5 text-xs font-black text-[#7E032F] shadow-[inset_0_1px_0_rgba(255,255,255,0.62)] backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/40 md:inline-flex"
+            >
+              Lihat Semua Galeri <ArrowRight size={15} />
+            </Link>
+          </div>
+
+          <GalleryGrid items={galleries.data.slice(0, 8)} />
+
+          <div className="mt-5 flex justify-center md:hidden">
+            <Link
+              to="/galeri"
+              className="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/28 px-5 py-2.5 text-xs font-black text-[#7E032F] shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] backdrop-blur-md"
+            >
+              Lihat Semua Galeri <ArrowRight size={14} />
+            </Link>
+          </div>
+        </section>
+      ) : null}
+
       {/* ===== CTA ===== */}
       <CTASection />
     </>
@@ -338,8 +414,13 @@ export function HomePage() {
 
 const competitionIcons = [Calculator, Atom, FlaskConical, Leaf, Code, BookOpen];
 
-function FeaturedCompetitionCard({ competition }: { competition: Competition }) {
-  const iconIndex = Math.abs(competition.code.charCodeAt(0) || 0) % competitionIcons.length;
+function FeaturedCompetitionCard({
+  competition,
+}: {
+  competition: Competition;
+}) {
+  const iconIndex =
+    Math.abs(competition.code.charCodeAt(0) || 0) % competitionIcons.length;
   const Icon = competitionIcons[iconIndex];
 
   const description =
@@ -377,7 +458,10 @@ function FeaturedCompetitionCard({ competition }: { competition: Competition }) 
 
       <span className="mt-5 inline-flex items-center gap-1 text-[0.72rem] font-black text-[#7E032F] md:text-xs">
         Selengkapnya{" "}
-        <ArrowRight size={13} className="transition group-hover:translate-x-1" />
+        <ArrowRight
+          size={13}
+          className="transition group-hover:translate-x-1"
+        />
       </span>
     </Link>
   );

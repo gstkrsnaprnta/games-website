@@ -166,6 +166,15 @@ export type FAQ = {
   sort_order: number;
 };
 
+export type Gallery = {
+  id: string;
+  title: string | null;
+  image_url: string;
+  description: string | null;
+  is_active: boolean;
+  sort_order: number;
+};
+
 export type Announcement = {
   id: string;
   title: string;
